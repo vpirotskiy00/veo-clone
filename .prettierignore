@@ -9,3 +9,29 @@ coverage
 .env*
 .vscode
 .idea
+
+# Storybook generated files
+storybook-static/
+.storybook/public/
+
+# Test coverage and artifacts
+.nyc_output/
+playwright-report/
+test-results/
+
+# Auto-generated types
+*.d.ts
+next-env.d.ts
+
+# Temporary files
+*.tmp
+*.swp
+.DS_Store
+
+# Package manager files
+pnpm-lock.yaml
+yarn.lock
+
+# Build artifacts from tools
+.turbo/
+.vercel/

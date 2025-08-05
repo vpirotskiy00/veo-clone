@@ -1,6 +1,7 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this
+repository.
 
 ## Development Commands
 
@@ -46,14 +47,18 @@ This project uses **Husky** for Git hooks to ensure code quality:
 ### Commit Message Validation
 
 - **Commitlint**: Enforces conventional commit format
-- Supported types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+- Supported types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`,
+  `chore`, `revert`
 - Example: `feat: add user authentication system`
 
 ### Code Quality Rules
 
-- **Fix all errors**: Never ignore ESLint/TypeScript errors with comments - always fix the root cause
+- **Fix all errors**: Never ignore ESLint/TypeScript errors with comments - always fix the root
+  cause
 - **No suppression**: Avoid `// eslint-disable`, `// @ts-ignore`, or similar suppression comments
-- **Clean commits**: Do not mention AI assistance in commit messages
+- **Clean commits**: NEVER mention AI assistance, Claude, or "Generated with" in commit messages
+- **Professional commits**: Write commit messages as if they came from a human developer
+- **No AI signatures**: Avoid "Co-Authored-By: Claude" or similar AI attribution
 
 ### Bypassing Hooks (Emergency Only)
 

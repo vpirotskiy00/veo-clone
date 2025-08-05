@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# Get the commit message file path
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+
+# Only run for regular commits (not amend, merge, etc.)
+if [ -z "$COMMIT_SOURCE" ] || [ "$COMMIT_SOURCE" = "message" ]; then
+  # Get current branch name
+  BRANCH_NAME=$(git symbolic-ref --short HEAD 2>/dev/null)
+  
+  # Extract issue number from branch name (e.g., feature/123-add-auth -> #123)
+  ISSUE_NUMBER=$(echo "$BRANCH_NAME" | grep -o -E '[0-9]+' | head -1)
+  
+  # Check if commit message is empty or just whitespace
+  if [ ! -s "$COMMIT_MSG_FILE" ] || ! grep -q '[^[:space:]]' "$COMMIT_MSG_FILE"; then
+    # Create commit message template based on branch name
+    if echo "$BRANCH_NAME" | grep -q "^feat"; then
+      echo "feat: " > "$COMMIT_MSG_FILE"
+    elif echo "$BRANCH_NAME" | grep -q "^fix"; then
+      echo "fix: " > "$COMMIT_MSG_FILE"
+    elif echo "$BRANCH_NAME" | grep -q "^docs"; then
+      echo "docs: " > "$COMMIT_MSG_FILE"
+    elif echo "$BRANCH_NAME" | grep -q "^style"; then
+      echo "style: " > "$COMMIT_MSG_FILE"
+    elif echo "$BRANCH_NAME" | grep -q "^refactor"; then
+      echo "refactor: " > "$COMMIT_MSG_FILE"
+    elif echo "$BRANCH_NAME" | grep -q "^perf"; then
+      echo "perf: " > "$COMMIT_MSG_FILE"
+    elif echo "$BRANCH_NAME" | grep -q "^test"; then
+      echo "test: " > "$COMMIT_MSG_FILE"
+    elif echo "$BRANCH_NAME" | grep -q "^build"; then
+      echo "build: " > "$COMMIT_MSG_FILE"
+    elif echo "$BRANCH_NAME" | grep -q "^ci"; then
+      echo "ci: " > "$COMMIT_MSG_FILE"
+    elif echo "$BRANCH_NAME" | grep -q "^chore"; then
+      echo "chore: " > "$COMMIT_MSG_FILE"
+    else
+      echo "feat: " > "$COMMIT_MSG_FILE"
+    fi
+  fi
+  
+  # Add issue reference if found and not already present
+  if [ -n "$ISSUE_NUMBER" ] && ! grep -q "#$ISSUE_NUMBER" "$COMMIT_MSG_FILE"; then
+    # Add issue reference at the end of the first line
+    sed -i.bak "1s/$/ (#$ISSUE_NUMBER)/" "$COMMIT_MSG_FILE" && rm "$COMMIT_MSG_FILE.bak"
+  fi
+fi
