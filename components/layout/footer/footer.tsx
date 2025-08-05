@@ -1,30 +1,34 @@
-import * as React from "react"
-import Link from "next/link"
-import { cn } from "@/lib/utils"
+import Link from 'next/link';
+import * as React from 'react';
+
+import { cn } from '@/lib/utils';
 
 export interface FooterLink {
-  href: string
-  label: string
-  icon?: React.ReactNode
+  href: string;
+  label: string;
+  icon?: React.ReactNode;
 }
 
 export interface FooterProps extends React.HTMLAttributes<HTMLElement> {
-  links?: FooterLink[]
-  copyright?: string
+  links?: FooterLink[];
+  copyright?: string;
 }
 
 const Footer = React.forwardRef<HTMLElement, FooterProps>(
-  ({ 
-    className, 
-    links = [], 
-    copyright = `© ${new Date().getFullYear()} Veo Clone. All rights reserved.`,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      links = [],
+      copyright = `© ${new Date().getFullYear()} Veo Clone. All rights reserved.`,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <footer
         ref={ref}
         className={cn(
-          "border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+          'bg-background/95 supports-[backdrop-filter]:bg-background/60 border-t backdrop-blur',
           className
         )}
         {...props}
@@ -36,7 +40,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-2 text-center text-sm leading-loose text-muted-foreground transition-colors hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-center text-sm leading-loose transition-colors"
                 >
                   {link.icon}
                   {link.label}
@@ -44,14 +48,14 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
               ))}
             </div>
           )}
-          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+          <p className="text-muted-foreground text-center text-sm leading-loose md:text-left">
             {copyright}
           </p>
         </div>
       </footer>
-    )
+    );
   }
-)
-Footer.displayName = "Footer"
+);
+Footer.displayName = 'Footer';
 
-export { Footer }
+export { Footer };

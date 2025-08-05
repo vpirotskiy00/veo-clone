@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { Header } from './header'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
+import { Header } from './header';
 
 const meta = {
   title: 'Layout/Header',
@@ -8,20 +9,20 @@ const meta = {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof Header>
+} satisfies Meta<typeof Header>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
-}
+};
 
 export const WithTitle: Story = {
   args: {
     title: 'My App',
   },
-}
+};
 
 export const WithNavigation: Story = {
   args: {
@@ -33,7 +34,7 @@ export const WithNavigation: Story = {
       { href: '/contact', label: 'Contact' },
     ],
   },
-}
+};
 
 export const WithLongNavigation: Story = {
   args: {
@@ -47,4 +48,4 @@ export const WithLongNavigation: Story = {
       { href: '/support', label: 'Support' },
     ],
   },
-}
+};

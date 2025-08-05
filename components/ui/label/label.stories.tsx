@@ -1,6 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { Label } from './label'
-import { Input } from '../input/input'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
+import { Input } from '../input/input';
+import { Label } from './label';
 
 const meta = {
   title: 'UI/Label',
@@ -9,16 +10,16 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof Label>
+} satisfies Meta<typeof Label>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
     children: 'Your label',
   },
-}
+};
 
 export const WithInput: Story = {
   render: () => (
@@ -27,7 +28,7 @@ export const WithInput: Story = {
       <Input type="email" id="email" placeholder="Email" />
     </div>
   ),
-}
+};
 
 export const Required: Story = {
   render: () => (
@@ -38,4 +39,4 @@ export const Required: Story = {
       <Input type="text" id="required" placeholder="This field is required" />
     </div>
   ),
-}
+};

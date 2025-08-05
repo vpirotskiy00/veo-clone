@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { Footer } from './footer'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
+import { Footer } from './footer';
 
 const meta = {
   title: 'Layout/Footer',
@@ -8,14 +9,14 @@ const meta = {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof Footer>
+} satisfies Meta<typeof Footer>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
-}
+};
 
 export const WithLinks: Story = {
   args: {
@@ -25,7 +26,7 @@ export const WithLinks: Story = {
       { href: '/support', label: 'Support' },
     ],
   },
-}
+};
 
 export const WithCustomCopyright: Story = {
   args: {
@@ -35,7 +36,7 @@ export const WithCustomCopyright: Story = {
       { href: '/terms', label: 'Terms' },
     ],
   },
-}
+};
 
 export const WithManyLinks: Story = {
   args: {
@@ -48,4 +49,4 @@ export const WithManyLinks: Story = {
       { href: '/contact', label: 'Contact' },
     ],
   },
-}
+};

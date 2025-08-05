@@ -5,6 +5,7 @@ This directory contains utility functions and shared code for the veo-clon proje
 ## Directory Overview
 
 The `lib/` directory serves as a centralized location for:
+
 - Utility functions
 - Helper methods
 - Shared business logic
@@ -21,46 +22,52 @@ lib/
 ## File Details
 
 ### utils.ts
+
 **Purpose**: Provides utility functions for the application, primarily for className management
 
 **Location**: `/lib/utils.ts`
 
 **Dependencies**:
+
 - `clsx` (v2.1.1): Utility for constructing className strings conditionally
 - `tailwind-merge` (v2.7.0): Intelligently merges Tailwind CSS classes
 
 **Exported Functions**:
 
 #### `cn(...inputs: ClassValue[]): string`
+
 **Purpose**: Combines and deduplicates Tailwind CSS classes
 
 **Usage**:
+
 ```typescript
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils';
 
 // Basic usage
-cn("text-red-500", "bg-blue-500")
+cn('text-red-500', 'bg-blue-500');
 
 // Conditional classes
-cn("base-class", isActive && "active-class")
+cn('base-class', isActive && 'active-class');
 
 // Merging conflicting classes (tailwind-merge handles this)
-cn("px-2", "px-4") // Result: "px-4"
+cn('px-2', 'px-4'); // Result: "px-4"
 
 // Complex example with shadcn/ui
 cn(
-  "rounded-lg border bg-card text-card-foreground shadow-sm",
+  'rounded-lg border bg-card text-card-foreground shadow-sm',
   className,
-  isDisabled && "opacity-50 cursor-not-allowed"
-)
+  isDisabled && 'opacity-50 cursor-not-allowed'
+);
 ```
 
 **How it works**:
+
 1. `clsx` processes the inputs and handles conditionals
 2. `twMerge` intelligently merges Tailwind classes, resolving conflicts
 3. Returns a clean, deduplicated className string
 
 **Why it's important**:
+
 - Essential for shadcn/ui component variants
 - Prevents className conflicts in Tailwind CSS
 - Provides clean API for conditional styling
@@ -71,6 +78,7 @@ cn(
 ### When to Add New Utilities
 
 Add functions to `lib/utils.ts` when:
+
 1. The function is used across multiple components
 2. It's a pure utility function (no side effects)
 3. It enhances code reusability
@@ -79,26 +87,29 @@ Add functions to `lib/utils.ts` when:
 ### Common Utility Patterns
 
 1. **Date Formatting**:
+
 ```typescript
 export function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat("en-US").format(date)
+  return new Intl.DateTimeFormat('en-US').format(date);
 }
 ```
 
 2. **Number Formatting**:
+
 ```typescript
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount)
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
 }
 ```
 
 3. **String Manipulation**:
+
 ```typescript
 export function truncate(str: string, length: number): string {
-  return str.length > length ? `${str.substring(0, length)}...` : str
+  return str.length > length ? `${str.substring(0, length)}...` : str;
 }
 ```
 
@@ -137,18 +148,20 @@ export function Button({ className, variant = "default", ...props }: ButtonProps
 ### Import Pattern
 
 Always use the path alias when importing:
+
 ```typescript
 // ✅ Correct
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils';
 
 // ❌ Avoid
-import { cn } from "../lib/utils"
-import { cn } from "./utils"
+import { cn } from '../lib/utils';
+import { cn } from './utils';
 ```
 
 ## Future Considerations
 
 As the project grows, consider organizing utilities:
+
 ```
 lib/
 ├── utils.ts           # General utilities

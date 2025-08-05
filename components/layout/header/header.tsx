@@ -1,19 +1,20 @@
-import * as React from "react"
-import Link from "next/link"
-import { cn } from "@/lib/utils"
+import Link from 'next/link';
+import * as React from 'react';
+
+import { cn } from '@/lib/utils';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
-  title?: string
-  navigation?: { href: string; label: string }[]
+  title?: string;
+  navigation?: { href: string; label: string }[];
 }
 
 const Header = React.forwardRef<HTMLElement, HeaderProps>(
-  ({ className, title = "Veo Clone", navigation = [], ...props }, ref) => {
+  ({ className, title = 'Veo Clone', navigation = [], ...props }, ref) => {
     return (
       <header
         ref={ref}
         className={cn(
-          "sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+          'bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur',
           className
         )}
         {...props}
@@ -29,7 +30,7 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="transition-colors hover:text-foreground/80 text-foreground/60"
+                    className="hover:text-foreground/80 text-foreground/60 transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -39,9 +40,9 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
           </div>
         </div>
       </header>
-    )
+    );
   }
-)
-Header.displayName = "Header"
+);
+Header.displayName = 'Header';
 
-export { Header }
+export { Header };

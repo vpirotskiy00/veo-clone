@@ -5,6 +5,7 @@ This directory contains static assets that are served directly by Next.js.
 ## Directory Overview
 
 The `public/` directory is Next.js's static file serving directory. Files placed here are:
+
 - Served from the root URL path (`/`)
 - Not processed by webpack
 - Publicly accessible
@@ -69,6 +70,7 @@ import Image from "next/image";
 ### Best Practices
 
 1. **File Organization**:
+
    ```
    public/
    ├── images/          # Image assets
@@ -98,6 +100,7 @@ import Image from "next/image";
 ### When to Use public/ vs next/image
 
 **Use public/ for**:
+
 - Favicons
 - Robots.txt, sitemap.xml
 - Static downloads (PDFs, etc.)
@@ -105,6 +108,7 @@ import Image from "next/image";
 - Assets referenced in meta tags
 
 **Use next/image imports for**:
+
 - Component images
 - Hero images
 - Product photos
@@ -135,11 +139,12 @@ Since all current assets are SVGs:
 4. **Dark Mode**: Current SVGs use `dark:invert` class for theme support
 
 Example inline SVG usage:
+
 ```tsx
 // For dynamic styling
-import { ReactComponent as Logo } from "@/public/next.svg";
+import { ReactComponent as Logo } from '@/public/next.svg';
 
-<Logo className="w-32 h-32 fill-current text-primary" />
+<Logo className="text-primary h-32 w-32 fill-current" />;
 ```
 
 ## Important Notes
