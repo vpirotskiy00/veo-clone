@@ -13,6 +13,8 @@ import sonarjs from 'eslint-plugin-sonarjs';
 import promise from 'eslint-plugin-promise';
 import unicorn from 'eslint-plugin-unicorn';
 import tanstackQuery from '@tanstack/eslint-plugin-query';
+import deprecation from 'eslint-plugin-deprecation';
+import perfectionist from 'eslint-plugin-perfectionist';
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -35,6 +37,8 @@ const eslintConfig = [
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
         ecmaFeatures: {
           jsx: true,
         },
@@ -53,6 +57,8 @@ const eslintConfig = [
       promise: promise,
       unicorn: unicorn,
       '@tanstack/query': tanstackQuery,
+      deprecation: deprecation,
+      perfectionist: perfectionist,
     },
     rules: {
       // TypeScript strict rules
@@ -180,6 +186,17 @@ const eslintConfig = [
       '@tanstack/query/stable-query-client': 'error',
       '@tanstack/query/no-rest-destructuring': 'error',
       '@tanstack/query/no-unstable-deps': 'warn',
+
+      // Deprecation tracking for React 19 and Next.js 15
+      // Temporarily disabled due to ESLint v9 compatibility issue
+      // 'deprecation/deprecation': 'warn',
+
+      // Code consistency - only JSX props sorting to avoid duplication with simple-import-sort
+      'perfectionist/sort-jsx-props': ['warn', {
+        type: 'alphabetical',
+        order: 'asc',
+        ignoreCase: true,
+      }],
 
       // General code quality
       'no-console': ['warn', { allow: ['warn', 'error'] }],
