@@ -12,6 +12,7 @@ import importPlugin from 'eslint-plugin-import';
 import sonarjs from 'eslint-plugin-sonarjs';
 import promise from 'eslint-plugin-promise';
 import unicorn from 'eslint-plugin-unicorn';
+import tanstackQuery from '@tanstack/eslint-plugin-query';
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -51,6 +52,7 @@ const eslintConfig = [
       sonarjs: sonarjs,
       promise: promise,
       unicorn: unicorn,
+      '@tanstack/query': tanstackQuery,
     },
     rules: {
       // TypeScript strict rules
@@ -172,6 +174,12 @@ const eslintConfig = [
       'unicorn/prefer-optional-catch-binding': 'warn',
       'unicorn/consistent-function-scoping': 'warn',
       'unicorn/no-process-exit': 'error',
+
+      // TanStack Query rules
+      '@tanstack/query/exhaustive-deps': 'error',
+      '@tanstack/query/stable-query-client': 'error',
+      '@tanstack/query/no-rest-destructuring': 'error',
+      '@tanstack/query/no-unstable-deps': 'warn',
 
       // General code quality
       'no-console': ['warn', { allow: ['warn', 'error'] }],
