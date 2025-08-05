@@ -3,3 +3,7 @@
 /workspace.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+/modules.xml
+/inspectionProfiles/Project_Default.xml
+/vcs.xml
+/veo-clon.iml
