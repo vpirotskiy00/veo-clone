@@ -1,0 +1,57 @@
+import * as React from "react"
+import Link from "next/link"
+import { cn } from "@/lib/utils"
+
+export interface FooterLink {
+  href: string
+  label: string
+  icon?: React.ReactNode
+}
+
+export interface FooterProps extends React.HTMLAttributes<HTMLElement> {
+  links?: FooterLink[]
+  copyright?: string
+}
+
+const Footer = React.forwardRef<HTMLElement, FooterProps>(
+  ({ 
+    className, 
+    links = [], 
+    copyright = `© ${new Date().getFullYear()} Veo Clone. All rights reserved.`,
+    ...props 
+  }, ref) => {
+    return (
+      <footer
+        ref={ref}
+        className={cn(
+          "border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+          className
+        )}
+        {...props}
+      >
+        <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
+          {links.length > 0 && (
+            <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="flex items-center gap-2 text-center text-sm leading-loose text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {link.icon}
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          )}
+          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+            {copyright}
+          </p>
+        </div>
+      </footer>
+    )
+  }
+)
+Footer.displayName = "Footer"
+
+export { Footer }
