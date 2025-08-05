@@ -56,9 +56,11 @@ This project uses **Husky** for Git hooks to ensure code quality:
 - **Fix all errors**: Never ignore ESLint/TypeScript errors with comments - always fix the root
   cause
 - **No suppression**: Avoid `// eslint-disable`, `// @ts-ignore`, or similar suppression comments
-- **Clean commits**: NEVER mention AI assistance, Claude, or "Generated with" in commit messages
+- **Clean commits**: NEVER mention Claude, "Generated with", or "Co-Authored-By: Claude" in commit
+  messages
 - **Professional commits**: Write commit messages as if they came from a human developer
-- **No AI signatures**: Avoid "Co-Authored-By: Claude" or similar AI attribution
+- **AI development allowed**: "AI" word is allowed when referring to actual AI features or
+  development
 
 ### Bypassing Hooks (Emergency Only)
 

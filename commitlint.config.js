@@ -48,7 +48,6 @@ module.exports = {
             /claude/i,
             /generated with/i,
             /co-authored-by.*claude/i,
-            /\bai\b/i,
             /🤖/,
             /anthropic/i,
           ];
