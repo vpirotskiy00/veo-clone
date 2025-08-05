@@ -48,7 +48,12 @@ This project uses **Husky** for Git hooks to ensure code quality:
 - **Commitlint**: Enforces conventional commit format
 - Supported types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
 - Example: `feat: add user authentication system`
-- **Important**: Do not mention "Claude" or AI assistance in commit messages - keep them focused on the actual changes
+
+### Code Quality Rules
+
+- **Fix all errors**: Never ignore ESLint/TypeScript errors with comments - always fix the root cause
+- **No suppression**: Avoid `// eslint-disable`, `// @ts-ignore`, or similar suppression comments
+- **Clean commits**: Do not mention AI assistance in commit messages
 
 ### Bypassing Hooks (Emergency Only)
 
