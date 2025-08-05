@@ -21,11 +21,49 @@ bun run start
 
 # Run linting
 bun run lint
+
+# Run type checking
+bun run typecheck
+```
+
+## Code Quality & Git Hooks
+
+This project uses **Husky** for Git hooks to ensure code quality:
+
+### Pre-commit Hooks
+
+- **ESLint**: Automatically fixes linting issues in staged files
+- **TypeScript**: Runs type checking on staged TypeScript files
+- **Prettier**: Formats code according to project standards
+- Only staged files are processed (via `lint-staged`)
+
+### Pre-push Hooks
+
+- **Full linting**: Runs ESLint on entire codebase
+- **Type checking**: Validates TypeScript across the project
+- **Build verification**: Ensures the project builds successfully
+
+### Commit Message Validation
+
+- **Commitlint**: Enforces conventional commit format
+- Supported types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+- Example: `feat: add user authentication system`
+- **Important**: Do not mention "Claude" or AI assistance in commit messages - keep them focused on the actual changes
+
+### Bypassing Hooks (Emergency Only)
+
+```bash
+# Skip pre-commit and commit-msg hooks
+git commit --no-verify -m "emergency fix"
+
+# Skip pre-push hooks
+git push --no-verify
 ```
 
 ## Architecture Overview
 
 This is a Next.js 15.4.5 application using:
+
 - **App Router** (modern Next.js 13+ routing in `/app` directory)
 - **React Server Components** by default
 - **TypeScript** with strict mode enabled
@@ -35,19 +73,23 @@ This is a Next.js 15.4.5 application using:
 ## Key Conventions
 
 ### Import Aliases
+
 - `@/*` - Maps to project root
 - `@/components` - Component directory
 - `@/lib/utils` - Utility functions
 - `@/components/ui` - UI components from shadcn/ui
 
 ### Component Development
+
 When creating new components:
+
 1. Use Server Components by default (no "use client" unless needed)
 2. Place UI components in `/components/ui/`
 3. Use the `cn()` utility from `@/lib/utils` for className merging
 4. Follow shadcn/ui patterns for variants using `class-variance-authority`
 
 ### Styling
+
 - Use Tailwind CSS utility classes
 - CSS custom properties are defined in `globals.css`
 - Dark mode is supported via CSS variables
@@ -57,6 +99,10 @@ When creating new components:
 
 ```
 veo-clon/
+├── .husky/                   # Git hooks directory (Husky)
+│   ├── pre-commit            # Pre-commit hook (lint-staged)
+│   ├── pre-push              # Pre-push hook (lint, typecheck, build)
+│   └── commit-msg            # Commit message validation
 ├── app/                      # Next.js App Router (see app/CLAUDE.md)
 │   ├── favicon.ico           # Site favicon
 │   ├── globals.css           # Global styles, design system, CSS variables
@@ -74,9 +120,12 @@ veo-clon/
 ├── .env.example              # Environment template (empty)
 ├── .env.local                # Local environment (empty)
 ├── .gitignore                # Git ignore patterns
+├── .prettierrc               # Prettier configuration
+├── .prettierignore           # Prettier ignore patterns
 ├── CLAUDE.md                 # This file
 ├── README.md                 # Project documentation
 ├── bun.lock                  # Bun lockfile
+├── commitlint.config.js      # Commitlint configuration
 ├── components.json           # shadcn/ui configuration
 ├── eslint.config.mjs         # ESLint configuration (flat config)
 ├── next-env.d.ts             # Next.js TypeScript definitions
@@ -89,6 +138,7 @@ veo-clon/
 ## Major Entry Points
 
 ### Configuration Files
+
 - **package.json**: Project dependencies and scripts
   - Scripts: `dev`, `build`, `start`, `lint`
   - Key deps: Next.js 15.4.5, React 19.1.0, Tailwind CSS v4
@@ -103,6 +153,7 @@ veo-clon/
 - **postcss.config.mjs**: PostCSS with Tailwind CSS v4
 
 ### Application Entry Points
+
 - **app/layout.tsx**: Root layout component
   - Configures Geist fonts
   - Sets up HTML structure
@@ -117,20 +168,24 @@ veo-clon/
   - OKLCH color space
 
 ### Utility Entry Points
+
 - **lib/utils.ts**: Utility functions
   - `cn()`: Class name merging utility
 
 ## Important Notes
 
 - **Package Manager**: Project uses Bun (see bun.lock)
-- **No testing framework** currently configured
+- **Code Quality**: Husky pre-commit hooks with ESLint, Prettier, and TypeScript checking
+- **Commit Format**: Conventional commits enforced via commitlint
 - **ESLint**: Modern flat config format (ESLint v9)
 - **Icons**: Use `lucide-react` for icons
 - **Fonts**: Geist Sans and Geist Mono are configured
+- **Testing**: Vitest configured with Storybook integration
 
 ## Working with Subdirectories
 
 When working in specific directories, Claude should check for subdirectory CLAUDE.md files:
+
 - `app/CLAUDE.md` - Detailed App Router documentation
 - `lib/CLAUDE.md` - Utility function documentation
 - `public/CLAUDE.md` - Static asset documentation
