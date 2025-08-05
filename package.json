@@ -84,7 +84,7 @@
   },
   "bundlesize": [
     {
-      "path": ".next/static/js/*.js",
+      "path": ".next/static/chunks/*.js",
       "maxSize": "250 kB",
       "compression": "gzip"
     },
