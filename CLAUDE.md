@@ -53,19 +53,72 @@ When creating new components:
 - Dark mode is supported via CSS variables
 - Animation utilities available via `tw-animate-css`
 
-### File Structure
-```
-app/
-├── layout.tsx    # Root layout with font configuration
-├── page.tsx      # Pages as components
-└── globals.css   # Global styles and CSS variables
+## Complete File Structure
 
-components/
-└── ui/          # shadcn/ui components
-
-lib/
-└── utils.ts     # Utility functions including cn()
 ```
+veo-clon/
+├── app/                      # Next.js App Router (see app/CLAUDE.md)
+│   ├── favicon.ico           # Site favicon
+│   ├── globals.css           # Global styles, design system, CSS variables
+│   ├── layout.tsx            # Root layout with fonts and metadata
+│   └── page.tsx              # Home page component
+├── lib/                      # Utility library (see lib/CLAUDE.md)
+│   └── utils.ts              # cn() utility for className merging
+├── public/                   # Static assets (see public/CLAUDE.md)
+│   ├── file.svg              # File icon
+│   ├── globe.svg             # Globe icon
+│   ├── next.svg              # Next.js logo
+│   ├── vercel.svg            # Vercel logo
+│   └── window.svg            # Window icon
+├── .env                      # Environment variables (empty)
+├── .env.example              # Environment template (empty)
+├── .env.local                # Local environment (empty)
+├── .gitignore                # Git ignore patterns
+├── CLAUDE.md                 # This file
+├── README.md                 # Project documentation
+├── bun.lock                  # Bun lockfile
+├── components.json           # shadcn/ui configuration
+├── eslint.config.mjs         # ESLint configuration (flat config)
+├── next-env.d.ts             # Next.js TypeScript definitions
+├── next.config.ts            # Next.js configuration
+├── package.json              # Package configuration
+├── postcss.config.mjs        # PostCSS configuration
+└── tsconfig.json             # TypeScript configuration
+```
+
+## Major Entry Points
+
+### Configuration Files
+- **package.json**: Project dependencies and scripts
+  - Scripts: `dev`, `build`, `start`, `lint`
+  - Key deps: Next.js 15.4.5, React 19.1.0, Tailwind CSS v4
+- **tsconfig.json**: TypeScript compiler settings
+  - Path alias: `@/*` → root directory
+  - Strict mode enabled
+- **components.json**: shadcn/ui component system config
+  - New York style, RSC enabled
+  - Component paths configured
+- **next.config.ts**: Next.js configuration (currently minimal)
+- **eslint.config.mjs**: ESLint v9 flat config with Next.js rules
+- **postcss.config.mjs**: PostCSS with Tailwind CSS v4
+
+### Application Entry Points
+- **app/layout.tsx**: Root layout component
+  - Configures Geist fonts
+  - Sets up HTML structure
+  - Exports metadata for SEO
+- **app/page.tsx**: Home page component
+  - Default Next.js starter page
+  - Uses Next.js Image optimization
+- **app/globals.css**: Global styles
+  - Tailwind CSS imports
+  - Complete design system with CSS variables
+  - Light/dark theme definitions
+  - OKLCH color space
+
+### Utility Entry Points
+- **lib/utils.ts**: Utility functions
+  - `cn()`: Class name merging utility
 
 ## Important Notes
 
@@ -74,3 +127,12 @@ lib/
 - **ESLint**: Modern flat config format (ESLint v9)
 - **Icons**: Use `lucide-react` for icons
 - **Fonts**: Geist Sans and Geist Mono are configured
+
+## Working with Subdirectories
+
+When working in specific directories, Claude should check for subdirectory CLAUDE.md files:
+- `app/CLAUDE.md` - Detailed App Router documentation
+- `lib/CLAUDE.md` - Utility function documentation
+- `public/CLAUDE.md` - Static asset documentation
+
+These subdirectory files contain more detailed information about their specific areas.
