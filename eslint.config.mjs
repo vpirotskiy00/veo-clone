@@ -168,6 +168,10 @@ const eslintConfig = [
       'unicorn/no-console-spaces': 'error',
       'unicorn/error-message': 'error',
       'unicorn/throw-new-error': 'error',
+      'unicorn/no-useless-undefined': 'error',
+      'unicorn/prefer-optional-catch-binding': 'warn',
+      'unicorn/consistent-function-scoping': 'warn',
+      'unicorn/no-process-exit': 'error',
 
       // General code quality
       'no-console': ['warn', { allow: ['warn', 'error'] }],
