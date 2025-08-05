@@ -198,6 +198,20 @@ const eslintConfig = [
         ignoreCase: true,
       }],
 
+      // File and function size limits
+      'max-lines': ['warn', {
+        max: 500,
+        skipBlankLines: true,
+        skipComments: true,
+      }],
+      'max-lines-per-function': ['warn', {
+        max: 80,
+        skipBlankLines: true,
+        skipComments: true,
+      }],
+      'max-statements': ['warn', 20],
+      'complexity': ['warn', 10],
+
       // General code quality
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'prefer-const': 'error',
