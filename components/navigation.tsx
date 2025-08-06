@@ -17,7 +17,13 @@ import { useTheme } from '@/lib/theme';
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { theme, resolvedTheme, toggleTheme } = useTheme();
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Handle scroll effect
   useEffect(() => {
@@ -43,6 +49,7 @@ export function Navigation() {
   };
 
   const getThemeLabel = () => {
+    if (!mounted) return 'Theme';
     switch (theme) {
       case 'light':
         return 'Light mode';
@@ -50,6 +57,8 @@ export function Navigation() {
         return 'Dark mode';
       case 'auto':
         return `Auto mode (${resolvedTheme})`;
+      default:
+        return 'Theme';
     }
   };
 
@@ -110,6 +119,7 @@ export function Navigation() {
               size='sm'
               title={getThemeLabel()}
               variant='ghost'
+              suppressHydrationWarning
             >
               {getThemeIcon()}
             </Button>
@@ -129,6 +139,7 @@ export function Navigation() {
               size='sm'
               title={getThemeLabel()}
               variant='ghost'
+              suppressHydrationWarning
             >
               {getThemeIcon()}
             </Button>
