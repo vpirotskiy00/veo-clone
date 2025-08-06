@@ -81,6 +81,10 @@ This is a Next.js 15.4.5 application using:
 - **TypeScript** with strict mode enabled
 - **Tailwind CSS v4** with OKLCH color space
 - **shadcn/ui** component system (New York style)
+- **Zustand** for client-side state management
+- **TanStack Query (React Query)** for server state and data fetching
+- **Zod** for runtime type validation and schema definitions
+- **React Hook Form** with Zod resolver for form management
 
 ## Key Conventions
 
@@ -99,6 +103,29 @@ When creating new components:
 2. Place UI components in `/components/ui/`
 3. Use the `cn()` utility from `@/lib/utils` for className merging
 4. Follow shadcn/ui patterns for variants using `class-variance-authority`
+
+### State Management
+
+- **Zustand**: Use for client-side global state
+  - Create stores in `/lib/stores/` or `/stores/`
+  - Follow Zustand patterns with slices for complex state
+  - Use `create()` for store creation with TypeScript
+- **TanStack Query**: Use for server state management
+  - Create query hooks in `/lib/queries/` or `/hooks/queries/`
+  - Use `useQuery` for data fetching, `useMutation` for updates
+  - Configure QueryClient in root layout or providers
+
+### Form Management & Validation
+
+- **React Hook Form**: Use for form state and validation
+  - Create forms with `useForm()` hook
+  - Use controlled components with `Controller` when needed
+  - Prefer uncontrolled components for better performance
+- **Zod**: Use for schema validation and type safety
+  - Define schemas in `/lib/schemas/` or alongside components
+  - Use `zodResolver` from `@hookform/resolvers/zod` with React Hook Form
+  - Export TypeScript types with `z.infer<typeof schema>`
+  - Use for both client-side validation and API route validation
 
 ### Styling
 
@@ -153,7 +180,8 @@ veo-clon/
 
 - **package.json**: Project dependencies and scripts
   - Scripts: `dev`, `build`, `start`, `lint`
-  - Key deps: Next.js 15.4.5, React 19.1.0, Tailwind CSS v4
+  - Key deps: Next.js 15.4.5, React 19.1.0, Tailwind CSS v4, Zustand, TanStack Query, Zod, React
+    Hook Form
 - **tsconfig.json**: TypeScript compiler settings
   - Path alias: `@/*` → root directory
   - Strict mode enabled
