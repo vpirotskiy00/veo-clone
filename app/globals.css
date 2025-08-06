@@ -171,40 +171,46 @@
   position: relative;
 }
 
-/* Better shimmer effect with readable text */
+/* Subtle shimmer effect with proper text masking */
 .text-shimmer {
-  background: linear-gradient(
-    90deg,
-    #667eea 0%,
-    #764ba2 25%,
-    #f093fb 50%,
-    #f5576c 75%,
-    #667eea 100%
-  );
+  background: var(--gradient-epic);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-size: 300% 300%;
-  animation: gradient-shift 4s ease-in-out infinite;
+  background-size: 400% 400%;
+  animation: gradient-shift 6s ease-in-out infinite;
   position: relative;
+  overflow: hidden;
 }
 
-.text-shimmer::before {
+.text-shimmer::after {
   content: '';
   position: absolute;
   top: 0;
-  left: -10%;
-  width: 20%;
-  height: 100%;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255,255,255,0.4) 50%,
+    transparent 40%,
+    rgba(255,255,255,0.12) 45%,
+    rgba(255,255,255,0.2) 50%,
+    rgba(255,255,255,0.12) 55%,
+    transparent 60%,
     transparent 100%
   );
-  animation: text-shimmer 3s ease-in-out infinite;
+  background-size: 300% 100%;
+  animation: subtle-shimmer 6s ease-in-out infinite;
   pointer-events: none;
-  mix-blend-mode: overlay;
+  mask: 
+    linear-gradient(#fff 0 0) text,
+    linear-gradient(#fff 0 0);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) text,
+    linear-gradient(#fff 0 0);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
 }
 
 /* Animations - Enhanced Gemini Style */
@@ -232,12 +238,12 @@
   }
 }
 
-@keyframes text-shimmer {
+@keyframes subtle-shimmer {
   0% {
-    left: -20%;
+    background-position: -300% center;
   }
   100% {
-    left: 100%;
+    background-position: 300% center;
   }
 }
 
