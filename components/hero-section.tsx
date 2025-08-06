@@ -28,23 +28,96 @@ export function HeroSection() {
       {/* Video Background */}
       <SimpleVideoBg className='z-0' src='/hero-video.mp4' />
 
-      {/* Epic Overlay */}
-      <div className='absolute inset-0 z-10 bg-gradient-to-b from-black/30 via-purple-900/20 to-black/40'></div>
+      {/* Enhanced Epic Overlay with Dynamic Gradients */}
+      <div className='absolute inset-0 z-10'>
+        <div className='absolute inset-0 bg-gradient-to-b from-black/20 via-purple-900/10 dark:via-purple-900/20 to-black/30 dark:to-black/50'></div>
+        <div className='absolute inset-0 bg-gradient-to-r from-blue-900/10 via-transparent to-purple-900/10 dark:from-blue-900/20 dark:to-purple-900/20'></div>
+      </div>
 
-      {/* Animated Grid Pattern */}
-      <div className='absolute inset-0 z-10 grid-pattern opacity-20'></div>
+      {/* Enhanced Animated Grid Pattern */}
+      <div className='absolute inset-0 z-10 grid-pattern opacity-15 dark:opacity-25'></div>
 
-      {/* Floating Orbs */}
+      {/* Dynamic Mesh Background */}
+      <div className='absolute inset-0 z-10 mesh-bg opacity-30 dark:opacity-40'></div>
+
+      {/* Enhanced Floating Orbs with Theme Awareness */}
       <div className='absolute inset-0 z-10 overflow-hidden pointer-events-none'>
-        <div className='absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-2xl float-animation'></div>
-        <div
-          className='absolute top-3/4 right-1/4 w-40 h-40 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-2xl float-animation'
-          style={{ animationDelay: '2s' }}
-        ></div>
-        <div
-          className='absolute top-1/2 right-1/3 w-24 h-24 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-2xl float-animation'
-          style={{ animationDelay: '4s' }}
-        ></div>
+        {/* Primary Orb */}
+        <motion.div
+          animate={{
+            y: [0, -30, 0],
+            x: [0, 20, 0],
+            scale: [1, 1.1, 1],
+          }}
+          className='absolute top-1/4 left-1/4 w-32 h-32 md:w-40 md:h-40 bg-gradient-to-r from-blue-500/15 dark:from-blue-400/20 to-purple-500/15 dark:to-purple-400/20 rounded-full blur-3xl'
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+
+        {/* Secondary Orb */}
+        <motion.div
+          animate={{
+            y: [0, 25, 0],
+            x: [0, -25, 0],
+            scale: [1, 0.9, 1],
+          }}
+          className='absolute top-3/4 right-1/4 w-40 h-40 md:w-48 md:h-48 bg-gradient-to-r from-purple-500/15 dark:from-purple-400/20 to-pink-500/15 dark:to-pink-400/20 rounded-full blur-3xl'
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: 2,
+          }}
+        />
+
+        {/* Accent Orb */}
+        <motion.div
+          animate={{
+            y: [0, -20, 0],
+            x: [0, 15, 0],
+            scale: [1, 1.2, 1],
+          }}
+          className='absolute top-1/2 right-1/3 w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-cyan-500/15 dark:from-cyan-400/20 to-blue-500/15 dark:to-blue-400/20 rounded-full blur-3xl'
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: 4,
+          }}
+        />
+
+        {/* Additional Ambient Orbs */}
+        <motion.div
+          animate={{
+            y: [0, 15, 0],
+            opacity: [0.3, 0.7, 0.3],
+          }}
+          className='absolute top-1/3 left-1/2 w-20 h-20 bg-gradient-to-r from-indigo-500/10 dark:from-indigo-400/15 to-violet-500/10 dark:to-violet-400/15 rounded-full blur-2xl'
+          transition={{
+            duration: 7,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: 1,
+          }}
+        />
+
+        <motion.div
+          animate={{
+            y: [0, -18, 0],
+            x: [0, 12, 0],
+            opacity: [0.2, 0.6, 0.2],
+          }}
+          className='absolute bottom-1/3 left-1/5 w-28 h-28 bg-gradient-to-r from-emerald-500/10 dark:from-emerald-400/15 to-teal-500/10 dark:to-teal-400/15 rounded-full blur-2xl'
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: 3,
+          }}
+        />
       </div>
 
       {/* Hero Content */}
@@ -69,193 +142,65 @@ export function HeroSection() {
           {/* Main Headline */}
           <motion.div className='space-y-6' variants={fadeInUp}>
             <h1 className='text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight'>
-              <motion.span
-                animate={{ opacity: 1, y: 0 }}
-                className='block text-white mb-4 text-glow'
-                initial={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
+              <span className='block text-white mb-4 text-glow'>
                 Veo 3: AI Video Generation
-              </motion.span>
-              <motion.span
-                animate={{ opacity: 1, scale: 1 }}
-                className='block text-shimmer relative'
-                initial={{ opacity: 0, scale: 0.9 }}
-                transition={{
-                  duration: 1.2,
-                  delay: 0.6,
-                  type: 'spring',
-                  stiffness: 100,
-                }}
-              >
-                <motion.span
-                  animate={{
-                    textShadow: [
-                      '0 0 0px rgba(79,160,255,0)',
-                      '0 0 20px rgba(79,160,255,0.5)',
-                      '0 0 40px rgba(79,160,255,0.3)',
-                      '0 0 20px rgba(79,160,255,0.5)',
-                      '0 0 0px rgba(79,160,255,0)',
-                    ],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                >
-                  with Realistic
-                </motion.span>{' '}
-                <motion.span
-                  animate={{
-                    scale: [1, 1.05, 1],
-                    textShadow: [
-                      '0 0 0px rgba(52,107,241,0)',
-                      '0 0 30px rgba(52,107,241,0.8)',
-                      '0 0 60px rgba(52,107,241,0.4)',
-                      '0 0 30px rgba(52,107,241,0.8)',
-                      '0 0 0px rgba(52,107,241,0)',
-                    ],
-                  }}
-                  className='relative inline-block'
-                  transition={{
-                    duration: 2.5,
-                    delay: 1,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                >
-                  Sound
-                  {/* Sound wave animation */}
-                  <motion.div
-                    animate={{ opacity: 1 }}
-                    className='absolute -right-8 top-1/2 -translate-y-1/2 flex items-center space-x-1'
-                    initial={{ opacity: 0 }}
-                    transition={{ delay: 1.5 }}
-                  >
-                    {[...Array(3)].map((_, i) => (
-                      <motion.div
-                        animate={{
-                          height: [8, 16, 24, 16, 8],
-                          opacity: [0.3, 0.7, 1, 0.7, 0.3],
-                        }}
-                        className='w-1 bg-gradient-to-t from-blue-400 to-purple-400 rounded-full'
-                        key={i}
-                        transition={{
-                          duration: 1.5,
-                          repeat: Infinity,
-                          delay: i * 0.2,
-                          ease: 'easeInOut',
-                        }}
-                      />
-                    ))}
-                  </motion.div>
-                </motion.span>
-              </motion.span>
+              </span>
+              <span className='block gradient-text-epic relative'>
+                with Realistic Sound
+              </span>
             </h1>
-            <motion.p
-              animate={{ opacity: 1, y: 0 }}
-              className='text-xl md:text-2xl text-gray-100 max-w-4xl mx-auto leading-relaxed font-light'
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.8, delay: 1.8 }}
-            >
+            <p className='text-xl md:text-2xl text-gray-100 max-w-4xl mx-auto leading-relaxed font-light'>
               Generate videos with perfectly synced{' '}
-              <motion.span
-                animate={{
-                  textShadow: [
-                    '0 0 0px rgba(249,134,255,0)',
-                    '0 0 15px rgba(249,134,255,0.6)',
-                    '0 0 30px rgba(249,134,255,0.3)',
-                    '0 0 15px rgba(249,134,255,0.6)',
-                    '0 0 0px rgba(249,134,255,0)',
-                  ],
-                }}
-                className='relative inline-block gradient-text-secondary font-semibold'
-                transition={{
-                  duration: 4,
-                  delay: 2.5,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              >
+              <span className='relative inline-block gradient-text-secondary font-semibold'>
                 audio
-                {/* Audio wave visualization */}
-                <motion.div
-                  animate={{ opacity: 1 }}
-                  className='absolute -top-2 -right-6 flex items-end space-x-0.5'
-                  initial={{ opacity: 0 }}
-                  transition={{ delay: 2.5 }}
-                >
-                  {[...Array(4)].map((_, i) => (
-                    <motion.div
-                      animate={{
-                        height: [2, 6, 10, 6, 2],
-                        opacity: [0.4, 0.8, 1, 0.8, 0.4],
-                      }}
-                      className='w-0.5 bg-gradient-to-t from-pink-400 to-purple-300 rounded-full'
-                      key={i}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: 2.5 + i * 0.15,
-                        ease: 'easeInOut',
-                      }}
-                    />
-                  ))}
-                </motion.div>
-              </motion.span>
+              </span>
               , including{' '}
-              <motion.span
-                animate={{
-                  color: [
-                    'rgb(103 232 249)',
-                    'rgb(59 130 246)',
-                    'rgb(147 51 234)',
-                    'rgb(103 232 249)',
-                  ],
-                }}
-                className='text-cyan-300 font-medium'
-                transition={{
-                  duration: 5,
-                  delay: 3,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              >
-                sound effects
-              </motion.span>
-              , dialogue, and ambient noise.
-              <motion.span
-                animate={{ opacity: 1, scale: 1 }}
-                className='block mt-2 gradient-text-secondary'
-                initial={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.6, delay: 2.2 }}
-              >
+              <span className='text-cyan-300 font-medium'>sound effects</span>,
+              dialogue, and ambient noise.
+              <span className='block mt-2 gradient-text-secondary'>
                 Bring your stories to life with Veo 3.
-              </motion.span>
-            </motion.p>
+              </span>
+            </p>
           </motion.div>
 
-          {/* CTA Buttons */}
+          {/* Enhanced CTA Buttons */}
           <motion.div
             className='flex flex-col sm:flex-row gap-6 justify-center items-center'
             variants={fadeInUp}
           >
-            <Button
-              className='epic-button text-white px-10 py-5 rounded-full text-xl font-semibold glow-effect group'
-              size='lg'
-            >
-              <Play className='w-6 h-6 mr-3 group-hover:scale-110 transition-transform' />
-              Start Creating
-            </Button>
-            <Button
-              className='epic-card border-white/30 text-white hover:bg-white/10 px-10 py-5 rounded-full text-xl font-semibold backdrop-blur-xl'
-              size='lg'
-              variant='outline'
-            >
-              <Zap className='w-6 h-6 mr-3' />
-              Watch Demo
-            </Button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                className='epic-button text-white px-10 py-6 rounded-full text-xl font-semibold glow-effect group relative overflow-hidden'
+                size='xl'
+              >
+                <motion.div
+                  animate={{
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                  }}
+                  className='absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300'
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'linear',
+                  }}
+                />
+                <span className='relative z-10 flex items-center'>
+                  <Play className='w-6 h-6 mr-3 group-hover:scale-110 transition-transform' />
+                  Start Creating
+                </span>
+              </Button>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                className='glass border-white/20 dark:border-white/10 text-white hover:text-white px-10 py-6 rounded-full text-xl font-semibold group backdrop-blur-xl shadow-lg hover:shadow-xl'
+                size='xl'
+                variant='outline'
+              >
+                <Zap className='w-6 h-6 mr-3 group-hover:rotate-12 transition-transform' />
+                Watch Demo
+              </Button>
+            </motion.div>
           </motion.div>
 
           {/* Stats */}

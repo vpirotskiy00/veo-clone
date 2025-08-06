@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import {
   Camera,
   Clock,
@@ -17,6 +16,7 @@ import {
 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -118,118 +118,127 @@ const features = [
 ];
 
 export function FeaturesGrid() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: 'easeOut' as const,
-      },
-    },
-  };
-
   return (
-    <section className='py-24 mesh-bg relative overflow-hidden' id='features'>
-      {/* Background Grid */}
-      <div className='absolute inset-0 grid-pattern opacity-30'></div>
+    <section
+      className='py-24 relative overflow-hidden bg-gradient-to-b from-background via-surface-50 dark:via-surface-100 to-surface-100 dark:to-surface-200'
+      id='features'
+    >
+      {/* Enhanced Background Elements */}
+      <div className='absolute inset-0'>
+        <div className='absolute inset-0 mesh-bg opacity-20 dark:opacity-30'></div>
+        <div className='absolute inset-0 grid-pattern opacity-20 dark:opacity-30'></div>
+        <div className='absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-500/5 dark:from-blue-400/10 to-purple-500/5 dark:to-purple-400/10 rounded-full blur-3xl'></div>
+        <div className='absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/5 dark:from-purple-400/10 to-pink-500/5 dark:to-pink-400/10 rounded-full blur-3xl'></div>
+      </div>
 
       <div className='max-w-7xl mx-auto px-6 relative z-10'>
         {/* Section Header */}
-        <motion.div
-          className='text-center mb-16'
-          initial={{ opacity: 0, y: 30 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          whileInView={{ opacity: 1, y: 0 }}
-        >
-          <Badge className='mb-4 px-4 py-2' variant='secondary'>
-            <Sparkles className='w-4 h-4 mr-2' />
+        <div className='text-center mb-20'>
+          <Badge
+            className='mb-6 px-6 py-3 text-sm font-semibold glass inline-block'
+            variant='secondary'
+          >
+            <Sparkles className='w-5 h-5 mr-2' />
             Powerful Features
           </Badge>
-          <h2 className='text-3xl md:text-4xl lg:text-5xl font-bold mb-6'>
-            Everything You Need to Create
-            <span className='gradient-text block mt-2'>Amazing Videos</span>
-          </h2>
-          <p className='text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto'>
-            Our comprehensive suite of AI-powered tools makes video creation
-            accessible to everyone, from beginners to professionals.
-          </p>
-        </motion.div>
 
-        {/* Features Grid */}
-        <motion.div
-          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-          initial='hidden'
-          variants={containerVariants}
-          viewport={{ once: true, margin: '-100px' }}
-          whileInView='visible'
-        >
+          <h2 className='text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-8 leading-tight'>
+            <span className='block text-foreground'>
+              Everything You Need to
+            </span>
+            <span className='gradient-text-epic block mt-2'>
+              Create Amazing Videos
+            </span>
+          </h2>
+
+          <p className='text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed'>
+            Our comprehensive suite of AI-powered tools makes video creation
+            accessible to everyone, from beginners to professionals. Experience
+            the future of content creation.
+          </p>
+        </div>
+
+        {/* Enhanced Features Grid */}
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
           {features.map((feature, index) => {
             const IconComponent = feature.icon;
             return (
-              <motion.div key={index} variants={itemVariants}>
-                <Card className='h-full epic-card group'>
-                  <CardHeader className='pb-4'>
-                    <div className='flex items-start justify-between mb-3'>
-                      <div
-                        className={`p-3 rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg group-hover:scale-110 transition-transform duration-200`}
-                      >
-                        <IconComponent className='w-6 h-6 text-white' />
+              <div key={index}>
+                <Card className='h-full group relative overflow-hidden border border-border/50 shadow-lg hover:shadow-xl backdrop-blur-sm transition-shadow duration-300'>
+                  {/* Simplified Glass Effect */}
+                  <div className='absolute inset-0 bg-gradient-to-br from-background/90 to-background/70 dark:from-background/80 dark:to-background/60' />
+                  <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+
+                  {/* Content */}
+                  <div className='relative p-6'>
+                    <CardHeader className='pb-4 p-0'>
+                      <div className='flex items-start justify-between mb-4'>
+                        <div
+                          className={`p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-xl group-hover:shadow-2xl relative overflow-hidden transition-all duration-200 group-hover:scale-105`}
+                        >
+                          {/* Enhanced Icon glow effect */}
+                          <div className='absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl' />
+
+                          <IconComponent className='w-7 h-7 text-white relative z-10' />
+                        </div>
+
+                        <Badge
+                          className='text-xs font-medium px-3 py-1.5 bg-surface-100 dark:bg-surface-200 text-muted-foreground border-border/50 group-hover:border-primary/50 group-hover:text-primary transition-all duration-300'
+                          variant='outline'
+                        >
+                          {feature.badge}
+                        </Badge>
                       </div>
-                      <Badge
-                        className='text-xs border-current opacity-60 group-hover:opacity-100 transition-opacity'
-                        variant='outline'
-                      >
-                        {feature.badge}
-                      </Badge>
-                    </div>
-                    <CardTitle className='text-lg font-semibold group-hover:gradient-text transition-all duration-300'>
-                      {feature.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className='text-gray-600 dark:text-gray-400 leading-relaxed'>
-                      {feature.description}
-                    </CardDescription>
-                  </CardContent>
+
+                      <CardTitle className='text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300'>
+                        {feature.title}
+                      </CardTitle>
+                    </CardHeader>
+
+                    <CardContent className='p-0'>
+                      <CardDescription className='text-muted-foreground leading-relaxed text-base group-hover:text-foreground/80 transition-colors duration-300'>
+                        {feature.description}
+                      </CardDescription>
+                    </CardContent>
+
+                    {/* Hover Effect Overlay */}
+                    <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none' />
+                  </div>
                 </Card>
-              </motion.div>
+              </div>
             );
           })}
-        </motion.div>
+        </div>
 
         {/* Bottom CTA */}
-        <motion.div
-          className='text-center mt-16'
-          initial={{ opacity: 0, y: 30 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true }}
-          whileInView={{ opacity: 1, y: 0 }}
-        >
-          <p className='text-gray-600 dark:text-gray-400 mb-6'>
-            Ready to experience the future of video creation?
-          </p>
-          <motion.button
-            className='px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-200'
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Start Creating for Free
-          </motion.button>
-        </motion.div>
+        <div className='text-center mt-20'>
+          <div className='relative'>
+            {/* Background glow effect */}
+            <div className='absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 blur-3xl rounded-full scale-150' />
+
+            <div className='relative glass p-8 md:p-12 rounded-3xl max-w-2xl mx-auto'>
+              <h3 className='text-2xl md:text-3xl font-bold mb-4 text-foreground'>
+                Ready to experience the future?
+              </h3>
+
+              <p className='text-lg text-muted-foreground mb-8 max-w-lg mx-auto'>
+                Join thousands of creators who are already using AI to bring
+                their ideas to life
+              </p>
+
+              <Button
+                className='epic-button text-white px-12 py-6 rounded-full text-xl font-semibold glow-effect relative overflow-hidden group hover:scale-105 transition-transform duration-200'
+                size='xl'
+              >
+                <div className='absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+                <span className='relative z-10 flex items-center'>
+                  <Sparkles className='w-6 h-6 mr-3' />
+                  Start Creating for Free
+                </span>
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, Moon, Sun, X } from 'lucide-react';
+import { Menu, Moon, Sun, SunMoon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -12,11 +12,12 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
+import { useTheme } from '@/lib/theme';
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { theme, resolvedTheme, toggleTheme } = useTheme();
 
   // Handle scroll effect
   useEffect(() => {
@@ -24,36 +25,31 @@ export function Navigation() {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Handle theme toggle
-  useEffect(() => {
-    const theme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia(
-      '(prefers-color-scheme: dark)'
-    ).matches;
-
-    if (theme === 'dark' || (!theme && systemPrefersDark)) {
-      setIsDark(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setIsDark(false);
-      document.documentElement.classList.remove('dark');
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
     }
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
+  const getThemeIcon = () => {
+    switch (theme) {
+      case 'light':
+        return <Sun className='w-4 h-4' />;
+      case 'dark':
+        return <Moon className='w-4 h-4' />;
+      case 'auto':
+        return <SunMoon className='w-4 h-4' />;
+    }
+  };
 
-    if (newTheme) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
+  const getThemeLabel = () => {
+    switch (theme) {
+      case 'light':
+        return 'Light mode';
+      case 'dark':
+        return 'Dark mode';
+      case 'auto':
+        return `Auto mode (${resolvedTheme})`;
     }
   };
 
@@ -112,13 +108,10 @@ export function Navigation() {
               className='w-9 h-9 p-0 hover-scale'
               onClick={toggleTheme}
               size='sm'
+              title={getThemeLabel()}
               variant='ghost'
             >
-              {isDark ? (
-                <Sun className='w-4 h-4' />
-              ) : (
-                <Moon className='w-4 h-4' />
-              )}
+              {getThemeIcon()}
             </Button>
             <Button className='hover-scale' size='sm' variant='outline'>
               Sign In
@@ -134,13 +127,10 @@ export function Navigation() {
               className='w-9 h-9 p-0'
               onClick={toggleTheme}
               size='sm'
+              title={getThemeLabel()}
               variant='ghost'
             >
-              {isDark ? (
-                <Sun className='w-4 h-4' />
-              ) : (
-                <Moon className='w-4 h-4' />
-              )}
+              {getThemeIcon()}
             </Button>
             <Button
               className='w-9 h-9 p-0'

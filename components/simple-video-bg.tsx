@@ -13,13 +13,13 @@ export function SimpleVideoBg({ src, className = '' }: SimpleVideoBgProps) {
         className='absolute inset-0 w-full h-full object-cover'
         loop
         muted
-        onCanPlay={() => console.log('Video can play')}
+        onCanPlay={() => {}}
         onError={e => {
           console.error('Video error:', e);
           console.error('Video src:', src);
         }}
-        onLoadStart={() => console.log('Video loading started')}
-        onPlay={() => console.log('Video started playing')}
+        onLoadStart={() => {}}
+        onPlay={() => {}}
         playsInline
       >
         <source src={src} type='video/mp4' />
