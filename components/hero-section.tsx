@@ -2,13 +2,18 @@
 
 import { motion } from 'framer-motion';
 import { Play, Sparkles, Zap } from 'lucide-react';
+import { useState } from 'react';
 
+import { QuantumOrbs } from '@/components/animations/quantum-orbs';
+import { SubtleParticles } from '@/components/animations/subtle-particles';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 import { SimpleVideoBg } from './simple-video-bg';
 
 export function HeroSection() {
+  const [particleTrigger, setParticleTrigger] = useState(false);
+
   const fadeInUp = {
     initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },
@@ -39,6 +44,10 @@ export function HeroSection() {
 
       {/* Dynamic Mesh Background */}
       <div className='absolute inset-0 z-10 mesh-bg opacity-30 dark:opacity-40'></div>
+
+      {/* Quantum Flow Elements */}
+      <QuantumOrbs intensity="subtle" className="z-15" />
+      <SubtleParticles trigger={particleTrigger} className="z-15" />
 
       {/* Enhanced Floating Orbs with Theme Awareness */}
       <div className='absolute inset-0 z-10 overflow-hidden pointer-events-none'>
@@ -168,10 +177,15 @@ export function HeroSection() {
             className='flex flex-col sm:flex-row gap-6 justify-center items-center'
             variants={fadeInUp}
           >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <motion.div 
+              whileHover={{ scale: 1.05 }} 
+              whileTap={{ scale: 0.95 }}
+              onHoverStart={() => setParticleTrigger(!particleTrigger)}
+            >
               <Button
                 className='epic-button text-white px-10 py-6 rounded-full text-xl font-semibold glow-effect group relative overflow-hidden'
                 size='xl'
+                onMouseEnter={() => setParticleTrigger(!particleTrigger)}
               >
                 <motion.div
                   animate={{

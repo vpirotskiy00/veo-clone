@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import {
   Camera,
   Clock,
@@ -15,6 +16,8 @@ import {
   Zap,
 } from 'lucide-react';
 
+import { LiquidIcon } from '@/components/animations/liquid-icon';
+import { QuantumOrbs } from '@/components/animations/quantum-orbs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -131,6 +134,9 @@ export function FeaturesGrid() {
         <div className='absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/5 dark:from-purple-400/10 to-pink-500/5 dark:to-pink-400/10 rounded-full blur-3xl'></div>
       </div>
 
+      {/* Quantum Flow Background */}
+      <QuantumOrbs intensity="medium" className="z-5" />
+
       <div className='max-w-7xl mx-auto px-6 relative z-10'>
         {/* Section Header */}
         <div className='text-center mb-20'>
@@ -159,11 +165,30 @@ export function FeaturesGrid() {
         </div>
 
         {/* Enhanced Features Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
+        <motion.div 
+          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.1,
+              },
+            },
+          }}
+        >
           {features.map((feature, index) => {
-            const IconComponent = feature.icon;
             return (
-              <div key={index}>
+              <motion.div
+                key={index}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+              >
                 <Card className='h-full group relative overflow-hidden border border-border/50 shadow-lg hover:shadow-xl backdrop-blur-sm transition-shadow duration-300'>
                   {/* Simplified Glass Effect */}
                   <div className='absolute inset-0 bg-gradient-to-br from-background/90 to-background/70 dark:from-background/80 dark:to-background/60' />
@@ -173,14 +198,11 @@ export function FeaturesGrid() {
                   <div className='relative p-6'>
                     <CardHeader className='pb-4 p-0'>
                       <div className='flex items-start justify-between mb-4'>
-                        <div
-                          className={`p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-xl group-hover:shadow-2xl relative overflow-hidden transition-all duration-200 group-hover:scale-105`}
-                        >
-                          {/* Enhanced Icon glow effect */}
-                          <div className='absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl' />
-
-                          <IconComponent className='w-7 h-7 text-white relative z-10' />
-                        </div>
+                        <LiquidIcon
+                          icon={feature.icon}
+                          gradient={feature.gradient}
+                          className="shadow-xl group-hover:shadow-2xl transition-all duration-200"
+                        />
 
                         <Badge
                           className='text-xs font-medium px-3 py-1.5 bg-surface-100 dark:bg-surface-200 text-muted-foreground border-border/50 group-hover:border-primary/50 group-hover:text-primary transition-all duration-300'
@@ -205,10 +227,10 @@ export function FeaturesGrid() {
                     <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none' />
                   </div>
                 </Card>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Bottom CTA */}
         <div className='text-center mt-20'>
