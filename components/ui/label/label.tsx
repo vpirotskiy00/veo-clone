@@ -1,4 +1,4 @@
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva,type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
@@ -12,7 +12,7 @@ const Label = React.forwardRef<
   React.LabelHTMLAttributes<HTMLLabelElement> &
     VariantProps<typeof labelVariants>
 >(({ className, ...props }, ref) => (
-  <label ref={ref} className={cn(labelVariants(), className)} {...props} />
+  <label className={cn(labelVariants(), className)} ref={ref} {...props} />
 ));
 Label.displayName = 'Label';
 
