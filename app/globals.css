@@ -171,17 +171,40 @@
   position: relative;
 }
 
-.gradient-text-epic::before {
+/* Better shimmer effect with readable text */
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #667eea 0%,
+    #764ba2 25%,
+    #f093fb 50%,
+    #f5576c 75%,
+    #667eea 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 300% 300%;
+  animation: gradient-shift 4s ease-in-out infinite;
+  position: relative;
+}
+
+.text-shimmer::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--shimmer);
-  background-size: 200% 100%;
-  animation: shimmer 3s infinite;
+  left: -10%;
+  width: 20%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.4) 50%,
+    transparent 100%
+  );
+  animation: text-shimmer 3s ease-in-out infinite;
   pointer-events: none;
+  mix-blend-mode: overlay;
 }
 
 /* Animations - Enhanced Gemini Style */
@@ -206,6 +229,15 @@
   }
   100% {
     background-position: 200% 0;
+  }
+}
+
+@keyframes text-shimmer {
+  0% {
+    left: -20%;
+  }
+  100% {
+    left: 100%;
   }
 }
 

@@ -69,20 +69,171 @@ export function HeroSection() {
           {/* Main Headline */}
           <motion.div className='space-y-6' variants={fadeInUp}>
             <h1 className='text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight'>
-              <span className='block text-white mb-4 text-glow'>
+              <motion.span
+                animate={{ opacity: 1, y: 0 }}
+                className='block text-white mb-4 text-glow'
+                initial={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
                 Veo 3: AI Video Generation
-              </span>
-              <span className='block gradient-text-epic'>
-                with Realistic Sound
-              </span>
+              </motion.span>
+              <motion.span
+                animate={{ opacity: 1, scale: 1 }}
+                className='block text-shimmer relative'
+                initial={{ opacity: 0, scale: 0.9 }}
+                transition={{
+                  duration: 1.2,
+                  delay: 0.6,
+                  type: 'spring',
+                  stiffness: 100,
+                }}
+              >
+                <motion.span
+                  animate={{
+                    textShadow: [
+                      '0 0 0px rgba(79,160,255,0)',
+                      '0 0 20px rgba(79,160,255,0.5)',
+                      '0 0 40px rgba(79,160,255,0.3)',
+                      '0 0 20px rgba(79,160,255,0.5)',
+                      '0 0 0px rgba(79,160,255,0)',
+                    ],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                >
+                  with Realistic
+                </motion.span>{' '}
+                <motion.span
+                  animate={{
+                    scale: [1, 1.05, 1],
+                    textShadow: [
+                      '0 0 0px rgba(52,107,241,0)',
+                      '0 0 30px rgba(52,107,241,0.8)',
+                      '0 0 60px rgba(52,107,241,0.4)',
+                      '0 0 30px rgba(52,107,241,0.8)',
+                      '0 0 0px rgba(52,107,241,0)',
+                    ],
+                  }}
+                  className='relative inline-block'
+                  transition={{
+                    duration: 2.5,
+                    delay: 1,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                >
+                  Sound
+                  {/* Sound wave animation */}
+                  <motion.div
+                    animate={{ opacity: 1 }}
+                    className='absolute -right-8 top-1/2 -translate-y-1/2 flex items-center space-x-1'
+                    initial={{ opacity: 0 }}
+                    transition={{ delay: 1.5 }}
+                  >
+                    {[...Array(3)].map((_, i) => (
+                      <motion.div
+                        animate={{
+                          height: [8, 16, 24, 16, 8],
+                          opacity: [0.3, 0.7, 1, 0.7, 0.3],
+                        }}
+                        className='w-1 bg-gradient-to-t from-blue-400 to-purple-400 rounded-full'
+                        key={i}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          delay: i * 0.2,
+                          ease: 'easeInOut',
+                        }}
+                      />
+                    ))}
+                  </motion.div>
+                </motion.span>
+              </motion.span>
             </h1>
-            <p className='text-xl md:text-2xl text-gray-100 max-w-4xl mx-auto leading-relaxed font-light'>
-              Generate videos with perfectly synced audio, including sound
-              effects, dialogue, and ambient noise.
-              <span className='block mt-2 gradient-text-secondary'>
+            <motion.p
+              animate={{ opacity: 1, y: 0 }}
+              className='text-xl md:text-2xl text-gray-100 max-w-4xl mx-auto leading-relaxed font-light'
+              initial={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.8, delay: 1.8 }}
+            >
+              Generate videos with perfectly synced{' '}
+              <motion.span
+                animate={{
+                  textShadow: [
+                    '0 0 0px rgba(249,134,255,0)',
+                    '0 0 15px rgba(249,134,255,0.6)',
+                    '0 0 30px rgba(249,134,255,0.3)',
+                    '0 0 15px rgba(249,134,255,0.6)',
+                    '0 0 0px rgba(249,134,255,0)',
+                  ],
+                }}
+                className='relative inline-block gradient-text-secondary font-semibold'
+                transition={{
+                  duration: 4,
+                  delay: 2.5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                audio
+                {/* Audio wave visualization */}
+                <motion.div
+                  animate={{ opacity: 1 }}
+                  className='absolute -top-2 -right-6 flex items-end space-x-0.5'
+                  initial={{ opacity: 0 }}
+                  transition={{ delay: 2.5 }}
+                >
+                  {[...Array(4)].map((_, i) => (
+                    <motion.div
+                      animate={{
+                        height: [2, 6, 10, 6, 2],
+                        opacity: [0.4, 0.8, 1, 0.8, 0.4],
+                      }}
+                      className='w-0.5 bg-gradient-to-t from-pink-400 to-purple-300 rounded-full'
+                      key={i}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: 2.5 + i * 0.15,
+                        ease: 'easeInOut',
+                      }}
+                    />
+                  ))}
+                </motion.div>
+              </motion.span>
+              , including{' '}
+              <motion.span
+                animate={{
+                  color: [
+                    'rgb(103 232 249)',
+                    'rgb(59 130 246)',
+                    'rgb(147 51 234)',
+                    'rgb(103 232 249)',
+                  ],
+                }}
+                className='text-cyan-300 font-medium'
+                transition={{
+                  duration: 5,
+                  delay: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                sound effects
+              </motion.span>
+              , dialogue, and ambient noise.
+              <motion.span
+                animate={{ opacity: 1, scale: 1 }}
+                className='block mt-2 gradient-text-secondary'
+                initial={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.6, delay: 2.2 }}
+              >
                 Bring your stories to life with Veo 3.
-              </span>
-            </p>
+              </motion.span>
+            </motion.p>
           </motion.div>
 
           {/* CTA Buttons */}

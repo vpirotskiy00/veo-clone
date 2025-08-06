@@ -1,10 +1,11 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, Moon, Play, Sun, X } from 'lucide-react';
+import { Menu, Moon, Sun, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { GeminiLogo } from '@/components/ui/gemini-logo';
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -81,9 +82,7 @@ export function Navigation() {
             className='flex items-center space-x-3'
             whileHover={{ scale: 1.05 }}
           >
-            <div className='w-10 h-10 epic-button rounded-xl flex items-center justify-center glow-effect'>
-              <Play className='w-5 h-5 text-white' />
-            </div>
+            <GeminiLogo animated size={40} />
             <span className='text-2xl font-bold text-gray-900 dark:text-white'>
               Veo<span className='gradient-text-epic'>3</span>
             </span>
