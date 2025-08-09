@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { TelegramIcon } from '@/components/ui/telegram-icon';
-import { signIn } from '@/lib/auth';
 
 // Utility functions moved outside component
 const calculatePasswordStrength = (password: string) => {
@@ -86,18 +85,14 @@ export default function SignUpPage() {
     [router]
   );
 
-  const handleGoogleSignUp = useCallback(async () => {
+  const handleGoogleSignUp = useCallback(() => {
     setIsLoading(true);
-    try {
-      await signIn('google', {
-        redirectTo: '/dashboard',
-        redirect: true,
-      });
-    } catch (error) {
-      console.error('Google sign-up error:', error);
+    // Temporary redirect to dashboard for Google (same as Telegram)
+    setTimeout(() => {
       setIsLoading(false);
-    }
-  }, []);
+      router.push('/dashboard');
+    }, 1500);
+  }, [router]);
 
   const handleTelegramSignUp = useCallback(() => {
     setIsLoading(true);

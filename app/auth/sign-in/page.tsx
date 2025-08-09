@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { TelegramIcon } from '@/components/ui/telegram-icon';
-import { signIn } from '@/lib/auth';
 
 export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,18 +36,14 @@ export default function SignInPage() {
     [router]
   );
 
-  const handleGoogleLogin = useCallback(async () => {
+  const handleGoogleLogin = useCallback(() => {
     setIsLoading(true);
-    try {
-      await signIn('google', {
-        redirectTo: '/dashboard',
-        redirect: true,
-      });
-    } catch (error) {
-      console.error('Google sign-in error:', error);
+    // Temporary redirect to dashboard for Google (same as Telegram)
+    setTimeout(() => {
       setIsLoading(false);
-    }
-  }, []);
+      router.push('/dashboard');
+    }, 1500);
+  }, [router]);
 
   const handleTelegramLogin = useCallback(() => {
     setIsLoading(true);

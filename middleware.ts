@@ -2,18 +2,21 @@ import { auth } from '@/lib/auth';
 
 export default auth(req => {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
+  const _isLoggedIn = !!req.auth;
 
-  const isAuthPage = nextUrl.pathname.startsWith('/auth');
-  const isDashboard = nextUrl.pathname.startsWith('/dashboard');
+  const _isAuthPage = nextUrl.pathname.startsWith('/auth');
+  const _isDashboard = nextUrl.pathname.startsWith('/dashboard');
 
-  if (isDashboard && !isLoggedIn) {
-    return Response.redirect(new URL('/auth/sign-in', nextUrl));
-  }
+  // TEMPORARY: Disable auth checks for demo - allow access to dashboard
+  // TODO: Re-enable when authentication is fully implemented
 
-  if (isAuthPage && isLoggedIn) {
-    return Response.redirect(new URL('/dashboard', nextUrl));
-  }
+  // if (_isDashboard && !_isLoggedIn) {
+  //   return Response.redirect(new URL('/auth/sign-in', nextUrl));
+  // }
+
+  // if (_isAuthPage && _isLoggedIn) {
+  //   return Response.redirect(new URL('/dashboard', nextUrl));
+  // }
 
   return;
 });
