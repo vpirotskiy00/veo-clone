@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export interface AnimationConfig {
   quality: 'low' | 'medium' | 'high' | 'ultra';
@@ -12,7 +12,8 @@ export class AnimationEngine {
   private lastFrameTime = 0;
   private fps = 60;
   private fpsHistory: number[] = [];
-  private callbacks: Set<(deltaTime: number) => void> = new Set();
+  private handlers: Set<(deltaTime: number) => void | Promise<void>> =
+    new Set();
   private config: AnimationConfig = {
     quality: 'high',
     autoOptimize: true,
@@ -31,7 +32,7 @@ export class AnimationEngine {
     if (typeof window !== 'undefined') {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
       this.config.reducedMotion = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (e) => {
+      mediaQuery.addEventListener('change', e => {
         this.config.reducedMotion = e.matches;
       });
     }
@@ -50,10 +51,10 @@ export class AnimationEngine {
     }
   }
 
-  private loop = () => {
+  private loop = async () => {
     const currentTime = performance.now();
     const deltaTime = currentTime - this.lastFrameTime;
-    
+
     // Calculate FPS
     this.fps = 1000 / deltaTime;
     this.fpsHistory.push(this.fps);
@@ -68,8 +69,11 @@ export class AnimationEngine {
 
     // Skip frame if reduced motion is enabled
     if (!this.config.reducedMotion) {
-      // Execute all registered callbacks
-      this.callbacks.forEach(callback => callback(deltaTime));
+      // Execute all registered handlers
+      const handlerArray = Array.from(this.handlers);
+      for (const handler of handlerArray) {
+        await handler(deltaTime);
+      }
     }
 
     this.lastFrameTime = currentTime;
@@ -77,8 +81,9 @@ export class AnimationEngine {
   };
 
   private optimizeQuality() {
-    const avgFPS = this.fpsHistory.reduce((a, b) => a + b, 0) / this.fpsHistory.length;
-    
+    const avgFPS =
+      this.fpsHistory.reduce((a, b) => a + b, 0) / this.fpsHistory.length;
+
     if (avgFPS < 30 && this.config.quality !== 'low') {
       this.config.quality = 'low';
     } else if (avgFPS < 45 && this.config.quality === 'high') {
@@ -90,12 +95,12 @@ export class AnimationEngine {
     }
   }
 
-  public register(callback: (deltaTime: number) => void) {
-    this.callbacks.add(callback);
+  public register(handler: (deltaTime: number) => void | Promise<void>) {
+    this.handlers.add(handler);
   }
 
-  public unregister(callback: (deltaTime: number) => void) {
-    this.callbacks.delete(callback);
+  public unregister(handler: (deltaTime: number) => void | Promise<void>) {
+    this.handlers.delete(handler);
   }
 
   public getConfig() {
@@ -126,27 +131,29 @@ export function getAnimationEngine(config?: Partial<AnimationConfig>) {
 
 // React hook for using the animation engine
 export function useAnimationEngine(
-  callback: (deltaTime: number) => void,
+  handler: (deltaTime: number) => void | Promise<void>,
   deps: React.DependencyList = []
 ) {
   const engine = useRef(getAnimationEngine());
-  const callbackRef = useRef(callback);
+  const handlerRef = useRef(handler);
 
-  // Update callback ref when it changes
+  // Update handler ref when it changes
   useEffect(() => {
-    callbackRef.current = callback;
-  }, [callback, ...deps]);
+    handlerRef.current = handler;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handler, ...deps]);
 
   useEffect(() => {
-    const wrappedCallback = (deltaTime: number) => {
-      callbackRef.current(deltaTime);
+    const currentEngine = engine.current;
+    const wrappedHandler = async (deltaTime: number) => {
+      await handlerRef.current(deltaTime);
     };
 
-    engine.current.register(wrappedCallback);
-    engine.current.start();
+    currentEngine.register(wrappedHandler);
+    currentEngine.start();
 
     return () => {
-      engine.current.unregister(wrappedCallback);
+      currentEngine.unregister(wrappedHandler);
       // Don't stop the engine as other components might be using it
     };
   }, []);

@@ -1,10 +1,20 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, Moon, Sun, SunMoon, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Menu, Moon, Sun, SunMoon } from 'lucide-react';
+import Link from 'next/link';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import { GeminiLogo } from '@/components/ui/gemini-logo';
 import {
   NavigationMenu,
@@ -62,30 +72,44 @@ export function Navigation() {
     }
   };
 
-  const navItems = [
-    { href: '#features', label: 'Features' },
-    { href: '#how-it-works', label: 'How it Works' },
-    { href: '#pricing', label: 'Pricing' },
-    { href: '#about', label: 'About' },
-  ];
+  const navItems = useMemo(
+    () => [
+      { href: '#features', label: 'Features' },
+      { href: '#how-it-works', label: 'How it Works' },
+    ],
+    []
+  );
+
+  const headerAnimateProps = useMemo(() => ({ y: 0 }), []);
+  const headerInitialProps = useMemo(() => ({ y: -100 }), []);
+  const headerTransitionProps = useMemo(
+    () => ({ duration: 0.6, ease: 'easeOut' as const }),
+    []
+  );
+  const logoHoverProps = useMemo(() => ({ scale: 1.05 }), []);
+
+  const handleNavClick = useCallback((href: string) => {
+    window.location.href = href;
+    setIsOpen(false);
+  }, []);
 
   return (
     <motion.header
-      animate={{ y: 0 }}
+      animate={headerAnimateProps}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? 'bg-white/80 dark:bg-black/80 backdrop-blur-lg border-b border-gray-200/20 dark:border-gray-800/20'
           : 'bg-transparent'
       }`}
-      initial={{ y: -100 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
+      initial={headerInitialProps}
+      transition={headerTransitionProps}
     >
       <nav className='max-w-7xl mx-auto px-6 py-4'>
         <div className='flex items-center justify-between'>
           {/* Logo */}
           <motion.div
             className='flex items-center space-x-3'
-            whileHover={{ scale: 1.05 }}
+            whileHover={logoHoverProps}
           >
             <GeminiLogo animated size={40} />
             <span className='text-2xl font-bold text-gray-900 dark:text-white'>
@@ -114,84 +138,96 @@ export function Navigation() {
           {/* Desktop Actions */}
           <div className='hidden md:flex items-center space-x-4'>
             <Button
-              className='w-9 h-9 p-0 hover-scale'
+              className='w-11 h-11 p-0 hover-scale'
               onClick={toggleTheme}
               size='sm'
+              suppressHydrationWarning
               title={getThemeLabel()}
               variant='ghost'
-              suppressHydrationWarning
             >
               {getThemeIcon()}
             </Button>
-            <Button className='hover-scale' size='sm' variant='outline'>
-              Sign In
-            </Button>
-            <Button className='epic-button glow-effect' size='sm'>
-              Get Started
-            </Button>
+            <Link href='/auth/sign-in'>
+              <Button className='hover-scale' size='sm' variant='outline'>
+                Sign In
+              </Button>
+            </Link>
+            <Link href='/auth/sign-up'>
+              <Button className='epic-button glow-effect' size='sm'>
+                Get Started
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <div className='md:hidden flex items-center space-x-2'>
             <Button
-              className='w-9 h-9 p-0'
+              className='w-11 h-11 p-0'
               onClick={toggleTheme}
               size='sm'
+              suppressHydrationWarning
               title={getThemeLabel()}
               variant='ghost'
-              suppressHydrationWarning
             >
               {getThemeIcon()}
             </Button>
-            <Button
-              className='w-9 h-9 p-0'
-              onClick={() => setIsOpen(!isOpen)}
-              size='sm'
-              variant='ghost'
-            >
-              {isOpen ? (
-                <X className='w-5 h-5' />
-              ) : (
-                <Menu className='w-5 h-5' />
-              )}
-            </Button>
+
+            {/* Drawer for Mobile Navigation */}
+            <Drawer onOpenChange={setIsOpen} open={isOpen}>
+              <DrawerTrigger asChild>
+                <Button
+                  aria-label='Toggle menu'
+                  className='w-11 h-11 p-0'
+                  size='sm'
+                  variant='ghost'
+                >
+                  <Menu className='w-5 h-5' />
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent className='h-[85vh]'>
+                <DrawerHeader className='text-left'>
+                  <DrawerTitle>Navigation</DrawerTitle>
+                  <DrawerDescription>
+                    Access all features and pages
+                  </DrawerDescription>
+                </DrawerHeader>
+                <div className='flex flex-col space-y-4 px-4 py-6'>
+                  {navItems.map(item => (
+                    <Button
+                      className='justify-start text-lg h-12'
+                      key={item.href}
+                      onClick={() => handleNavClick(item.href)}
+                      variant='ghost'
+                    >
+                      {item.label}
+                    </Button>
+                  ))}
+                </div>
+                <DrawerFooter className='mt-auto'>
+                  <Link className='w-full' href='/auth/sign-in'>
+                    <Button
+                      className='w-full'
+                      onClick={() => setIsOpen(false)}
+                      size='lg'
+                      variant='outline'
+                    >
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link className='w-full' href='/auth/sign-up'>
+                    <Button
+                      className='w-full epic-button glow-effect'
+                      onClick={() => setIsOpen(false)}
+                      size='lg'
+                    >
+                      Get Started
+                    </Button>
+                  </Link>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              animate={{ opacity: 1, height: 'auto' }}
-              className='md:hidden mt-4 py-4 border-t border-gray-200/20 dark:border-gray-800/20'
-              exit={{ opacity: 0, height: 0 }}
-              initial={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-            >
-              <div className='flex flex-col space-y-4'>
-                {navItems.map(item => (
-                  <motion.a
-                    className='text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 px-3 py-2 rounded-md hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
-                    href={item.href}
-                    key={item.href}
-                    onClick={() => setIsOpen(false)}
-                    whileHover={{ x: 4 }}
-                  >
-                    {item.label}
-                  </motion.a>
-                ))}
-                <div className='flex flex-col space-y-2 pt-4 border-t border-gray-200/20 dark:border-gray-800/20'>
-                  <Button size='sm' variant='outline'>
-                    Sign In
-                  </Button>
-                  <Button className='epic-button glow-effect' size='sm'>
-                    Get Started
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </nav>
     </motion.header>
   );

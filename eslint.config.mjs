@@ -217,6 +217,9 @@ const eslintConfig = [
       'prefer-const': 'error',
       'no-var': 'error',
       'no-debugger': 'error',
+      
+      // Next.js specific - enforce using next/image
+      '@next/next/no-img-element': 'error',
     },
     settings: {
       tailwindcss: {

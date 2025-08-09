@@ -15,12 +15,7 @@ interface UseMousePhysicsOptions {
 }
 
 export function useMousePhysics(options: UseMousePhysicsOptions = {}) {
-  const {
-    damping = 0.1,
-    mass = 1,
-    stiffness = 0.1,
-    enabled = true,
-  } = options;
+  const { damping = 0.1, mass = 1, stiffness = 0.1, enabled = true } = options;
 
   const [position, setPosition] = useState<MousePosition>({
     x: 0,
@@ -31,7 +26,7 @@ export function useMousePhysics(options: UseMousePhysicsOptions = {}) {
 
   const targetRef = useRef({ x: 0, y: 0 });
   const currentRef = useRef({ x: 0, y: 0, vx: 0, vy: 0 });
-  const rafRef = useRef<number>();
+  const rafRef = useRef<number | null>(null);
 
   const animate = useCallback(() => {
     if (!enabled) return;
@@ -65,14 +60,17 @@ export function useMousePhysics(options: UseMousePhysicsOptions = {}) {
     rafRef.current = requestAnimationFrame(animate);
   }, [damping, mass, stiffness, enabled]);
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!enabled) return;
-    
-    targetRef.current = {
-      x: e.clientX,
-      y: e.clientY,
-    };
-  }, [enabled]);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!enabled) return;
+
+      targetRef.current = {
+        x: e.clientX,
+        y: e.clientY,
+      };
+    },
+    [enabled]
+  );
 
   useEffect(() => {
     if (!enabled) return;

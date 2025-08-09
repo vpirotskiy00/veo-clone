@@ -17,24 +17,30 @@ export function useScrollVelocity(threshold: number = 0.1) {
 
   const lastScrollY = useRef(0);
   const lastTime = useRef(Date.now());
-  const velocityTimeout = useRef<NodeJS.Timeout>();
+  const velocityTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const currentTime = Date.now();
       const timeDiff = currentTime - lastTime.current;
-      
+
       if (timeDiff > 0) {
         const distance = currentScrollY - lastScrollY.current;
         const velocity = Math.abs(distance / timeDiff);
-        
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+        const maxScroll =
+          document.documentElement.scrollHeight - window.innerHeight;
         const progress = maxScroll > 0 ? currentScrollY / maxScroll : 0;
 
         setScrollData({
           velocity,
-          direction: distance > threshold ? 'down' : distance < -threshold ? 'up' : 'idle',
+          direction:
+            distance > threshold
+              ? 'down'
+              : distance < -threshold
+                ? 'up'
+                : 'idle',
           position: currentScrollY,
           progress: Math.min(1, Math.max(0, progress)),
         });
@@ -53,7 +59,7 @@ export function useScrollVelocity(threshold: number = 0.1) {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       if (velocityTimeout.current) {

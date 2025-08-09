@@ -12,7 +12,11 @@ interface LiquidIconProps {
   className?: string;
 }
 
-export function LiquidIcon({ icon: Icon, gradient, className = '' }: LiquidIconProps) {
+export function LiquidIcon({
+  icon: Icon,
+  gradient,
+  className = '',
+}: LiquidIconProps) {
   const reducedMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
   const ref = useRef(null);
@@ -20,17 +24,16 @@ export function LiquidIcon({ icon: Icon, gradient, className = '' }: LiquidIconP
 
   return (
     <motion.div
-      ref={ref}
+      animate={isInView ? { scale: 1, opacity: 1 } : {}}
       className={`relative ${className}`}
       initial={{ scale: 0.8, opacity: 0 }}
-      animate={isInView ? { scale: 1, opacity: 1 } : {}}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
+      onHoverStart={() => setIsHovered(true)}
+      ref={ref}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
     >
       {/* Background orb with liquid morphing */}
       <motion.div
-        className={`relative rounded-2xl overflow-hidden bg-gradient-to-br ${gradient}`}
         animate={
           !reducedMotion && isHovered
             ? {
@@ -39,6 +42,7 @@ export function LiquidIcon({ icon: Icon, gradient, className = '' }: LiquidIconP
               }
             : {}
         }
+        className={`relative rounded-2xl overflow-hidden bg-gradient-to-br ${gradient}`}
         transition={{
           duration: 2,
           ease: 'easeInOut',
@@ -47,7 +51,6 @@ export function LiquidIcon({ icon: Icon, gradient, className = '' }: LiquidIconP
       >
         {/* Shimmer effect */}
         <motion.div
-          className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent'
           animate={
             !reducedMotion && isHovered
               ? {
@@ -55,6 +58,7 @@ export function LiquidIcon({ icon: Icon, gradient, className = '' }: LiquidIconP
                 }
               : {}
           }
+          className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent'
           transition={{
             duration: 1.5,
             ease: 'easeInOut',
@@ -88,17 +92,17 @@ export function LiquidIcon({ icon: Icon, gradient, className = '' }: LiquidIconP
           <>
             {[...Array(3)].map((_, i) => (
               <motion.div
-                key={i}
-                className='absolute w-2 h-2 bg-white/40 rounded-full'
-                style={{
-                  left: `${20 + Math.random() * 60}%`,
-                  top: `${20 + Math.random() * 60}%`,
-                }}
-                initial={{ scale: 0, opacity: 0 }}
                 animate={{
                   scale: [0, 1, 0],
                   opacity: [0, 1, 0],
                   y: [0, -20],
+                }}
+                className='absolute w-2 h-2 bg-white/40 rounded-full'
+                initial={{ scale: 0, opacity: 0 }}
+                key={i}
+                style={{
+                  left: `${20 + Math.random() * 60}%`,
+                  top: `${20 + Math.random() * 60}%`,
                 }}
                 transition={{
                   duration: 2,

@@ -10,7 +10,10 @@ interface QuantumOrbsProps {
   className?: string;
 }
 
-export function QuantumOrbs({ intensity = 'subtle', className = '' }: QuantumOrbsProps) {
+export function QuantumOrbs({
+  intensity = 'subtle',
+  className = '',
+}: QuantumOrbsProps) {
   const reducedMotion = useReducedMotion();
   const [mounted, setMounted] = useState(false);
 
@@ -47,7 +50,9 @@ export function QuantumOrbs({ intensity = 'subtle', className = '' }: QuantumOrb
   const config = intensityConfig[intensity];
 
   return (
-    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
+    <div
+      className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
+    >
       {/* SVG Filter for subtle liquid effect */}
       <svg className='absolute' style={{ width: 0, height: 0 }}>
         <defs>
@@ -67,11 +72,16 @@ export function QuantumOrbs({ intensity = 'subtle', className = '' }: QuantumOrb
 
       {Array.from({ length: config.count }, (_, i) => (
         <motion.div
-          key={i}
+          animate={{
+            x: [0, 30, -20, 0],
+            y: [0, -25, 20, 0],
+            scale: [1, 1.1, 0.95, 1],
+          }}
           className={`absolute rounded-full ${config.blur}`}
+          key={i}
           style={{
-            left: `${20 + (i * 25) % 60}%`,
-            top: `${15 + (i * 30) % 70}%`,
+            left: `${20 + ((i * 25) % 60)}%`,
+            top: `${15 + ((i * 30) % 70)}%`,
             width: config.sizes[i],
             height: config.sizes[i],
             background: `linear-gradient(135deg, 
@@ -80,11 +90,6 @@ export function QuantumOrbs({ intensity = 'subtle', className = '' }: QuantumOrb
               rgba(236, 72, 153, ${config.opacity * 0.6})
             )`,
             filter: intensity === 'subtle' ? 'url(#quantum-glow)' : undefined,
-          }}
-          animate={{
-            x: [0, 30, -20, 0],
-            y: [0, -25, 20, 0],
-            scale: [1, 1.1, 0.95, 1],
           }}
           transition={{
             duration: config.duration[i],

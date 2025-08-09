@@ -135,7 +135,7 @@ export function FeaturesGrid() {
       </div>
 
       {/* Quantum Flow Background */}
-      <QuantumOrbs intensity="medium" className="z-5" />
+      <QuantumOrbs className='z-5' intensity='medium' />
 
       <div className='max-w-7xl mx-auto px-6 relative z-10'>
         {/* Section Header */}
@@ -165,10 +165,10 @@ export function FeaturesGrid() {
         </div>
 
         {/* Enhanced Features Grid */}
-        <motion.div 
-          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'
-          initial="hidden"
-          animate="visible"
+        <motion.div
+          animate='visible'
+          className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8'
+          initial='hidden'
           variants={{
             hidden: { opacity: 0 },
             visible: {
@@ -183,11 +183,11 @@ export function FeaturesGrid() {
             return (
               <motion.div
                 key={index}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
                 variants={{
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
               >
                 <Card className='h-full group relative overflow-hidden border border-border/50 shadow-lg hover:shadow-xl backdrop-blur-sm transition-shadow duration-300'>
                   {/* Simplified Glass Effect */}
@@ -199,9 +199,9 @@ export function FeaturesGrid() {
                     <CardHeader className='pb-4 p-0'>
                       <div className='flex items-start justify-between mb-4'>
                         <LiquidIcon
-                          icon={feature.icon}
+                          className='shadow-xl group-hover:shadow-2xl transition-all duration-200'
                           gradient={feature.gradient}
-                          className="shadow-xl group-hover:shadow-2xl transition-all duration-200"
+                          icon={feature.icon}
                         />
 
                         <Badge

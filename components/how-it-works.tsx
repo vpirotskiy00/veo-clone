@@ -73,8 +73,8 @@ export function HowItWorks() {
       </div>
 
       {/* Quantum Flow Background */}
-      <QuantumOrbs intensity="medium" className="z-5" />
-      <SubtleParticles trigger={particleTrigger} className="z-5" />
+      <QuantumOrbs className='z-5' intensity='medium' />
+      <SubtleParticles className='z-5' trigger={particleTrigger} />
 
       <div className='max-w-7xl mx-auto px-6 relative z-10'>
         {/* Enhanced Section Header */}
@@ -104,10 +104,10 @@ export function HowItWorks() {
         </div>
 
         {/* Steps */}
-        <motion.div 
+        <motion.div
+          animate='visible'
           className='space-y-8 md:space-y-0'
-          initial="hidden"
-          animate="visible"
+          initial='hidden'
           variants={{
             hidden: { opacity: 0 },
             visible: {
@@ -126,12 +126,12 @@ export function HowItWorks() {
               <motion.div
                 className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 py-8`}
                 key={index}
+                onHoverStart={() => setParticleTrigger(!particleTrigger)}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
                 variants={{
                   hidden: { opacity: 0, y: 50 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-                onHoverStart={() => setParticleTrigger(!particleTrigger)}
               >
                 {/* Enhanced Content */}
                 <div className='flex-1 text-center md:text-left'>
@@ -142,9 +142,9 @@ export function HowItWorks() {
                       </div>
 
                       <LiquidIcon
-                        icon={IconComponent}
+                        className='shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105'
                         gradient={step.color}
-                        className="shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105"
+                        icon={IconComponent}
                       />
                     </div>
                   </div>
@@ -177,10 +177,10 @@ export function HowItWorks() {
 
                 {/* Enhanced Visual */}
                 <div className='flex-1 flex justify-center'>
-                  <motion.div 
+                  <motion.div
                     className='w-full max-w-md'
-                    whileHover={{ y: -8, scale: 1.02 }}
                     transition={{ duration: 0.3, ease: 'easeOut' }}
+                    whileHover={{ y: -8, scale: 1.02 }}
                   >
                     <Card className='interactive-card group relative overflow-hidden border-0 shadow-xl bg-card/90 dark:bg-card/80 backdrop-blur-sm'>
                       {/* Gradient Border Effect */}
@@ -191,26 +191,30 @@ export function HowItWorks() {
                         {/* Enhanced Visual Area */}
                         <div className='aspect-video bg-gradient-to-br from-surface-100 to-surface-200 dark:from-surface-200 dark:to-surface-300 rounded-2xl flex items-center justify-center mb-8 relative overflow-hidden group/visual'>
                           {/* Animated background */}
-                          <motion.div 
-                            className='absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5'
+                          <motion.div
                             animate={{ opacity: [0, 0.3, 0] }}
-                            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                            className='absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5'
+                            transition={{
+                              duration: 4,
+                              repeat: Infinity,
+                              ease: 'easeInOut',
+                            }}
                           />
 
                           {/* Quantum particles */}
                           <div className='absolute inset-0'>
                             {[...Array(6)].map((_, i) => (
                               <motion.div
+                                animate={{
+                                  scale: [0.5, 1, 0.5],
+                                  opacity: [0.2, 0.8, 0.2],
+                                  y: [0, -10, 0],
+                                }}
                                 className='absolute w-2 h-2 bg-gradient-to-r from-blue-400/40 to-purple-400/40 rounded-full'
                                 key={i}
                                 style={{
                                   left: `${15 + i * 12}%`,
                                   top: `${25 + (i % 3) * 25}%`,
-                                }}
-                                animate={{
-                                  scale: [0.5, 1, 0.5],
-                                  opacity: [0.2, 0.8, 0.2],
-                                  y: [0, -10, 0],
                                 }}
                                 transition={{
                                   duration: 3 + i * 0.5,
@@ -224,13 +228,13 @@ export function HowItWorks() {
 
                           {/* Main Icon with Liquid Effect */}
                           <motion.div
-                            whileHover={{ scale: 1.05, rotate: [0, 5, -5, 0] }}
                             transition={{ duration: 0.6 }}
+                            whileHover={{ scale: 1.05, rotate: [0, 5, -5, 0] }}
                           >
                             <LiquidIcon
-                              icon={IconComponent}
+                              className='shadow-2xl hover:shadow-3xl transition-all duration-300'
                               gradient={step.color}
-                              className="shadow-2xl hover:shadow-3xl transition-all duration-300"
+                              icon={IconComponent}
                             />
                           </motion.div>
                         </div>
@@ -259,26 +263,30 @@ export function HowItWorks() {
                 {/* Enhanced Arrow for desktop */}
                 {index < steps.length - 1 && (
                   <div className='hidden md:block absolute left-1/2 transform -translate-x-1/2 mt-24 z-20'>
-                    <motion.div 
-                      className='w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center shadow-lg cursor-pointer'
-                      animate={{ 
+                    <motion.div
+                      animate={{
                         scale: [1, 1.1, 1],
-                        rotate: [0, 10, 0]
+                        rotate: [0, 10, 0],
                       }}
-                      transition={{ 
-                        duration: 2, 
-                        repeat: Infinity, 
+                      className='w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center shadow-lg cursor-pointer'
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
                         ease: 'easeInOut',
-                        delay: index * 0.5
+                        delay: index * 0.5,
                       }}
-                      whileHover={{ 
+                      whileHover={{
                         scale: 1.2,
-                        boxShadow: '0 0 20px rgba(99, 102, 241, 0.5)'
+                        boxShadow: '0 0 20px rgba(99, 102, 241, 0.5)',
                       }}
                     >
                       <motion.div
                         animate={{ x: [0, 3, 0] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          ease: 'easeInOut',
+                        }}
                       >
                         <ArrowRight className='w-6 h-6 text-white' />
                       </motion.div>
@@ -330,21 +338,21 @@ export function HowItWorks() {
                   their ideas to life. Start your journey today.
                 </p>
 
-                <motion.div 
+                <motion.div
+                  transition={{ duration: 0.2 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
                 >
                   <Button
                     className='epic-button text-white px-12 py-6 rounded-full text-xl font-semibold glow-effect relative overflow-hidden group'
-                    size='xl'
                     onMouseEnter={() => setParticleTrigger(!particleTrigger)}
+                    size='xl'
                   >
-                    <motion.div 
-                      className='absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100'
+                    <motion.div
                       animate={{
                         backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
                       }}
+                      className='absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100'
                       transition={{
                         duration: 3,
                         repeat: Infinity,
@@ -352,12 +360,7 @@ export function HowItWorks() {
                       }}
                     />
                     <span className='relative z-10 flex items-center'>
-                      <motion.div
-                        animate={{ rotate: [0, 360] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                      >
-                        <Video className='w-6 h-6 mr-3' />
-                      </motion.div>
+                      <Video className='w-6 h-6 mr-3' />
                       Start Creating Now
                     </span>
                   </Button>
