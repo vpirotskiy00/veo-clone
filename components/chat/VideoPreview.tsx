@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import { BottomControls } from '@/components/chat/video-preview/BottomControls';
 import { ProcessingPlaceholder } from '@/components/chat/video-preview/ProcessingPlaceholder';
@@ -17,6 +17,53 @@ interface VideoPreviewProps {
   videoId?: string;
   status: 'processing' | 'completed' | 'error' | 'sending' | 'sent';
   className?: string;
+}
+
+// Motion and interaction configuration
+const motionProps = {
+  initial: { opacity: 0, scale: 0.95 },
+  animate: { opacity: 1, scale: 1 },
+  transition: { duration: 0.3 },
+};
+
+interface VideoPlayerProps {
+  videoUrl: string;
+  isFullscreen: boolean;
+  isMuted: boolean;
+  setIsPlaying: (playing: boolean) => void;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+}
+
+function VideoPlayer({ 
+  videoUrl, 
+  isFullscreen, 
+  isMuted, 
+  setIsPlaying, 
+  videoRef 
+}: VideoPlayerProps) {
+  const videoClasses = useMemo(
+    () => cn(
+      'w-full aspect-video object-cover bg-black cursor-pointer',
+      isFullscreen && 'h-full aspect-auto'
+    ),
+    [isFullscreen]
+  );
+
+  return (
+    <video
+      className={videoClasses}
+      loop
+      muted={isMuted}
+      onPause={() => setIsPlaying(false)}
+      onPlay={() => setIsPlaying(true)}
+      playsInline
+      ref={videoRef}
+      src={videoUrl}
+    >
+      <track kind='captions' label='English captions' src='' srcLang='en' />
+      Your browser does not support the video tag.
+    </video>
+  );
 }
 
 export function VideoPreview({
@@ -58,33 +105,38 @@ export function VideoPreview({
     return clearControlsTimeout;
   }, [clearControlsTimeout]);
 
+  const containerClasses = useMemo(
+    () => cn(
+      'relative group rounded-lg overflow-hidden',
+      isFullscreen && 'fixed inset-0 z-50 rounded-none',
+      className
+    ),
+    [isFullscreen, className]
+  );
+
+  const handleMouseEnter = useCallback(
+    () => !isMobile && setShowControls(true),
+    [isMobile, setShowControls]
+  );
+
+  const handleMouseLeave = useCallback(
+    () => !isMobile && setShowControls(false),
+    [isMobile, setShowControls]
+  );
+
+  const interactionProps = useMemo(
+    () => ({
+      onClick: handleVideoClick,
+      onMouseEnter: handleMouseEnter,
+      onMouseLeave: handleMouseLeave,
+      onTouchStart: handleVideoTouch,
+    }),
+    [handleVideoClick, handleVideoTouch, handleMouseEnter, handleMouseLeave]
+  );
+
   if (status !== 'completed') {
     return <ProcessingPlaceholder className={className} status={status} />;
   }
-
-  const containerClasses = cn(
-    'relative group rounded-lg overflow-hidden',
-    isFullscreen && 'fixed inset-0 z-50 rounded-none',
-    className
-  );
-
-  const videoClasses = cn(
-    'w-full aspect-video object-cover bg-black cursor-pointer',
-    isFullscreen && 'h-full aspect-auto'
-  );
-
-  const motionProps = {
-    initial: { opacity: 0, scale: 0.95 },
-    animate: { opacity: 1, scale: 1 },
-    transition: { duration: 0.3 },
-  };
-
-  const interactionProps = {
-    onClick: handleVideoClick,
-    onMouseEnter: () => !isMobile && setShowControls(true),
-    onMouseLeave: () => !isMobile && setShowControls(false),
-    onTouchStart: handleVideoTouch,
-  };
 
   return (
     <motion.div
@@ -93,19 +145,13 @@ export function VideoPreview({
       className={containerClasses}
       ref={containerRef}
     >
-      <video
-        className={videoClasses}
-        loop
-        muted={isMuted}
-        onPause={() => setIsPlaying(false)}
-        onPlay={() => setIsPlaying(true)}
-        playsInline
-        ref={videoRef}
-        src={videoUrl}
-      >
-        <track kind='captions' label='English captions' src='' srcLang='en' />
-        Your browser does not support the video tag.
-      </video>
+      <VideoPlayer
+        isFullscreen={isFullscreen}
+        isMuted={isMuted}
+        setIsPlaying={setIsPlaying}
+        videoRef={videoRef}
+        videoUrl={videoUrl}
+      />
 
       <VideoControls
         isMobile={isMobile}

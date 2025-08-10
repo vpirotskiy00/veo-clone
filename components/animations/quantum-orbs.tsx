@@ -11,6 +11,30 @@ interface QuantumOrbsProps {
   className?: string;
 }
 
+const intensityConfigs = {
+  subtle: {
+    count: 2,
+    opacity: 0.08,
+    sizes: [120, 100] as number[],
+    blur: 'blur-2xl',
+    duration: [20, 25] as number[],
+  },
+  medium: {
+    count: 3,
+    opacity: 0.15,
+    sizes: [150, 130, 110] as number[],
+    blur: 'blur-3xl',
+    duration: [15, 20, 18] as number[],
+  },
+  full: {
+    count: 4,
+    opacity: 0.25,
+    sizes: [200, 180, 160, 140] as number[],
+    blur: 'blur-3xl',
+    duration: [12, 16, 14, 18] as number[],
+  },
+};
+
 export function QuantumOrbs({
   intensity = 'subtle',
   className = '',
@@ -24,31 +48,7 @@ export function QuantumOrbs({
 
   if (!mounted || reducedMotion) return null;
 
-  const intensityConfig = {
-    subtle: {
-      count: 2,
-      opacity: 0.08,
-      sizes: [120, 100],
-      blur: 'blur-2xl',
-      duration: [20, 25],
-    },
-    medium: {
-      count: 3,
-      opacity: 0.15,
-      sizes: [150, 130, 110],
-      blur: 'blur-3xl',
-      duration: [15, 20, 18],
-    },
-    full: {
-      count: 4,
-      opacity: 0.25,
-      sizes: [200, 180, 160, 140],
-      blur: 'blur-3xl',
-      duration: [12, 16, 14, 18],
-    },
-  };
-
-  const config = intensityConfig[intensity];
+  const config = intensityConfigs[intensity];
   const animateConfig = {
     x: [0, 30, -20, 0],
     y: [0, -25, 20, 0],

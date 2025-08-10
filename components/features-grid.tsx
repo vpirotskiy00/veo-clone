@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, Transition } from 'framer-motion';
 import {
   Camera,
   Clock,
@@ -15,6 +15,7 @@ import {
   Wand2,
   Zap,
 } from 'lucide-react';
+import { useMemo } from 'react';
 
 import { LiquidIcon } from '@/components/animations/liquid-icon';
 import { QuantumOrbs } from '@/components/animations/quantum-orbs';
@@ -120,6 +121,164 @@ const features = [
   },
 ];
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const itemTransition: Transition = { duration: 0.6, ease: 'easeOut' };
+
+interface FeatureCardProps {
+  feature: typeof features[0];
+  index: number;
+}
+
+function FeatureCard({ feature, index }: FeatureCardProps) {
+  const cardClassName = useMemo(
+    () => 'h-full group relative overflow-hidden border border-border/50 shadow-lg hover:shadow-xl backdrop-blur-sm transition-shadow duration-300',
+    []
+  );
+
+  const badgeClassName = useMemo(
+    () => 'text-xs font-medium px-3 py-1.5 bg-surface-100 dark:bg-surface-200 text-muted-foreground border-border/50 group-hover:border-primary/50 group-hover:text-primary transition-all duration-300',
+    []
+  );
+
+  const titleClassName = useMemo(
+    () => 'text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300',
+    []
+  );
+
+  const descriptionClassName = useMemo(
+    () => 'text-muted-foreground leading-relaxed text-base group-hover:text-foreground/80 transition-colors duration-300',
+    []
+  );
+
+  return (
+    <motion.div
+      key={index}
+      transition={itemTransition}
+      variants={itemVariants}
+    >
+      <Card className={cardClassName}>
+        {/* Simplified Glass Effect */}
+        <div className='absolute inset-0 bg-gradient-to-br from-background/90 to-background/70 dark:from-background/80 dark:to-background/60' />
+        <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+
+        {/* Content */}
+        <div className='relative p-6'>
+          <CardHeader className='pb-4 p-0'>
+            <div className='flex items-start justify-between mb-4'>
+              <LiquidIcon
+                className='shadow-xl group-hover:shadow-2xl transition-all duration-200'
+                gradient={feature.gradient}
+                icon={feature.icon}
+              />
+
+              <Badge
+                className={badgeClassName}
+                variant='outline'
+              >
+                {feature.badge}
+              </Badge>
+            </div>
+
+            <CardTitle className={titleClassName}>
+              {feature.title}
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent className='p-0'>
+            <CardDescription className={descriptionClassName}>
+              {feature.description}
+            </CardDescription>
+          </CardContent>
+
+          {/* Hover Effect Overlay */}
+          <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none' />
+        </div>
+      </Card>
+    </motion.div>
+  );
+}
+
+interface SectionHeaderProps {
+  title: string;
+  subtitle: string;
+  description: string;
+}
+
+function SectionHeader({ title, subtitle, description }: SectionHeaderProps) {
+  return (
+    <div className='text-center mb-20'>
+      <Badge
+        className='mb-6 px-6 py-3 text-sm font-semibold glass inline-block'
+        variant='secondary'
+      >
+        <Sparkles className='w-5 h-5 mr-2' />
+        {title}
+      </Badge>
+
+      <h2 className='text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-8 leading-tight'>
+        <span className='block text-foreground'>
+          {subtitle}
+        </span>
+        <span className='gradient-text-epic block mt-2'>
+          Create Amazing Videos
+        </span>
+      </h2>
+
+      <p className='text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed'>
+        {description}
+      </p>
+    </div>
+  );
+}
+
+function BottomCTA() {
+  return (
+    <div className='text-center mt-20'>
+      <div className='relative'>
+        {/* Background glow effect */}
+        <div className='absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 blur-3xl rounded-full scale-150' />
+
+        <div className='relative glass p-8 md:p-12 rounded-3xl max-w-2xl mx-auto'>
+          <h3 className='text-2xl md:text-3xl font-bold mb-4 text-foreground'>
+            Ready to experience the future?
+          </h3>
+
+          <p className='text-lg text-muted-foreground mb-8 max-w-lg mx-auto'>
+            Join thousands of creators who are already using AI to bring
+            their ideas to life
+          </p>
+
+          <Button
+            className='epic-button text-white px-12 py-6 rounded-full text-xl font-semibold glow-effect relative overflow-hidden group hover:scale-105 transition-transform duration-200'
+            size='xl'
+          >
+            <div className='absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+            <span className='relative z-10 flex items-center'>
+              <Sparkles className='w-6 h-6 mr-3' />
+              Start Creating for Free
+            </span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function FeaturesGrid() {
   return (
     <section
@@ -138,129 +297,26 @@ export function FeaturesGrid() {
       <QuantumOrbs className='z-5' intensity='medium' />
 
       <div className='max-w-7xl mx-auto px-6 relative z-10'>
-        {/* Section Header */}
-        <div className='text-center mb-20'>
-          <Badge
-            className='mb-6 px-6 py-3 text-sm font-semibold glass inline-block'
-            variant='secondary'
-          >
-            <Sparkles className='w-5 h-5 mr-2' />
-            Powerful Features
-          </Badge>
 
-          <h2 className='text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-8 leading-tight'>
-            <span className='block text-foreground'>
-              Everything You Need to
-            </span>
-            <span className='gradient-text-epic block mt-2'>
-              Create Amazing Videos
-            </span>
-          </h2>
-
-          <p className='text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed'>
-            Our comprehensive suite of AI-powered tools makes video creation
-            accessible to everyone, from beginners to professionals. Experience
-            the future of content creation.
-          </p>
-        </div>
+        <SectionHeader
+          description='Our comprehensive suite of AI-powered tools makes video creation accessible to everyone, from beginners to professionals. Experience the future of content creation.'
+          subtitle='Everything You Need to'
+          title='Powerful Features'
+        />
 
         {/* Enhanced Features Grid */}
         <motion.div
           animate='visible'
           className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8'
           initial='hidden'
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: {
-                staggerChildren: 0.1,
-              },
-            },
-          }}
+          variants={containerVariants}
         >
-          {features.map((feature, index) => {
-            return (
-              <motion.div
-                key={index}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-              >
-                <Card className='h-full group relative overflow-hidden border border-border/50 shadow-lg hover:shadow-xl backdrop-blur-sm transition-shadow duration-300'>
-                  {/* Simplified Glass Effect */}
-                  <div className='absolute inset-0 bg-gradient-to-br from-background/90 to-background/70 dark:from-background/80 dark:to-background/60' />
-                  <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
-
-                  {/* Content */}
-                  <div className='relative p-6'>
-                    <CardHeader className='pb-4 p-0'>
-                      <div className='flex items-start justify-between mb-4'>
-                        <LiquidIcon
-                          className='shadow-xl group-hover:shadow-2xl transition-all duration-200'
-                          gradient={feature.gradient}
-                          icon={feature.icon}
-                        />
-
-                        <Badge
-                          className='text-xs font-medium px-3 py-1.5 bg-surface-100 dark:bg-surface-200 text-muted-foreground border-border/50 group-hover:border-primary/50 group-hover:text-primary transition-all duration-300'
-                          variant='outline'
-                        >
-                          {feature.badge}
-                        </Badge>
-                      </div>
-
-                      <CardTitle className='text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300'>
-                        {feature.title}
-                      </CardTitle>
-                    </CardHeader>
-
-                    <CardContent className='p-0'>
-                      <CardDescription className='text-muted-foreground leading-relaxed text-base group-hover:text-foreground/80 transition-colors duration-300'>
-                        {feature.description}
-                      </CardDescription>
-                    </CardContent>
-
-                    {/* Hover Effect Overlay */}
-                    <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none' />
-                  </div>
-                </Card>
-              </motion.div>
-            );
-          })}
+          {features.map((feature, index) => (
+            <FeatureCard feature={feature} index={index} key={index} />
+          ))}
         </motion.div>
 
-        {/* Bottom CTA */}
-        <div className='text-center mt-20'>
-          <div className='relative'>
-            {/* Background glow effect */}
-            <div className='absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 blur-3xl rounded-full scale-150' />
-
-            <div className='relative glass p-8 md:p-12 rounded-3xl max-w-2xl mx-auto'>
-              <h3 className='text-2xl md:text-3xl font-bold mb-4 text-foreground'>
-                Ready to experience the future?
-              </h3>
-
-              <p className='text-lg text-muted-foreground mb-8 max-w-lg mx-auto'>
-                Join thousands of creators who are already using AI to bring
-                their ideas to life
-              </p>
-
-              <Button
-                className='epic-button text-white px-12 py-6 rounded-full text-xl font-semibold glow-effect relative overflow-hidden group hover:scale-105 transition-transform duration-200'
-                size='xl'
-              >
-                <div className='absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
-                <span className='relative z-10 flex items-center'>
-                  <Sparkles className='w-6 h-6 mr-3' />
-                  Start Creating for Free
-                </span>
-              </Button>
-            </div>
-          </div>
-        </div>
+        <BottomCTA />
       </div>
     </section>
   );
