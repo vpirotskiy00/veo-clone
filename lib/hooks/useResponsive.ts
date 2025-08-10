@@ -12,7 +12,6 @@ export function useResponsive<T>(
 ): T | undefined {
   const currentBreakpoint = useBreakpoint();
 
-  // Breakpoints in order of priority (mobile-first)
   const breakpointOrder: readonly Breakpoint[] = [
     'xs',
     'sm',
@@ -22,34 +21,25 @@ export function useResponsive<T>(
     '2xl',
   ] as const;
 
-  // Create a safe map for lookups
   const safeValues = new Map<Breakpoint, T>();
+  breakpointOrder.forEach(bp => {
+    if (values[bp] !== undefined) safeValues.set(bp, values[bp] as T);
+  });
 
-  // Populate the map with defined values only
-  if (values.xs !== undefined) safeValues.set('xs', values.xs);
-  if (values.sm !== undefined) safeValues.set('sm', values.sm);
-  if (values.md !== undefined) safeValues.set('md', values.md);
-  if (values.lg !== undefined) safeValues.set('lg', values.lg);
-  if (values.xl !== undefined) safeValues.set('xl', values.xl);
-  if (values['2xl'] !== undefined) safeValues.set('2xl', values['2xl']);
-
-  // Find the value for current breakpoint or fall back to smaller ones
   const currentIndex = breakpointOrder.indexOf(currentBreakpoint);
 
-  // Check from current breakpoint down to smallest
-  for (let i = currentIndex; i >= 0; i--) {
-    const bp = breakpointOrder[i];
-    if (bp && safeValues.has(bp)) {
-      return safeValues.get(bp);
-    }
-  }
+  // Look for value from current breakpoint downward, then upward
+  const searchIndexes = [
+    ...Array.from({ length: currentIndex + 1 }, (_, i) => currentIndex - i),
+    ...Array.from(
+      { length: breakpointOrder.length - currentIndex - 1 },
+      (_, i) => currentIndex + i + 1
+    ),
+  ];
 
-  // If no smaller breakpoint has a value, check larger ones
-  for (let i = currentIndex + 1; i < breakpointOrder.length; i++) {
-    const bp = breakpointOrder[i];
-    if (bp && safeValues.has(bp)) {
-      return safeValues.get(bp);
-    }
+  for (const index of searchIndexes) {
+    const bp = breakpointOrder[index];
+    if (bp && safeValues.has(bp)) return safeValues.get(bp);
   }
 
   return undefined;
