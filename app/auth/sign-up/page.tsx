@@ -79,7 +79,8 @@ export default function SignUpPage() {
       // Simulate account creation
       setTimeout(() => {
         setIsLoading(false);
-        router.push('/dashboard');
+        // For new users, go to chat to start their first interaction
+        router.push('/chat');
       }, 2000);
     },
     [router]
@@ -87,19 +88,19 @@ export default function SignUpPage() {
 
   const handleGoogleSignUp = useCallback(() => {
     setIsLoading(true);
-    // Temporary redirect to dashboard for Google (same as Telegram)
+    // Redirect to chat for new Google users
     setTimeout(() => {
       setIsLoading(false);
-      router.push('/dashboard');
+      router.push('/chat');
     }, 1500);
   }, [router]);
 
   const handleTelegramSignUp = useCallback(() => {
     setIsLoading(true);
-    // Temporary redirect to dashboard for Telegram
+    // Redirect to chat for new Telegram users
     setTimeout(() => {
       setIsLoading(false);
-      router.push('/dashboard');
+      router.push('/chat');
     }, 1500);
   }, [router]);
 

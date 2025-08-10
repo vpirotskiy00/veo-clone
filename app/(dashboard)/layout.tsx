@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 
 import { AppSidebar } from '@/components/app-sidebar';
+import { Providers } from '@/components/providers';
 import { AuthSessionProvider } from '@/components/session-provider';
 import {
   SidebarInset,
@@ -20,18 +21,20 @@ export default async function DashboardLayout({
 
   return (
     <AuthSessionProvider session={session}>
-      <SidebarProvider defaultOpen={defaultOpen}>
-        <AppSidebar />
-        <SidebarInset>
-          <header className='flex h-16 shrink-0 items-center gap-2 px-4 border-b'>
-            <SidebarTrigger className='-ml-1' />
-            <div className='flex items-center gap-2 px-4'>
-              <h1 className='text-lg font-semibold'>Dashboard</h1>
-            </div>
-          </header>
-          <div className='flex flex-1 flex-col gap-4 p-4 pt-0'>{children}</div>
-        </SidebarInset>
-      </SidebarProvider>
+      <Providers>
+        <SidebarProvider defaultOpen={defaultOpen}>
+          <AppSidebar />
+          <SidebarInset>
+            <header className='flex h-16 shrink-0 items-center gap-2 px-4 border-b'>
+              <SidebarTrigger className='-ml-1' />
+              <div className='flex items-center gap-2 px-4'>
+                <h1 className='text-lg font-semibold'>Dashboard</h1>
+              </div>
+            </header>
+            <div className='flex flex-1 flex-col gap-4 p-4 pt-0'>{children}</div>
+          </SidebarInset>
+        </SidebarProvider>
+      </Providers>
     </AuthSessionProvider>
   );
 }

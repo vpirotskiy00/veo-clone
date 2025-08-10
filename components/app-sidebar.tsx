@@ -7,6 +7,7 @@ import {
   Home,
   Library,
   LogOut,
+  MessageSquare,
   Plus,
   Settings,
   Sparkles,
@@ -51,18 +52,23 @@ const mainNavigation = [
     icon: Home,
   },
   {
+    title: 'Chat',
+    url: '/chat',
+    icon: MessageSquare,
+  },
+  {
     title: 'Videos',
-    url: '/dashboard/videos',
+    url: '/videos',
     icon: Video,
   },
   {
     title: 'Library',
-    url: '/dashboard/library',
+    url: '/library',
     icon: Library,
   },
   {
     title: 'Generate',
-    url: '/dashboard/videos/generate',
+    url: '/videos/generate',
     icon: Sparkles,
     badge: 'New',
   },
@@ -71,17 +77,17 @@ const mainNavigation = [
 const secondaryNavigation = [
   {
     title: 'Analytics',
-    url: '/dashboard/analytics',
+    url: '/analytics',
     icon: BarChart,
   },
   {
     title: 'Settings',
-    url: '/dashboard/settings',
+    url: '/settings',
     icon: Settings,
   },
   {
     title: 'Billing',
-    url: '/dashboard/billing',
+    url: '/billing',
     icon: CreditCard,
     badge: '3',
   },
@@ -175,9 +181,10 @@ export function AppSidebar() {
                     <SidebarMenuBadge
                       className={cn(
                         item.badge === 'New' && 'bg-green-500 text-white',
+                        item.badge === 'Beta' && 'bg-blue-500 text-white',
                         typeof item.badge === 'string' &&
-                          item.badge !== 'New' &&
-                          'bg-blue-500 text-white'
+                          !['New', 'Beta'].includes(item.badge) &&
+                          'bg-muted text-muted-foreground'
                       )}
                     >
                       {item.badge}

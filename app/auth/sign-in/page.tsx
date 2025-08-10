@@ -30,7 +30,8 @@ export default function SignInPage() {
       // Simulate authentication
       setTimeout(() => {
         setIsLoading(false);
-        router.push('/dashboard');
+        // For returning users, go to chat which is the main interface
+        router.push('/chat');
       }, 1500);
     },
     [router]
@@ -38,19 +39,19 @@ export default function SignInPage() {
 
   const handleGoogleLogin = useCallback(() => {
     setIsLoading(true);
-    // Temporary redirect to dashboard for Google (same as Telegram)
+    // Redirect to chat for Google login
     setTimeout(() => {
       setIsLoading(false);
-      router.push('/dashboard');
+      router.push('/chat');
     }, 1500);
   }, [router]);
 
   const handleTelegramLogin = useCallback(() => {
     setIsLoading(true);
-    // Temporary redirect to dashboard for Telegram
+    // Redirect to chat for Telegram login
     setTimeout(() => {
       setIsLoading(false);
-      router.push('/dashboard');
+      router.push('/chat');
     }, 1500);
   }, [router]);
 
