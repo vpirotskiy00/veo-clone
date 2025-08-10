@@ -180,6 +180,10 @@ function MobileMenu({
     [setIsOpen]
   );
 
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
+
   return (
     <div className='md:hidden flex items-center space-x-2'>
       <ThemeButton
@@ -206,22 +210,21 @@ function MobileMenu({
             <DrawerDescription>Access all features and pages</DrawerDescription>
           </DrawerHeader>
           <div className='flex flex-col space-y-4 px-4 py-6'>
-            {NAV_ITEMS.map(item => (
-              <Button
-                className='justify-start text-lg h-12'
-                key={item.href}
-                onClick={() => handleNavClick(item.href)}
-                variant='ghost'
-              >
-                {item.label}
-              </Button>
-            ))}
+            {NAV_ITEMS.map(item => {
+              return (
+                <NavButton
+                  item={item}
+                  key={item.href}
+                  onNavClick={handleNavClick}
+                />
+              );
+            })}
           </div>
           <DrawerFooter className='mt-auto'>
             <Link className='w-full' href='/auth/sign-in'>
               <Button
                 className='w-full'
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 size='lg'
                 variant='outline'
               >
@@ -231,7 +234,7 @@ function MobileMenu({
             <Link className='w-full' href='/auth/sign-up'>
               <Button
                 className='w-full epic-button glow-effect'
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 size='lg'
               >
                 Get Started
@@ -241,6 +244,28 @@ function MobileMenu({
         </DrawerContent>
       </Drawer>
     </div>
+  );
+}
+
+function NavButton({
+  item,
+  onNavClick,
+}: {
+  item: { href: string; label: string };
+  onNavClick: (href: string) => void;
+}) {
+  const handleClick = useCallback(
+    () => onNavClick(item.href),
+    [onNavClick, item.href]
+  );
+  return (
+    <Button
+      className='justify-start text-lg h-12'
+      onClick={handleClick}
+      variant='ghost'
+    >
+      {item.label}
+    </Button>
   );
 }
 

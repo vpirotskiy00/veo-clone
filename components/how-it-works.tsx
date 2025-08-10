@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, Transition } from 'framer-motion';
+import { motion,Transition } from 'framer-motion';
 import {
   ArrowRight,
   Brain,
@@ -17,6 +17,49 @@ import { SubtleParticles } from '@/components/animations/subtle-particles';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+
+// Animation constants to prevent inline object creation
+const STEP_VISUAL_ANIMATIONS = {
+  whileHover: { y: -8, scale: 1.02 },
+  transition: { duration: 0.3, ease: 'easeOut' as const },
+  backgroundAnimate: { opacity: [0, 0.3, 0] as number[] },
+  backgroundTransition: {
+    duration: 4,
+    repeat: Infinity,
+    ease: 'easeInOut' as const,
+  },
+  particleAnimate: {
+    scale: [0.5, 1, 0.5] as number[],
+    opacity: [0.2, 0.8, 0.2] as number[],
+    y: [0, -10, 0] as number[],
+  },
+  particleTransition: {
+    duration: 3,
+    repeat: Infinity,
+    ease: 'easeInOut' as const,
+  },
+  iconWhileHover: { scale: 1.05, rotate: [0, 5, -5, 0] as number[] },
+  iconTransition: { duration: 0.6 },
+  arrowAnimate: {
+    scale: [1, 1.1, 1] as number[],
+    rotate: [0, 10, 0] as number[],
+  },
+  arrowTransition: {
+    duration: 2,
+    repeat: Infinity,
+    ease: 'easeInOut' as const,
+  },
+  arrowWhileHover: {
+    scale: 1.2,
+    boxShadow: '0 0 20px rgba(99, 102, 241, 0.5)',
+  },
+  arrowInnerAnimate: { x: [0, 3, 0] as number[] },
+  arrowInnerTransition: {
+    duration: 1.5,
+    repeat: Infinity,
+    ease: 'easeInOut' as const,
+  },
+};
 
 const steps = [
   {
@@ -92,9 +135,7 @@ function SectionHeader({ title, subtitle, description }: SectionHeaderProps) {
 
       <h2 className='text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-8 leading-tight'>
         <span className='block text-foreground'>{subtitle}</span>
-        <span className='gradient-text-epic block mt-2'>
-          In 4 Simple Steps
-        </span>
+        <span className='gradient-text-epic block mt-2'>In 4 Simple Steps</span>
       </h2>
 
       <p className='text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed'>
@@ -105,7 +146,7 @@ function SectionHeader({ title, subtitle, description }: SectionHeaderProps) {
 }
 
 interface StepContentProps {
-  step: typeof steps[0];
+  step: (typeof steps)[0];
   index: number;
 }
 
@@ -154,7 +195,7 @@ function StepContent({ step, index }: StepContentProps) {
 }
 
 interface StepVisualProps {
-  step: typeof steps[0];
+  step: (typeof steps)[0];
 }
 
 function StepVisual({ step }: StepVisualProps) {
@@ -164,8 +205,8 @@ function StepVisual({ step }: StepVisualProps) {
     <div className='flex-1 flex justify-center'>
       <motion.div
         className='w-full max-w-md'
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        whileHover={{ y: -8, scale: 1.02 }}
+        transition={STEP_VISUAL_ANIMATIONS.transition}
+        whileHover={STEP_VISUAL_ANIMATIONS.whileHover}
       >
         <Card className='interactive-card group relative overflow-hidden border-0 shadow-xl bg-card/90 dark:bg-card/80 backdrop-blur-sm'>
           <div className='absolute inset-0 bg-gradient-to-br from-border via-transparent to-border opacity-50 group-hover:opacity-100 transition-opacity duration-300 rounded-xl' />
@@ -174,23 +215,15 @@ function StepVisual({ step }: StepVisualProps) {
           <CardContent className='p-8 relative'>
             <div className='aspect-video bg-gradient-to-br from-surface-100 to-surface-200 dark:from-surface-200 dark:to-surface-300 rounded-2xl flex items-center justify-center mb-8 relative overflow-hidden group/visual'>
               <motion.div
-                animate={{ opacity: [0, 0.3, 0] }}
+                animate={STEP_VISUAL_ANIMATIONS.backgroundAnimate}
                 className='absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5'
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
+                transition={STEP_VISUAL_ANIMATIONS.backgroundTransition}
               />
 
               <div className='absolute inset-0'>
                 {[...Array(6)].map((_, i) => (
                   <motion.div
-                    animate={{
-                      scale: [0.5, 1, 0.5],
-                      opacity: [0.2, 0.8, 0.2],
-                      y: [0, -10, 0],
-                    }}
+                    animate={STEP_VISUAL_ANIMATIONS.particleAnimate}
                     className='absolute w-2 h-2 bg-gradient-to-r from-blue-400/40 to-purple-400/40 rounded-full'
                     key={i}
                     style={{
@@ -198,9 +231,8 @@ function StepVisual({ step }: StepVisualProps) {
                       top: `${25 + (i % 3) * 25}%`,
                     }}
                     transition={{
+                      ...STEP_VISUAL_ANIMATIONS.particleTransition,
                       duration: 3 + i * 0.5,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
                       delay: i * 0.5,
                     }}
                   />
@@ -208,8 +240,8 @@ function StepVisual({ step }: StepVisualProps) {
               </div>
 
               <motion.div
-                transition={{ duration: 0.6 }}
-                whileHover={{ scale: 1.05, rotate: [0, 5, -5, 0] }}
+                transition={STEP_VISUAL_ANIMATIONS.iconTransition}
+                whileHover={STEP_VISUAL_ANIMATIONS.iconWhileHover}
               >
                 <LiquidIcon
                   className='shadow-2xl hover:shadow-3xl transition-all duration-300'
@@ -250,29 +282,17 @@ function StepArrow({ index }: StepArrowProps) {
   return (
     <div className='hidden md:block absolute left-1/2 transform -translate-x-1/2 mt-24 z-20'>
       <motion.div
-        animate={{
-          scale: [1, 1.1, 1],
-          rotate: [0, 10, 0],
-        }}
+        animate={STEP_VISUAL_ANIMATIONS.arrowAnimate}
         className='w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center shadow-lg cursor-pointer'
         transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: 'easeInOut',
+          ...STEP_VISUAL_ANIMATIONS.arrowTransition,
           delay: index * 0.5,
         }}
-        whileHover={{
-          scale: 1.2,
-          boxShadow: '0 0 20px rgba(99, 102, 241, 0.5)',
-        }}
+        whileHover={STEP_VISUAL_ANIMATIONS.arrowWhileHover}
       >
         <motion.div
-          animate={{ x: [0, 3, 0] }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          animate={STEP_VISUAL_ANIMATIONS.arrowInnerAnimate}
+          transition={STEP_VISUAL_ANIMATIONS.arrowInnerTransition}
         >
           <ArrowRight className='w-6 h-6 text-white' />
         </motion.div>
@@ -314,8 +334,8 @@ function BottomCTA({ onParticleTrigger }: { onParticleTrigger: () => void }) {
             </h3>
 
             <p className='text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed'>
-              Join thousands of creators who are already using AI to bring
-              their ideas to life. Start your journey today.
+              Join thousands of creators who are already using AI to bring their
+              ideas to life. Start your journey today.
             </p>
 
             <motion.div

@@ -1,8 +1,8 @@
 'use client';
 
-import { motion, Transition } from 'framer-motion';
+import { motion,Transition } from 'framer-motion';
 import { Play, Sparkles, Zap } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { QuantumOrbs } from '@/components/animations/quantum-orbs';
 import { SubtleParticles } from '@/components/animations/subtle-particles';
@@ -39,7 +39,8 @@ const orbAnimations = {
       repeat: Infinity,
       ease: 'easeInOut' as const,
     },
-    className: 'absolute top-1/4 left-1/4 w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 bg-gradient-to-r from-blue-500/15 dark:from-blue-400/20 to-purple-500/15 dark:to-purple-400/20 rounded-full blur-3xl',
+    className:
+      'absolute top-1/4 left-1/4 w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 bg-gradient-to-r from-blue-500/15 dark:from-blue-400/20 to-purple-500/15 dark:to-purple-400/20 rounded-full blur-3xl',
   },
   secondary: {
     animation: {
@@ -53,7 +54,8 @@ const orbAnimations = {
       ease: 'easeInOut' as const,
       delay: 2,
     },
-    className: 'absolute top-3/4 right-1/4 w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-gradient-to-r from-purple-500/15 dark:from-purple-400/20 to-pink-500/15 dark:to-pink-400/20 rounded-full blur-3xl',
+    className:
+      'absolute top-3/4 right-1/4 w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-gradient-to-r from-purple-500/15 dark:from-purple-400/20 to-pink-500/15 dark:to-pink-400/20 rounded-full blur-3xl',
   },
   accent: {
     animation: {
@@ -67,7 +69,8 @@ const orbAnimations = {
       ease: 'easeInOut' as const,
       delay: 4,
     },
-    className: 'absolute top-1/2 right-1/3 w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-gradient-to-r from-cyan-500/15 dark:from-cyan-400/20 to-blue-500/15 dark:to-blue-400/20 rounded-full blur-3xl',
+    className:
+      'absolute top-1/2 right-1/3 w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-gradient-to-r from-cyan-500/15 dark:from-cyan-400/20 to-blue-500/15 dark:to-blue-400/20 rounded-full blur-3xl',
   },
   ambient1: {
     animation: {
@@ -80,7 +83,8 @@ const orbAnimations = {
       ease: 'easeInOut' as const,
       delay: 1,
     },
-    className: 'absolute top-1/3 left-1/2 w-20 h-20 bg-gradient-to-r from-indigo-500/10 dark:from-indigo-400/15 to-violet-500/10 dark:to-violet-400/15 rounded-full blur-2xl',
+    className:
+      'absolute top-1/3 left-1/2 w-20 h-20 bg-gradient-to-r from-indigo-500/10 dark:from-indigo-400/15 to-violet-500/10 dark:to-violet-400/15 rounded-full blur-2xl',
   },
   ambient2: {
     animation: {
@@ -94,7 +98,8 @@ const orbAnimations = {
       ease: 'easeInOut' as const,
       delay: 3,
     },
-    className: 'absolute bottom-1/3 left-1/5 w-28 h-28 bg-gradient-to-r from-emerald-500/10 dark:from-emerald-400/15 to-teal-500/10 dark:to-teal-400/15 rounded-full blur-2xl',
+    className:
+      'absolute bottom-1/3 left-1/5 w-28 h-28 bg-gradient-to-r from-emerald-500/10 dark:from-emerald-400/15 to-teal-500/10 dark:to-teal-400/15 rounded-full blur-2xl',
   },
 };
 
@@ -132,16 +137,24 @@ interface HeroCTAButtonsProps {
 }
 
 function HeroCTAButtons({ onParticleTrigger }: HeroCTAButtonsProps) {
-  const handleHoverStart = () => onParticleTrigger();
-  const handleMouseEnter = () => onParticleTrigger();
+  const handleHoverStart = useCallback(
+    () => onParticleTrigger(),
+    [onParticleTrigger]
+  );
+  const handleMouseEnter = useCallback(
+    () => onParticleTrigger(),
+    [onParticleTrigger]
+  );
 
   const primaryButtonClass = useMemo(
-    () => 'epic-button text-white px-10 py-6 rounded-full text-xl font-semibold glow-effect group relative overflow-hidden',
+    () =>
+      'epic-button text-white px-10 py-6 rounded-full text-xl font-semibold glow-effect group relative overflow-hidden',
     []
   );
 
   const secondaryButtonClass = useMemo(
-    () => 'glass border-white/20 dark:border-white/10 text-white hover:text-white px-10 py-6 rounded-full text-xl font-semibold group backdrop-blur-xl shadow-lg hover:shadow-xl',
+    () =>
+      'glass border-white/20 dark:border-white/10 text-white hover:text-white px-10 py-6 rounded-full text-xl font-semibold group backdrop-blur-xl shadow-lg hover:shadow-xl',
     []
   );
 
@@ -172,11 +185,7 @@ function HeroCTAButtons({ onParticleTrigger }: HeroCTAButtonsProps) {
         </Button>
       </motion.div>
       <motion.div whileHover={buttonConfigs.hover} whileTap={buttonConfigs.tap}>
-        <Button
-          className={secondaryButtonClass}
-          size='xl'
-          variant='outline'
-        >
+        <Button className={secondaryButtonClass} size='xl' variant='outline'>
           <Zap className='w-6 h-6 mr-3 group-hover:rotate-12 transition-transform' />
           Watch Demo
         </Button>
@@ -187,7 +196,11 @@ function HeroCTAButtons({ onParticleTrigger }: HeroCTAButtonsProps) {
 
 const statsData = [
   { value: '10M+', label: 'Videos Created', className: 'gradient-text-accent' },
-  { value: '4K', label: 'Ultra HD Quality', className: 'gradient-text-secondary' },
+  {
+    value: '4K',
+    label: 'Ultra HD Quality',
+    className: 'gradient-text-secondary',
+  },
   { value: '24/7', label: 'AI Processing', className: 'gradient-text' },
 ];
 
@@ -199,7 +212,9 @@ function HeroStats() {
     >
       {statsData.map((stat, index) => (
         <div className='text-center' key={index}>
-          <div className={`text-3xl md:text-4xl font-bold ${stat.className}`}>{stat.value}</div>
+          <div className={`text-3xl md:text-4xl font-bold ${stat.className}`}>
+            {stat.value}
+          </div>
           <div className='text-gray-300 text-sm mt-1'>{stat.label}</div>
         </div>
       ))}
@@ -210,11 +225,16 @@ function HeroStats() {
 const scrollIndicatorConfig = {
   container: {
     animation: { opacity: 1 },
+    initial: { opacity: 0 },
     transition: { delay: 1.5, duration: 0.5 } as Transition,
   },
   scroll: {
     animation: { y: [0, 8, 0] },
-    transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const } as Transition,
+    transition: {
+      duration: 1.5,
+      repeat: Infinity,
+      ease: 'easeInOut' as const,
+    } as Transition,
   },
 };
 
@@ -223,7 +243,7 @@ function ScrollIndicator() {
     <motion.div
       animate={scrollIndicatorConfig.container.animation}
       className='absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20'
-      initial={{ opacity: 0 }}
+      initial={scrollIndicatorConfig.container.initial}
       transition={scrollIndicatorConfig.container.transition}
     >
       <div className='flex flex-col items-center space-y-2'>
@@ -242,10 +262,10 @@ function ScrollIndicator() {
 
 export function HeroSection() {
   const [particleTrigger, setParticleTrigger] = useState(false);
-  
-  const handleParticleTrigger = () => {
-    setParticleTrigger(!particleTrigger);
-  };
+
+  const handleParticleTrigger = useCallback(() => {
+    setParticleTrigger(prev => !prev);
+  }, []);
 
   return (
     <section className='relative min-h-screen flex items-center justify-center overflow-hidden'>
@@ -259,7 +279,7 @@ export function HeroSection() {
       <QuantumOrbs className='z-15' intensity='subtle' />
       <SubtleParticles className='z-15' trigger={particleTrigger} />
       <FloatingOrbs />
-      
+
       <div className='relative z-20 max-w-5xl mx-auto px-6 text-center'>
         <motion.div
           animate='animate'
