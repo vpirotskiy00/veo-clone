@@ -1,8 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
+import { QuantumOrb } from '@/components/animations/QuantumOrb';
+import { QuantumSvgFilter } from '@/components/animations/QuantumSvgFilter';
 import { useReducedMotion } from '@/lib/animation-system/hooks/useReducedMotion';
 
 interface QuantumOrbsProps {
@@ -48,9 +49,6 @@ export function QuantumOrbs({
   };
 
   const config = intensityConfig[intensity];
-
-  const svgStyle = { width: 0, height: 0 };
-
   const animateConfig = {
     x: [0, 30, -20, 0],
     y: [0, -25, 20, 0],
@@ -61,54 +59,17 @@ export function QuantumOrbs({
     <div
       className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
     >
-      {/* SVG Filter for subtle liquid effect */}
-      <svg className='absolute' style={svgStyle}>
-        <defs>
-          <filter id='quantum-glow'>
-            <feGaussianBlur in='SourceGraphic' stdDeviation='8' />
-            <feColorMatrix
-              values='
-                1 0 0 0 0
-                0 1 0 0 0
-                0 0 1 0 0
-                0 0 0 15 -7
-              '
-            />
-          </filter>
-        </defs>
-      </svg>
+      <QuantumSvgFilter />
 
-      {Array.from({ length: config.count }, (_, i) => {
-        const orbStyle = {
-          left: `${20 + ((i * 25) % 60)}%`,
-          top: `${15 + ((i * 30) % 70)}%`,
-          width: config.sizes[i] || 100,
-          height: config.sizes[i] || 100,
-          background: `linear-gradient(135deg, 
-            rgba(59, 130, 246, ${config.opacity}), 
-            rgba(147, 51, 234, ${config.opacity * 0.8}), 
-            rgba(236, 72, 153, ${config.opacity * 0.6})
-          )`,
-          filter: intensity === 'subtle' ? 'url(#quantum-glow)' : undefined,
-        };
-
-        const transitionConfig = {
-          duration: config.duration[i] || 20,
-          repeat: Infinity,
-          ease: 'easeInOut' as const,
-          delay: i * 2,
-        };
-
-        return (
-          <motion.div
-            animate={animateConfig}
-            className={`absolute rounded-full ${config.blur}`}
-            key={i}
-            style={orbStyle}
-            transition={transitionConfig}
-          />
-        );
-      })}
+      {Array.from({ length: config.count }, (_, i) => (
+        <QuantumOrb
+          animateConfig={animateConfig}
+          config={config}
+          index={i}
+          intensity={intensity}
+          key={i}
+        />
+      ))}
     </div>
   );
 }

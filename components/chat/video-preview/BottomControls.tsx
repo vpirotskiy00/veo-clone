@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Download, ExternalLink, Maximize, Volume2, VolumeX } from 'lucide-react';
-import { MouseEvent } from 'react';
+import { MouseEvent, useCallback } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -31,12 +31,25 @@ export function BottomControls({
   onOpenInNewTab,
   onFullscreen,
 }: BottomControlsProps) {
-function createStopPropagationHandler(callback: () => void) {
-  return (e: MouseEvent) => {
+  const handleMuteToggle = useCallback((e: MouseEvent) => {
     e.stopPropagation();
-    callback();
-  };
-}
+    onMuteToggle();
+  }, [onMuteToggle]);
+
+  const handleDownload = useCallback((e: MouseEvent) => {
+    e.stopPropagation();
+    onDownload();
+  }, [onDownload]);
+
+  const handleOpenInNewTab = useCallback((e: MouseEvent) => {
+    e.stopPropagation();
+    onOpenInNewTab();
+  }, [onOpenInNewTab]);
+
+  const handleFullscreen = useCallback((e: MouseEvent) => {
+    e.stopPropagation();
+    onFullscreen();
+  }, [onFullscreen]);
 
   return (
     <motion.div
@@ -57,7 +70,7 @@ function createStopPropagationHandler(callback: () => void) {
               'text-white hover:bg-white/20',
               isMobile ? BUTTON_SIZE_MOBILE : BUTTON_SIZE_DESKTOP
             )}
-            onClick={createStopPropagationHandler(onMuteToggle)}
+            onClick={handleMuteToggle}
             size="sm"
             title={isMuted ? 'Unmute' : 'Mute'}
             variant="ghost"
@@ -77,7 +90,7 @@ function createStopPropagationHandler(callback: () => void) {
               'text-white hover:bg-white/20',
               isMobile ? BUTTON_SIZE_MOBILE : BUTTON_SIZE_DESKTOP
             )}
-            onClick={createStopPropagationHandler(onDownload)}
+            onClick={handleDownload}
             size="sm"
             title="Download video"
             variant="ghost"
@@ -87,7 +100,7 @@ function createStopPropagationHandler(callback: () => void) {
           {!isMobile && (
             <Button
               className="h-8 w-8 p-0 text-white hover:bg-white/20"
-              onClick={createStopPropagationHandler(onOpenInNewTab)}
+              onClick={handleOpenInNewTab}
               size="sm"
               title="Open in new tab"
               variant="ghost"
@@ -100,7 +113,7 @@ function createStopPropagationHandler(callback: () => void) {
               'text-white hover:bg-white/20',
               isMobile ? BUTTON_SIZE_MOBILE : BUTTON_SIZE_DESKTOP
             )}
-            onClick={createStopPropagationHandler(onFullscreen)}
+            onClick={handleFullscreen}
             size="sm"
             title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             variant="ghost"

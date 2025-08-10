@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { Loader2, Paperclip, Send, Settings, X, Zap } from 'lucide-react';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -50,63 +50,28 @@ interface ChatInputProps {
   placeholder?: string;
 }
 
-export function ChatInput({
-  onSubmit,
-  isLoading = false,
-  disabled = false,
-  placeholder = "Describe the video you'd like to generate...",
-}: ChatInputProps) {
-  const [showSettings, setShowSettings] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const isMobile = useIsMobile();
+const motionProps = {
+  animate: { opacity: 1, height: 'auto' },
+  exit: { opacity: 0, height: 0 },
+  initial: { opacity: 0, height: 0 },
+};
 
-  const form = useForm({
-    resolver: zodResolver(promptSchema),
-    defaultValues: {
-      prompt: '',
-      duration: 5,
-      aspectRatio: '16:9' as const,
-      style: 'realistic' as const,
-      quality: 'standard' as const,
+interface SettingsContentProps {
+  form: ReturnType<typeof useForm<PromptFormData>>;
+}
+
+function SettingsContent({ form }: SettingsContentProps) {
+  const handleDurationChange = useCallback(
+    (value: number[]) => {
+      form.setValue('duration', value[0]);
     },
-  });
+    [form]
+  );
 
-  const handleSubmit = (data: PromptFormData) => {
-    if (selectedImage) {
-      data.referenceImage = selectedImage;
-    }
-    onSubmit(data);
-    form.reset();
-    setSelectedImage(null);
-  };
-
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-    }
-  };
-
-  const removeImage = () => {
-    setSelectedImage(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      form.handleSubmit(handleSubmit)();
-    }
-  };
-
-  const SettingsContent = () => (
+  return (
     <div className='space-y-4'>
       <h4 className='font-medium text-sm'>Generation Settings</h4>
 
-      {/* Duration */}
       <FormField
         control={form.control}
         name='duration'
@@ -123,7 +88,7 @@ export function ChatInput({
                 className='w-full'
                 max={60}
                 min={2}
-                onValueChange={value => field.onChange(value[0])}
+                onValueChange={handleDurationChange}
                 step={1}
                 value={[field.value || 5]}
               />
@@ -132,7 +97,6 @@ export function ChatInput({
         )}
       />
 
-      {/* Aspect Ratio */}
       <FormField
         control={form.control}
         name='aspectRatio'
@@ -155,7 +119,6 @@ export function ChatInput({
         )}
       />
 
-      {/* Style */}
       <FormField
         control={form.control}
         name='style'
@@ -179,7 +142,6 @@ export function ChatInput({
         )}
       />
 
-      {/* Quality */}
       <FormField
         control={form.control}
         name='quality'
@@ -203,54 +165,136 @@ export function ChatInput({
       />
     </div>
   );
+}
+
+interface ImagePreviewProps {
+  selectedImage: File;
+  onRemove: () => void;
+}
+
+function ImagePreview({ selectedImage, onRemove }: ImagePreviewProps) {
+  const imageUrl = useMemo(
+    () => URL.createObjectURL(selectedImage),
+    [selectedImage]
+  );
+  const fileSize = useMemo(
+    () => (selectedImage.size / 1024 / 1024).toFixed(1),
+    [selectedImage.size]
+  );
+
+  return (
+    <motion.div className='p-3 bg-muted rounded-lg' {...motionProps}>
+      <div className='flex items-center justify-between mb-2'>
+        <Label className='text-sm font-medium'>Reference Image</Label>
+        <Button
+          className='h-6 w-6 p-0'
+          onClick={onRemove}
+          size='sm'
+          type='button'
+          variant='ghost'
+        >
+          <X className='h-4 w-4' />
+        </Button>
+      </div>
+      <div className='flex items-center gap-3'>
+        <div className='h-12 w-12 rounded-lg overflow-hidden bg-background'>
+          <Image
+            alt='Reference'
+            className='h-full w-full object-cover'
+            height={48}
+            src={imageUrl}
+            width={48}
+          />
+        </div>
+        <div className='flex-1'>
+          <p className='text-sm font-medium truncate'>{selectedImage.name}</p>
+          <p className='text-xs text-muted-foreground'>{fileSize} MB</p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export function ChatInput({
+  onSubmit,
+  isLoading = false,
+  disabled = false,
+  placeholder = "Describe the video you'd like to generate...",
+}: ChatInputProps) {
+  const [showSettings, setShowSettings] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const isMobile = useIsMobile();
+
+  const form = useForm({
+    resolver: zodResolver(promptSchema),
+    defaultValues: {
+      prompt: '',
+      duration: 5,
+      aspectRatio: '16:9' as const,
+      style: 'realistic' as const,
+      quality: 'standard' as const,
+    },
+  });
+
+  const handleSubmit = useCallback(
+    (data: PromptFormData) => {
+      if (selectedImage) {
+        data.referenceImage = selectedImage;
+      }
+      onSubmit(data);
+      form.reset();
+      setSelectedImage(null);
+    },
+    [selectedImage, onSubmit, form]
+  );
+
+  const handleImageSelect = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        setSelectedImage(file);
+      }
+    },
+    []
+  );
+
+  const removeImage = useCallback(() => {
+    setSelectedImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        form.handleSubmit(handleSubmit)();
+      }
+    },
+    [form, handleSubmit]
+  );
+
+  const handleFileClick = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
+  const isSubmitDisabled = useMemo(
+    () => disabled || isLoading || !form.watch('prompt').trim(),
+    [disabled, isLoading, form]
+  );
+
+  const promptLength = form.watch('prompt')?.length || 0;
 
   return (
     <Card className='p-4 border-t'>
       <Form {...form}>
         <form className='space-y-4' onSubmit={form.handleSubmit(handleSubmit)}>
-          {/* Reference Image Preview */}
           {selectedImage && (
-            <motion.div
-              animate={{ opacity: 1, height: 'auto' }}
-              className='p-3 bg-muted rounded-lg'
-              exit={{ opacity: 0, height: 0 }}
-              initial={{ opacity: 0, height: 0 }}
-            >
-              <div className='flex items-center justify-between mb-2'>
-                <Label className='text-sm font-medium'>Reference Image</Label>
-                <Button
-                  className='h-6 w-6 p-0'
-                  onClick={removeImage}
-                  size='sm'
-                  type='button'
-                  variant='ghost'
-                >
-                  <X className='h-4 w-4' />
-                </Button>
-              </div>
-              <div className='flex items-center gap-3'>
-                <div className='h-12 w-12 rounded-lg overflow-hidden bg-background'>
-                  <Image
-                    alt='Reference'
-                    className='h-full w-full object-cover'
-                    height={48}
-                    src={URL.createObjectURL(selectedImage)}
-                    width={48}
-                  />
-                </div>
-                <div className='flex-1'>
-                  <p className='text-sm font-medium truncate'>
-                    {selectedImage.name}
-                  </p>
-                  <p className='text-xs text-muted-foreground'>
-                    {(selectedImage.size / 1024 / 1024).toFixed(1)} MB
-                  </p>
-                </div>
-              </div>
-            </motion.div>
+            <ImagePreview selectedImage={selectedImage} onRemove={removeImage} />
           )}
 
-          {/* Main Input */}
           <div className='relative'>
             <FormField
               control={form.control}
@@ -271,13 +315,11 @@ export function ChatInput({
               )}
             />
 
-            {/* Input Actions */}
             <div className='absolute bottom-3 right-3 flex items-center gap-1'>
-              {/* Attachment Button */}
               <Button
                 className='h-8 w-8 p-0'
                 disabled={disabled || isLoading}
-                onClick={() => fileInputRef.current?.click()}
+                onClick={handleFileClick}
                 size='sm'
                 type='button'
                 variant='ghost'
@@ -285,7 +327,6 @@ export function ChatInput({
                 <Paperclip className='h-4 w-4' />
               </Button>
 
-              {/* Settings Button */}
               {isMobile ? (
                 <Drawer onOpenChange={setShowSettings} open={showSettings}>
                   <DrawerTrigger asChild>
@@ -306,7 +347,7 @@ export function ChatInput({
                         Customize your video generation parameters
                       </DrawerDescription>
                     </DrawerHeader>
-                    <SettingsContent />
+                    <SettingsContent form={form} />
                   </DrawerContent>
                 </Drawer>
               ) : (
@@ -323,15 +364,14 @@ export function ChatInput({
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent align='end' className='w-80 p-4'>
-                    <SettingsContent />
+                    <SettingsContent form={form} />
                   </PopoverContent>
                 </Popover>
               )}
 
-              {/* Send Button */}
               <Button
                 className='h-8 w-8 p-0'
-                disabled={disabled || isLoading || !form.watch('prompt').trim()}
+                disabled={isSubmitDisabled}
                 size='sm'
                 type='submit'
               >
@@ -344,7 +384,6 @@ export function ChatInput({
             </div>
           </div>
 
-          {/* Hidden File Input */}
           <Input
             accept='image/jpeg,image/png,image/webp'
             className='hidden'
@@ -353,13 +392,12 @@ export function ChatInput({
             type='file'
           />
 
-          {/* Character Count */}
           <div className='flex justify-between items-center text-xs text-muted-foreground'>
             <span className='flex items-center gap-1'>
               <Zap className='h-3 w-3' />
               Powered by Veo 3
             </span>
-            <span>{form.watch('prompt')?.length || 0} / 2000</span>
+            <span>{promptLength} / 2000</span>
           </div>
         </form>
       </Form>
