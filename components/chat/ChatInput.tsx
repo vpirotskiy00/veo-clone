@@ -60,7 +60,12 @@ interface SettingsContentProps {
   form: ReturnType<typeof useForm<PromptFormData>>;
 }
 
-function SettingsContent({ form }: SettingsContentProps) {
+// Duration field component
+function DurationField({
+  form,
+}: {
+  form: ReturnType<typeof useForm<PromptFormData>>;
+}) {
   const handleDurationChange = useCallback(
     (value: number[]) => {
       form.setValue('duration', value.at(0) ?? 5);
@@ -68,101 +73,138 @@ function SettingsContent({ form }: SettingsContentProps) {
     [form]
   );
 
+  const sliderValue = useMemo(() => [form.watch('duration') ?? 5], [form]);
+
+  return (
+    <FormField
+      control={form.control}
+      name='duration'
+      render={({ field }) => (
+        <FormItem>
+          <div className='flex items-center justify-between'>
+            <Label className='text-sm'>Duration</Label>
+            <span className='text-sm text-muted-foreground'>
+              {field.value}s
+            </span>
+          </div>
+          <FormControl>
+            <Slider
+              className='w-full'
+              max={60}
+              min={2}
+              onValueChange={handleDurationChange}
+              step={1}
+              value={sliderValue}
+            />
+          </FormControl>
+        </FormItem>
+      )}
+    />
+  );
+}
+
+// Aspect ratio field component
+function AspectRatioField({
+  form,
+}: {
+  form: ReturnType<typeof useForm<PromptFormData>>;
+}) {
+  return (
+    <FormField
+      control={form.control}
+      name='aspectRatio'
+      render={({ field }) => (
+        <FormItem>
+          <Label className='text-sm'>Aspect Ratio</Label>
+          <Select onValueChange={field.onChange} value={field.value}>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectItem value='16:9'>16:9 (Landscape)</SelectItem>
+              <SelectItem value='9:16'>9:16 (Portrait)</SelectItem>
+              <SelectItem value='1:1'>1:1 (Square)</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormItem>
+      )}
+    />
+  );
+}
+
+// Style field component
+function StyleField({
+  form,
+}: {
+  form: ReturnType<typeof useForm<PromptFormData>>;
+}) {
+  return (
+    <FormField
+      control={form.control}
+      name='style'
+      render={({ field }) => (
+        <FormItem>
+          <Label className='text-sm'>Style</Label>
+          <Select onValueChange={field.onChange} value={field.value}>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectItem value='realistic'>Realistic</SelectItem>
+              <SelectItem value='artistic'>Artistic</SelectItem>
+              <SelectItem value='cinematic'>Cinematic</SelectItem>
+              <SelectItem value='abstract'>Abstract</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormItem>
+      )}
+    />
+  );
+}
+
+// Quality field component
+function QualityField({
+  form,
+}: {
+  form: ReturnType<typeof useForm<PromptFormData>>;
+}) {
+  return (
+    <FormField
+      control={form.control}
+      name='quality'
+      render={({ field }) => (
+        <FormItem>
+          <Label className='text-sm'>Quality</Label>
+          <Select onValueChange={field.onChange} value={field.value}>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectItem value='draft'>Draft (Fast)</SelectItem>
+              <SelectItem value='standard'>Standard</SelectItem>
+              <SelectItem value='high'>High (Slow)</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormItem>
+      )}
+    />
+  );
+}
+
+function SettingsContent({ form }: SettingsContentProps) {
   return (
     <div className='space-y-4'>
       <h4 className='font-medium text-sm'>Generation Settings</h4>
-
-      <FormField
-        control={form.control}
-        name='duration'
-        render={({ field }) => (
-          <FormItem>
-            <div className='flex items-center justify-between'>
-              <Label className='text-sm'>Duration</Label>
-              <span className='text-sm text-muted-foreground'>
-                {field.value}s
-              </span>
-            </div>
-            <FormControl>
-              <Slider
-                className='w-full'
-                max={60}
-                min={2}
-                onValueChange={handleDurationChange}
-                step={1}
-                value={[field.value ?? 5]}
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name='aspectRatio'
-        render={({ field }) => (
-          <FormItem>
-            <Label className='text-sm'>Aspect Ratio</Label>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value='16:9'>16:9 (Landscape)</SelectItem>
-                <SelectItem value='9:16'>9:16 (Portrait)</SelectItem>
-                <SelectItem value='1:1'>1:1 (Square)</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name='style'
-        render={({ field }) => (
-          <FormItem>
-            <Label className='text-sm'>Style</Label>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value='realistic'>Realistic</SelectItem>
-                <SelectItem value='artistic'>Artistic</SelectItem>
-                <SelectItem value='cinematic'>Cinematic</SelectItem>
-                <SelectItem value='abstract'>Abstract</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name='quality'
-        render={({ field }) => (
-          <FormItem>
-            <Label className='text-sm'>Quality</Label>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value='draft'>Draft (Fast)</SelectItem>
-                <SelectItem value='standard'>Standard</SelectItem>
-                <SelectItem value='high'>High (Slow)</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )}
-      />
+      <DurationField form={form} />
+      <AspectRatioField form={form} />
+      <StyleField form={form} />
+      <QualityField form={form} />
     </div>
   );
 }
@@ -249,13 +291,13 @@ function useImageHandling() {
   };
 }
 
-function SettingsButton({ 
-  showSettings, 
-  setShowSettings, 
-  disabled, 
-  isLoading, 
+function SettingsButton({
+  showSettings,
+  setShowSettings,
+  disabled,
+  isLoading,
   form,
-  isMobile 
+  isMobile,
 }: {
   showSettings: boolean;
   setShowSettings: (show: boolean) => void;
@@ -311,15 +353,15 @@ function SettingsButton({
   );
 }
 
-function InputControls({ 
-  disabled, 
-  isLoading, 
+function InputControls({
+  disabled,
+  isLoading,
   isSubmitDisabled,
-  onFileClick, 
+  onFileClick,
   showSettings,
   setShowSettings,
   form,
-  isMobile
+  isMobile,
 }: {
   disabled: boolean;
   isLoading: boolean;
@@ -384,20 +426,43 @@ interface MainFormProps {
   isMobile: boolean;
 }
 
-function MainForm({ 
-  form, 
-  onSubmit, 
-  disabled, 
-  isLoading, 
-  placeholder, 
-  selectedImage, 
+// Form footer component
+function FormFooter({ promptLength }: { promptLength: number }) {
+  const footerContent = useMemo(
+    () => ({
+      left: (
+        <span className='flex items-center gap-1'>
+          <Zap className='h-3 w-3' />
+          Powered by Veo 3
+        </span>
+      ),
+      right: <span>{promptLength} / 2000</span>,
+    }),
+    [promptLength]
+  );
+
+  return (
+    <div className='flex justify-between items-center text-xs text-muted-foreground'>
+      {footerContent.left}
+      {footerContent.right}
+    </div>
+  );
+}
+
+function MainForm({
+  form,
+  onSubmit,
+  disabled,
+  isLoading,
+  placeholder,
+  selectedImage,
   removeImage,
   handleFileClick,
   fileInputRef,
   handleImageSelect,
   showSettings,
   setShowSettings,
-  isMobile
+  isMobile,
 }: MainFormProps) {
   const handleSubmit = useCallback(
     (data: PromptFormData) => {
@@ -475,13 +540,7 @@ function MainForm({
           type='file'
         />
 
-        <div className='flex justify-between items-center text-xs text-muted-foreground'>
-          <span className='flex items-center gap-1'>
-            <Zap className='h-3 w-3' />
-            Powered by Veo 3
-          </span>
-          <span>{promptLength} / 2000</span>
-        </div>
+        <FormFooter promptLength={promptLength} />
       </form>
     </Form>
   );
