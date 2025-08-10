@@ -111,13 +111,13 @@ export default function VideosPage() {
         </div>
         <div className='flex items-center space-x-2'>
           <Button asChild variant='outline'>
-            <Link href='/dashboard/videos/upload'>
+            <Link href='/videos/upload'>
               <Plus className='h-4 w-4 mr-2' />
               Upload
             </Link>
           </Button>
           <Button asChild>
-            <Link href='/dashboard/videos/generate'>
+            <Link href='/videos/generate'>
               <Video className='h-4 w-4 mr-2' />
               Generate Video
             </Link>

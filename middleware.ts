@@ -2,20 +2,29 @@ import { auth } from '@/lib/auth';
 
 export default auth(req => {
   const { nextUrl } = req;
-  const _isLoggedIn = !!req.auth;
+  const isLoggedIn = !!req.auth;
 
-  const _isAuthPage = nextUrl.pathname.startsWith('/auth');
-  const _isDashboard = nextUrl.pathname.startsWith('/dashboard');
+  const isAuthPage = nextUrl.pathname.startsWith('/auth');
+  const _isDashboardPage =
+    nextUrl.pathname.startsWith('/chat') ||
+    nextUrl.pathname.startsWith('/videos') ||
+    nextUrl.pathname.startsWith('/analytics') ||
+    nextUrl.pathname.startsWith('/billing') ||
+    nextUrl.pathname.startsWith('/library') ||
+    nextUrl.pathname.startsWith('/settings') ||
+    nextUrl.pathname === '/dashboard';
 
-  // TEMPORARY: Disable auth checks for demo - allow access to dashboard
-  // TODO: Re-enable when authentication is fully implemented
+  // DEMO MODE: Allow access to dashboard pages without login for now
+  // This will be disabled when full auth is implemented
 
-  // if (_isDashboard && !_isLoggedIn) {
+  // If user is logged in and trying to access auth pages, redirect to chat
+  if (isAuthPage && isLoggedIn) {
+    return Response.redirect(new URL('/chat', nextUrl));
+  }
+
+  // Future: Uncomment when ready to enforce auth
+  // if (_isDashboardPage && !isLoggedIn) {
   //   return Response.redirect(new URL('/auth/sign-in', nextUrl));
-  // }
-
-  // if (_isAuthPage && _isLoggedIn) {
-  //   return Response.redirect(new URL('/dashboard', nextUrl));
   // }
 
   return;

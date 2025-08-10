@@ -17,6 +17,8 @@ export default async function DashboardLayout({
 }) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true';
+
+  // Get session (will be null if not logged in, which is fine for demo)
   const session = await auth();
 
   return (
@@ -31,7 +33,9 @@ export default async function DashboardLayout({
                 <h1 className='text-lg font-semibold'>Dashboard</h1>
               </div>
             </header>
-            <div className='flex flex-1 flex-col gap-4 p-4 pt-0'>{children}</div>
+            <div className='flex flex-1 flex-col gap-4 p-4 pt-0'>
+              {children}
+            </div>
           </SidebarInset>
         </SidebarProvider>
       </Providers>

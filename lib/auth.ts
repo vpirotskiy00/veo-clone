@@ -27,6 +27,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return token;
     },
+    async redirect({ url, baseUrl }) {
+      // After successful login, redirect to app (chat page)
+      if (url.startsWith('/auth/callback')) {
+        return `${baseUrl}/chat`;
+      }
+      // Allow relative and same-origin redirects
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
   },
   pages: {
     signIn: '/auth/sign-in',

@@ -23,7 +23,7 @@ export function RecentVideos({ videos }: RecentVideosProps) {
       <div className='flex items-center justify-between'>
         <h2 className='text-xl font-semibold'>Recent Videos</h2>
         <Button asChild size='sm' variant='outline'>
-          <Link href='/dashboard/videos'>View all</Link>
+          <Link href='/videos'>View all</Link>
         </Button>
       </div>
       <div className='space-y-3'>
