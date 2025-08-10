@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
+  // Server external packages
+  serverExternalPackages: [],
+
   // Experimental features for better performance
   experimental: {
     optimizePackageImports: [
@@ -32,7 +35,21 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Output configuration - let Vercel handle this automatically
+  // Webpack configuration to handle route group manifest generation
+  webpack: config => {
+    // Return config without modification to avoid manifest issues
+    return config;
+  },
+
+  // TypeScript configuration
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+
+  // ESLint configuration
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
 };
 
 export default nextConfig;

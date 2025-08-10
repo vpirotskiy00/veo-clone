@@ -7,14 +7,16 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "npm run typecheck && next build",
+    "build:vercel": "next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "bundlesize": "bundlesize",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "prepare": "husky"
+    "prepare": "husky",
+    "vercel-build": "npm run build:vercel"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
