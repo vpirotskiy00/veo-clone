@@ -1,12 +1,10 @@
 'use client';
 
-import { Metadata } from 'next';
 import { useCallback } from 'react';
 
 import { ChatContainer } from '@/components/chat/ChatContainer';
-import { useChatStore } from '@/lib/stores/chatStore';
-
 import type { PromptFormData } from '@/lib/schemas/promptSchema';
+import { useChatStore } from '@/lib/stores/chatStore';
 
 // export const metadata: Metadata = {
 //   title: 'Chat - Veo 3',

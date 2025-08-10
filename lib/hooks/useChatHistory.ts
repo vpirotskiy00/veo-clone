@@ -1,8 +1,8 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
-import { useChatStore } from '@/lib/stores/chatStore';
 import type { ChatMessage } from '@/lib/stores/chatStore';
+import { useChatStore } from '@/lib/stores/chatStore';
 
 interface ChatHistoryItem {
   id: string;
@@ -53,7 +53,7 @@ export function useChatHistory(options: UseChatHistoryOptions = {}) {
 
   // Mock chat history query (in real app, this would fetch from API/database)
   const chatHistoryQuery = useQuery({
-    queryKey: ['chatHistory'],
+    queryKey: ['chatHistory', enablePersistence],
     queryFn: async (): Promise<ChatHistoryItem[]> => {
       if (!enablePersistence) return [];
       
@@ -135,7 +135,7 @@ export function useChatHistory(options: UseChatHistoryOptions = {}) {
 
   // Load chat mutation
   const loadChatMutation = useMutation({
-    mutationFn: async (chatId: string): Promise<ChatMessage[]> => {
+    mutationFn: async (_chatId: string): Promise<ChatMessage[]> => {
       if (!enablePersistence) return [];
       
       // In a real implementation, this would load from your backend

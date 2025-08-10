@@ -6,7 +6,7 @@ export const promptSchema = z.object({
     .min(10, 'Prompt must be at least 10 characters long')
     .max(2000, 'Prompt cannot exceed 2000 characters')
     .regex(
-      /^[a-zA-Z0-9\s.,!?'"()\-:;]+$/,
+      /^[\d\s!"'(),.:;?A-Za-z\-]+$/,
       'Prompt contains invalid characters'
     ),
   

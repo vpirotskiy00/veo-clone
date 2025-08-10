@@ -1,14 +1,14 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence,motion } from 'framer-motion';
 import { Bot, MessageSquare } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
+import type { PromptFormData } from '@/lib/schemas/promptSchema';
 import { useChatStore } from '@/lib/stores/chatStore';
 import { cn } from '@/lib/utils';
 
-import type { PromptFormData } from '@/lib/schemas/promptSchema';
 import { ChatInput } from './ChatInput';
 import { ChatMessage } from './ChatMessage';
 import { TypingIndicator } from './TypingIndicator';
@@ -19,7 +19,7 @@ interface ChatContainerProps {
 }
 
 export function ChatContainer({ onSendMessage, className }: ChatContainerProps) {
-  const { messages, isTyping, isGenerating, clearMessages } = useChatStore();
+  const { messages, isTyping, isGenerating } = useChatStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -65,18 +65,18 @@ export function ChatContainer({ onSendMessage, className }: ChatContainerProps) 
 
       {/* Messages Area */}
       <ScrollArea 
-        ref={scrollAreaRef}
         className='flex-1 px-0'
+        ref={scrollAreaRef}
       >
         <div className='min-h-full'>
           {messages.length === 0 ? (
             // Empty State
             <div className='flex flex-col items-center justify-center h-full min-h-[400px] px-4 md:px-6'>
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
                 className='text-center max-w-md w-full'
+                initial={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.6 }}
               >
                 <div className='mx-auto mb-4 md:mb-6 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-500/10 to-purple-600/10'>
                   <MessageSquare className='h-8 w-8 md:h-10 md:w-10 text-primary' />
@@ -91,15 +91,15 @@ export function ChatContainer({ onSendMessage, className }: ChatContainerProps) 
                 <div className='grid gap-2 text-xs md:text-sm text-left'>
                   <div className='flex items-start gap-2 p-2 md:p-3 rounded-lg bg-muted/50'>
                     <span className='text-primary font-semibold shrink-0'>💡</span>
-                    <span>Try: "A majestic eagle soaring over snow-capped mountains"</span>
+                    <span>Try: &ldquo;A majestic eagle soaring over snow-capped mountains&rdquo;</span>
                   </div>
                   <div className='flex items-start gap-2 p-2 md:p-3 rounded-lg bg-muted/50'>
                     <span className='text-primary font-semibold shrink-0'>🎬</span>
-                    <span>Try: "Time-lapse of a blooming flower in a sunlit garden"</span>
+                    <span>Try: &ldquo;Time-lapse of a blooming flower in a sunlit garden&rdquo;</span>
                   </div>
                   <div className='flex items-start gap-2 p-2 md:p-3 rounded-lg bg-muted/50'>
                     <span className='text-primary font-semibold shrink-0'>🌊</span>
-                    <span>Try: "Ocean waves crashing against rocky cliffs at sunset"</span>
+                    <span>Try: &ldquo;Ocean waves crashing against rocky cliffs at sunset&rdquo;</span>
                   </div>
                 </div>
               </motion.div>
@@ -110,10 +110,10 @@ export function ChatContainer({ onSendMessage, className }: ChatContainerProps) 
               <AnimatePresence mode='popLayout'>
                 {messages.map((message, index) => (
                   <ChatMessage
+                    isLast={index === messages.length - 1}
                     key={message.id}
                     message={message}
                     onRetry={handleRetry}
-                    isLast={index === messages.length - 1}
                   />
                 ))}
               </AnimatePresence>
@@ -121,9 +121,9 @@ export function ChatContainer({ onSendMessage, className }: ChatContainerProps) 
               {/* Typing Indicator */}
               {isTyping && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
+                  initial={{ opacity: 0, y: 20 }}
                   transition={{ duration: 0.2 }}
                 >
                   <TypingIndicator />
@@ -140,9 +140,9 @@ export function ChatContainer({ onSendMessage, className }: ChatContainerProps) 
       {/* Chat Input */}
       <div className='flex-shrink-0'>
         <ChatInput
-          onSubmit={onSendMessage}
-          isLoading={isGenerating}
           disabled={isGenerating}
+          isLoading={isGenerating}
+          onSubmit={onSendMessage}
         />
       </div>
     </div>

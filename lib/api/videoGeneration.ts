@@ -86,14 +86,12 @@ export class VideoGenerationAPI {
     }
   }
 
-  static async getAuthStatus(): Promise<{ authenticated: boolean; user?: any }> {
+  static async getAuthStatus(): Promise<{ authenticated: boolean; user?: unknown }> {
     try {
-      const response = await this.makeRequest<{
+      return await this.makeRequest<{
         authenticated: boolean;
-        user?: any;
+        user?: unknown;
       }>('/veo/auth/status');
-
-      return response;
     } catch (error) {
       console.error('Auth status check failed:', error);
       return { authenticated: false };

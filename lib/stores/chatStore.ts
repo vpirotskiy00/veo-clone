@@ -30,7 +30,7 @@ interface ChatState {
 
 export const useChatStore = create<ChatState>()(
   persist(
-    (set, get) => ({
+    (set, _get) => ({
       messages: [],
       isTyping: false,
       isGenerating: false,

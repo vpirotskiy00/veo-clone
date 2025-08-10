@@ -9,9 +9,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import type { ChatMessage as ChatMessageType } from '@/lib/stores/chatStore';
 import { cn } from '@/lib/utils';
 
-import type { ChatMessage as ChatMessageType } from '@/lib/stores/chatStore';
 import { VideoPreview } from './VideoPreview';
 
 interface ChatMessageProps {
@@ -61,14 +61,14 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
 
     return (
       <motion.div
-        ref={ref}
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
         className={cn(
           'flex w-full gap-3 px-4 py-6',
           isUser ? 'flex-row-reverse' : 'flex-row'
         )}
+        initial={{ opacity: 0, y: 20 }}
+        ref={ref}
+        transition={{ duration: 0.3 }}
       >
         {/* Avatar */}
         <Avatar className='h-8 w-8 shrink-0'>
@@ -102,9 +102,9 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
             {message.videoUrl && (
               <div className='mt-3'>
                 <VideoPreview 
-                  videoUrl={message.videoUrl} 
+                  status={message.status} 
                   videoId={message.videoId}
-                  status={message.status}
+                  videoUrl={message.videoUrl}
                 />
               </div>
             )}
@@ -116,7 +116,7 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
                   <span>Generating your video...</span>
                   <span>~2-3 minutes</span>
                 </div>
-                <Progress value={Math.random() * 100} className='h-1' />
+                <Progress className='h-1' value={Math.random() * 100} />
               </div>
             )}
 
@@ -129,10 +129,10 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
                 </div>
                 {onRetry && (
                   <Button
+                    className='h-7 px-2 text-xs'
+                    onClick={() => onRetry(message.id)}
                     size='sm'
                     variant='outline'
-                    onClick={() => onRetry(message.id)}
-                    className='h-7 px-2 text-xs'
                   >
                     Retry
                   </Button>
@@ -149,7 +149,7 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
             )}
           >
             <time>
-              {message.timestamp.toLocaleTimeString([], {
+              {new Date(message.timestamp).toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit',
               })}
@@ -159,11 +159,11 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
             <div className='flex items-center gap-1'>
               {getStatusIcon()}
               <Badge 
-                variant='secondary' 
                 className={cn(
                   'h-5 px-1.5 text-xs',
                   message.status === 'error' && 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                )}
+                )} 
+                variant='secondary'
               >
                 {getStatusText()}
               </Badge>

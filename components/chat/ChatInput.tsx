@@ -3,19 +3,26 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { 
-  Image, 
   Loader2, 
+  Paperclip,
   Send, 
   Settings, 
   X,
-  Paperclip,
   Zap 
 } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useRef,useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import {
   Form,
   FormControl,
@@ -26,19 +33,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer';
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Select,
   SelectContent,
@@ -48,9 +46,8 @@ import {
 } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
-
-import { promptSchema, type PromptFormData } from '@/lib/schemas/promptSchema';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { type PromptFormData,promptSchema } from '@/lib/schemas/promptSchema';
 
 interface ChatInputProps {
   onSubmit: (data: PromptFormData) => void;
@@ -70,7 +67,7 @@ export function ChatInput({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
 
-  const form = useForm<PromptFormData>({
+  const form = useForm({
     resolver: zodResolver(promptSchema),
     defaultValues: {
       prompt: '',
@@ -129,12 +126,12 @@ export function ChatInput({
             </div>
             <FormControl>
               <Slider
-                value={[field.value]}
-                onValueChange={(value) => field.onChange(value[0])}
-                min={2}
-                max={60}
-                step={1}
                 className='w-full'
+                max={60}
+                min={2}
+                onValueChange={(value) => field.onChange(value[0])}
+                step={1}
+                value={[field.value || 5]}
               />
             </FormControl>
           </FormItem>
@@ -148,7 +145,7 @@ export function ChatInput({
         render={({ field }) => (
           <FormItem>
             <Label className='text-sm'>Aspect Ratio</Label>
-            <Select value={field.value} onValueChange={field.onChange}>
+            <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue />
@@ -171,7 +168,7 @@ export function ChatInput({
         render={({ field }) => (
           <FormItem>
             <Label className='text-sm'>Style</Label>
-            <Select value={field.value} onValueChange={field.onChange}>
+            <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue />
@@ -195,7 +192,7 @@ export function ChatInput({
         render={({ field }) => (
           <FormItem>
             <Label className='text-sm'>Quality</Label>
-            <Select value={field.value} onValueChange={field.onChange}>
+            <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue />
@@ -216,23 +213,23 @@ export function ChatInput({
   return (
     <Card className='p-4 border-t'>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
+        <form className='space-y-4' onSubmit={form.handleSubmit(handleSubmit)}>
           {/* Reference Image Preview */}
           {selectedImage && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
               className='p-3 bg-muted rounded-lg'
+              exit={{ opacity: 0, height: 0 }}
+              initial={{ opacity: 0, height: 0 }}
             >
               <div className='flex items-center justify-between mb-2'>
                 <Label className='text-sm font-medium'>Reference Image</Label>
                 <Button
+                  className='h-6 w-6 p-0'
+                  onClick={removeImage}
+                  size='sm'
                   type='button'
                   variant='ghost'
-                  size='sm'
-                  onClick={removeImage}
-                  className='h-6 w-6 p-0'
                 >
                   <X className='h-4 w-4' />
                 </Button>
@@ -240,9 +237,9 @@ export function ChatInput({
               <div className='flex items-center gap-3'>
                 <div className='h-12 w-12 rounded-lg overflow-hidden bg-background'>
                   <img
-                    src={URL.createObjectURL(selectedImage)}
                     alt='Reference'
                     className='h-full w-full object-cover'
+                    src={URL.createObjectURL(selectedImage)}
                   />
                 </div>
                 <div className='flex-1'>
@@ -265,10 +262,10 @@ export function ChatInput({
                   <FormControl>
                     <Textarea
                       {...field}
-                      placeholder={placeholder}
                       className='min-h-[80px] pr-24 resize-none'
                       disabled={disabled || isLoading}
                       onKeyDown={handleKeyDown}
+                      placeholder={placeholder}
                     />
                   </FormControl>
                   <FormMessage />
@@ -280,26 +277,26 @@ export function ChatInput({
             <div className='absolute bottom-3 right-3 flex items-center gap-1'>
               {/* Attachment Button */}
               <Button
+                className='h-8 w-8 p-0'
+                disabled={disabled || isLoading}
+                onClick={() => fileInputRef.current?.click()}
+                size='sm'
                 type='button'
                 variant='ghost'
-                size='sm'
-                className='h-8 w-8 p-0'
-                onClick={() => fileInputRef.current?.click()}
-                disabled={disabled || isLoading}
               >
                 <Paperclip className='h-4 w-4' />
               </Button>
 
               {/* Settings Button */}
               {isMobile ? (
-                <Drawer open={showSettings} onOpenChange={setShowSettings}>
+                <Drawer onOpenChange={setShowSettings} open={showSettings}>
                   <DrawerTrigger asChild>
                     <Button
-                      type='button'
-                      variant='ghost'
-                      size='sm'
                       className='h-8 w-8 p-0'
                       disabled={disabled || isLoading}
+                      size='sm'
+                      type='button'
+                      variant='ghost'
                     >
                       <Settings className='h-4 w-4' />
                     </Button>
@@ -315,19 +312,19 @@ export function ChatInput({
                   </DrawerContent>
                 </Drawer>
               ) : (
-                <Popover open={showSettings} onOpenChange={setShowSettings}>
+                <Popover onOpenChange={setShowSettings} open={showSettings}>
                   <PopoverTrigger asChild>
                     <Button
-                      type='button'
-                      variant='ghost'
-                      size='sm'
                       className='h-8 w-8 p-0'
                       disabled={disabled || isLoading}
+                      size='sm'
+                      type='button'
+                      variant='ghost'
                     >
                       <Settings className='h-4 w-4' />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className='w-80 p-4' align='end'>
+                  <PopoverContent align='end' className='w-80 p-4'>
                     <SettingsContent />
                   </PopoverContent>
                 </Popover>
@@ -335,10 +332,10 @@ export function ChatInput({
 
               {/* Send Button */}
               <Button
-                type='submit'
-                size='sm'
                 className='h-8 w-8 p-0'
                 disabled={disabled || isLoading || !form.watch('prompt').trim()}
+                size='sm'
+                type='submit'
               >
                 {isLoading ? (
                   <Loader2 className='h-4 w-4 animate-spin' />
@@ -351,11 +348,11 @@ export function ChatInput({
 
           {/* Hidden File Input */}
           <Input
+            accept='image/jpeg,image/png,image/webp'
+            className='hidden'
+            onChange={handleImageSelect}
             ref={fileInputRef}
             type='file'
-            accept='image/jpeg,image/png,image/webp'
-            onChange={handleImageSelect}
-            className='hidden'
           />
 
           {/* Character Count */}

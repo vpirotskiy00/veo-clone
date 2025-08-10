@@ -20,11 +20,11 @@ export function TypingIndicator() {
       <Card className='px-4 py-3 bg-muted max-w-[120px]'>
         <div className='flex items-center gap-1'>
           <motion.div
-            className='h-2 w-2 rounded-full bg-muted-foreground'
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.6, 1, 0.6],
             }}
+            className='h-2 w-2 rounded-full bg-muted-foreground'
             transition={{
               duration: 1.2,
               repeat: Infinity,
@@ -32,11 +32,11 @@ export function TypingIndicator() {
             }}
           />
           <motion.div
-            className='h-2 w-2 rounded-full bg-muted-foreground'
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.6, 1, 0.6],
             }}
+            className='h-2 w-2 rounded-full bg-muted-foreground'
             transition={{
               duration: 1.2,
               repeat: Infinity,
@@ -44,11 +44,11 @@ export function TypingIndicator() {
             }}
           />
           <motion.div
-            className='h-2 w-2 rounded-full bg-muted-foreground'
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.6, 1, 0.6],
             }}
+            className='h-2 w-2 rounded-full bg-muted-foreground'
             transition={{
               duration: 1.2,
               repeat: Infinity,

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
-import { VideoGenerationAPI, mockCompletedVideo } from '@/lib/api/videoGeneration';
+import { mockCompletedVideo, VideoGenerationAPI } from '@/lib/api/videoGeneration';
 import type { 
   VideoGenerationRequest, 
   VideoGenerationResponse 
@@ -53,7 +53,7 @@ export function useVideoGeneration(options: UseVideoGenerationOptions = {}) {
   });
 
   // Poll video status
-  const startPolling = useCallback((videoId: string) => {
+  const startPolling = useCallback(async (videoId: string) => {
     if (enableMocking) {
       // Mock polling - simulate progress updates
       let progress = 0;
@@ -81,19 +81,22 @@ export function useVideoGeneration(options: UseVideoGenerationOptions = {}) {
     }
 
     // Real API polling
-    VideoGenerationAPI.pollVideoStatus(
-      videoId,
-      onStatusUpdate,
-      60, // max attempts
-      5000 // 5 second interval
-    )
-      .then(onSuccess)
-      .catch(onError);
+    try {
+      const result = await VideoGenerationAPI.pollVideoStatus(
+        videoId,
+        onStatusUpdate,
+        60, // max attempts
+        5000 // 5 second interval
+      );
+      onSuccess?.(result);
+    } catch (error) {
+      onError?.(error instanceof Error ? error : new Error('Unknown error'));
+    }
   }, [enableMocking, onStatusUpdate, onSuccess, onError]);
 
   // Get video status query
   const videoStatusQuery = useQuery({
-    queryKey: ['videoStatus', currentVideoId],
+    queryKey: ['videoStatus', currentVideoId, enableMocking],
     queryFn: () => {
       if (!currentVideoId) return null;
       
@@ -106,7 +109,7 @@ export function useVideoGeneration(options: UseVideoGenerationOptions = {}) {
     enabled: !!currentVideoId,
     refetchInterval: (query) => {
       // Stop refetching if completed or failed
-      return query.data?.status === 'processing' ? 5000 : false;
+      return query.state.data?.status === 'processing' ? 5000 : false;
     },
   });
 
@@ -124,8 +127,7 @@ export function useVideoGeneration(options: UseVideoGenerationOptions = {}) {
     request: VideoGenerationRequest
   ): Promise<VideoGenerationResponse> => {
     try {
-      const result = await generateVideoMutation.mutateAsync(request);
-      return result;
+      return await generateVideoMutation.mutateAsync(request);
     } catch (error) {
       throw error instanceof Error ? error : new Error('Video generation failed');
     }

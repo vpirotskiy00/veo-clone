@@ -1,8 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Download, ExternalLink, Play, Pause, Volume2, VolumeX, Maximize } from 'lucide-react';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { Download, ExternalLink, Maximize,Pause, Play, Volume2, VolumeX } from 'lucide-react';
+import { useCallback,useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -29,7 +29,7 @@ export function VideoPreview({
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>();
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handlePlayPause = () => {
     if (videoRef.current) {
@@ -138,50 +138,50 @@ export function VideoPreview({
 
   return (
     <motion.div
-      ref={containerRef}
-      initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
       className={cn(
         'relative group rounded-lg overflow-hidden',
         isFullscreen && 'fixed inset-0 z-50 rounded-none',
         className
       )}
+      initial={{ opacity: 0, scale: 0.95 }}
+      onClick={handleVideoClick}
       onMouseEnter={() => !isMobile && setShowControls(true)}
       onMouseLeave={() => !isMobile && setShowControls(false)}
-      onClick={handleVideoClick}
       onTouchStart={handleVideoTouch}
+      ref={containerRef}
+      transition={{ duration: 0.3 }}
     >
       <video
-        ref={videoRef}
         className={cn(
           'w-full aspect-video object-cover bg-black cursor-pointer',
           isFullscreen && 'h-full aspect-auto'
         )}
-        src={videoUrl}
-        muted={isMuted}
         loop
-        playsInline
-        onPlay={() => setIsPlaying(true)}
+        muted={isMuted}
         onPause={() => setIsPlaying(false)}
+        onPlay={() => setIsPlaying(true)}
+        playsInline
+        ref={videoRef}
+        src={videoUrl}
       >
+        <track kind="captions" src="" srcLang="en" label="English captions" />
         Your browser does not support the video tag.
       </video>
 
       {/* Video Controls Overlay */}
       <motion.div
-        initial={{ opacity: 0 }}
         animate={{ opacity: showControls ? 1 : 0 }}
-        transition={{ duration: 0.2 }}
         className={cn(
           'absolute inset-0 flex items-center justify-center',
           !isMobile && 'bg-black/20'
         )}
+        initial={{ opacity: 0 }}
         style={{ pointerEvents: showControls ? 'auto' : 'none' }}
+        transition={{ duration: 0.2 }}
       >
         {/* Play/Pause Button */}
         <Button
-          size='lg'
           className={cn(
             'rounded-full bg-black/50 hover:bg-black/70 border-0',
             isMobile ? 'h-14 w-14 md:h-16 md:w-16' : 'h-16 w-16'
@@ -190,6 +190,7 @@ export function VideoPreview({
             e.stopPropagation();
             handlePlayPause();
           }}
+          size='lg'
         >
           {isPlaying ? (
             <Pause className={cn('text-white', isMobile ? 'h-6 w-6 md:h-8 md:w-8' : 'h-8 w-8')} />
@@ -201,21 +202,19 @@ export function VideoPreview({
 
       {/* Bottom Controls */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: showControls ? 1 : 0, y: showControls ? 0 : 10 }}
-        transition={{ duration: 0.2 }}
         className={cn(
           'absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent',
           isMobile ? 'p-3' : 'p-4'
         )}
+        initial={{ opacity: 0, y: 10 }}
         style={{ pointerEvents: showControls ? 'auto' : 'none' }}
+        transition={{ duration: 0.2 }}
       >
         <div className='flex items-center justify-between'>
           {/* Left controls */}
           <div className='flex items-center gap-1 md:gap-2'>
             <Button
-              size='sm'
-              variant='ghost'
               className={cn(
                 'text-white hover:bg-white/20',
                 isMobile ? 'h-9 w-9 p-0' : 'h-8 w-8 p-0'
@@ -224,7 +223,9 @@ export function VideoPreview({
                 e.stopPropagation();
                 handleMuteToggle();
               }}
+              size='sm'
               title={isMuted ? 'Unmute' : 'Mute'}
+              variant='ghost'
             >
               {isMuted ? (
                 <VolumeX className={isMobile ? 'h-5 w-5' : 'h-4 w-4'} />
@@ -237,8 +238,6 @@ export function VideoPreview({
           {/* Right controls */}
           <div className='flex items-center gap-1 md:gap-2'>
             <Button
-              size='sm'
-              variant='ghost'
               className={cn(
                 'text-white hover:bg-white/20',
                 isMobile ? 'h-9 w-9 p-0' : 'h-8 w-8 p-0'
@@ -247,27 +246,27 @@ export function VideoPreview({
                 e.stopPropagation();
                 handleDownload();
               }}
+              size='sm'
               title='Download video'
+              variant='ghost'
             >
               <Download className={isMobile ? 'h-5 w-5' : 'h-4 w-4'} />
             </Button>
             {!isMobile && (
               <Button
-                size='sm'
-                variant='ghost'
                 className='h-8 w-8 p-0 text-white hover:bg-white/20'
                 onClick={(e) => {
                   e.stopPropagation();
                   handleOpenInNewTab();
                 }}
+                size='sm'
                 title='Open in new tab'
+                variant='ghost'
               >
                 <ExternalLink className='h-4 w-4' />
               </Button>
             )}
             <Button
-              size='sm'
-              variant='ghost'
               className={cn(
                 'text-white hover:bg-white/20',
                 isMobile ? 'h-9 w-9 p-0' : 'h-8 w-8 p-0'
@@ -276,7 +275,9 @@ export function VideoPreview({
                 e.stopPropagation();
                 handleFullscreen();
               }}
+              size='sm'
               title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              variant='ghost'
             >
               <Maximize className={isMobile ? 'h-5 w-5' : 'h-4 w-4'} />
             </Button>
@@ -284,15 +285,7 @@ export function VideoPreview({
         </div>
       </motion.div>
 
-      {/* Loading overlay for processing state */}
-      {status === 'processing' && (
-        <div className='absolute inset-0 bg-black/50 flex items-center justify-center'>
-          <div className='text-center text-white px-4'>
-            <div className='animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-b-2 border-white mx-auto mb-2' />
-            <p className='text-xs md:text-sm'>Processing...</p>
-          </div>
-        </div>
-      )}
+      {/* This overlay is not needed since processing status is handled in the early return above */}
     </motion.div>
   );
 }
