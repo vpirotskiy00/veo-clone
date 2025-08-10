@@ -19,16 +19,19 @@ interface VideoPreviewProps {
   className?: string;
 }
 
-export function VideoPreview({ 
-  videoUrl, 
-  videoId, 
-  status, 
-  className 
+export function VideoPreview({
+  videoUrl,
+  videoId,
+  status,
+  className,
 }: VideoPreviewProps) {
   const isMobile = useIsMobile();
   const { isFullscreen, containerRef, handleFullscreen } = useFullscreen();
-  const { handleDownload, handleOpenInNewTab } = useVideoActions({ videoUrl, videoId });
-  
+  const { handleDownload, handleOpenInNewTab } = useVideoActions({
+    videoUrl,
+    videoId,
+  });
+
   const {
     isPlaying,
     setIsPlaying,
@@ -56,7 +59,7 @@ export function VideoPreview({
   }, [clearControlsTimeout]);
 
   if (status !== 'completed') {
-    return <ProcessingPlaceholder status={status} className={className} />;
+    return <ProcessingPlaceholder className={className} status={status} />;
   }
 
   const containerClasses = cn(
@@ -100,13 +103,13 @@ export function VideoPreview({
         ref={videoRef}
         src={videoUrl}
       >
-        <track kind="captions" label="English captions" src="" srcLang="en" />
+        <track kind='captions' label='English captions' src='' srcLang='en' />
         Your browser does not support the video tag.
       </video>
 
       <VideoControls
-        isPlaying={isPlaying}
         isMobile={isMobile}
+        isPlaying={isPlaying}
         onPlayPause={handlePlayPause}
         showControls={showControls}
       />

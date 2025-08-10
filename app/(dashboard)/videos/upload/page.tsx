@@ -19,7 +19,7 @@ const formatFileSize = (bytes: number): string => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB'] as const;
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   const sizeIndex = Math.min(Math.max(i, 0), sizes.length - 1);
-  const sizeUnit = sizes[sizeIndex];
+  const sizeUnit = sizes[sizeIndex] || 'Bytes';
   return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizeUnit}`;
 };
 

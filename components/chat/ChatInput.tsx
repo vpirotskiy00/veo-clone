@@ -2,15 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
-import { 
-  Loader2, 
-  Paperclip,
-  Send, 
-  Settings, 
-  X,
-  Zap 
-} from 'lucide-react';
-import { useRef,useState } from 'react';
+import { Loader2, Paperclip, Send, Settings, X, Zap } from 'lucide-react';
+import Image from 'next/image';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -47,7 +41,7 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { type PromptFormData,promptSchema } from '@/lib/schemas/promptSchema';
+import { type PromptFormData, promptSchema } from '@/lib/schemas/promptSchema';
 
 interface ChatInputProps {
   onSubmit: (data: PromptFormData) => void;
@@ -56,11 +50,11 @@ interface ChatInputProps {
   placeholder?: string;
 }
 
-export function ChatInput({ 
-  onSubmit, 
-  isLoading = false, 
+export function ChatInput({
+  onSubmit,
+  isLoading = false,
   disabled = false,
-  placeholder = "Describe the video you'd like to generate..." 
+  placeholder = "Describe the video you'd like to generate...",
 }: ChatInputProps) {
   const [showSettings, setShowSettings] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -111,7 +105,7 @@ export function ChatInput({
   const SettingsContent = () => (
     <div className='space-y-4'>
       <h4 className='font-medium text-sm'>Generation Settings</h4>
-      
+
       {/* Duration */}
       <FormField
         control={form.control}
@@ -129,7 +123,7 @@ export function ChatInput({
                 className='w-full'
                 max={60}
                 min={2}
-                onValueChange={(value) => field.onChange(value[0])}
+                onValueChange={value => field.onChange(value[0])}
                 step={1}
                 value={[field.value || 5]}
               />
@@ -236,14 +230,18 @@ export function ChatInput({
               </div>
               <div className='flex items-center gap-3'>
                 <div className='h-12 w-12 rounded-lg overflow-hidden bg-background'>
-                  <img
+                  <Image
                     alt='Reference'
                     className='h-full w-full object-cover'
+                    height={48}
                     src={URL.createObjectURL(selectedImage)}
+                    width={48}
                   />
                 </div>
                 <div className='flex-1'>
-                  <p className='text-sm font-medium truncate'>{selectedImage.name}</p>
+                  <p className='text-sm font-medium truncate'>
+                    {selectedImage.name}
+                  </p>
                   <p className='text-xs text-muted-foreground'>
                     {(selectedImage.size / 1024 / 1024).toFixed(1)} MB
                   </p>
@@ -361,9 +359,7 @@ export function ChatInput({
               <Zap className='h-3 w-3' />
               Powered by Veo 3
             </span>
-            <span>
-              {form.watch('prompt')?.length || 0} / 2000
-            </span>
+            <span>{form.watch('prompt')?.length || 0} / 2000</span>
           </div>
         </form>
       </Form>

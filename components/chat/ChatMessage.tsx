@@ -21,7 +21,7 @@ interface ChatMessageProps {
 }
 
 export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
-  ({ message, onRetry, isLast }, ref) => {
+  ({ message, onRetry, isLast: _isLast }, ref) => {
     const isUser = message.type === 'user';
     const isAssistant = message.type === 'assistant';
 
@@ -82,27 +82,34 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
         </Avatar>
 
         {/* Message Content */}
-        <div className={cn('flex flex-col', isUser ? 'items-end' : 'items-start', 'max-w-[80%]')}>
+        <div
+          className={cn(
+            'flex flex-col',
+            isUser ? 'items-end' : 'items-start',
+            'max-w-[80%]'
+          )}
+        >
           {/* Message Card */}
           <Card
             className={cn(
               'px-4 py-3',
-              isUser
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted',
-              message.status === 'error' && 'border-red-500 bg-red-50 dark:bg-red-950'
+              isUser ? 'bg-primary text-primary-foreground' : 'bg-muted',
+              message.status === 'error' &&
+                'border-red-500 bg-red-50 dark:bg-red-950'
             )}
           >
             {/* Text Content */}
             <div className='prose prose-sm max-w-none dark:prose-invert'>
-              <p className='mb-0 whitespace-pre-wrap break-words'>{message.content}</p>
+              <p className='mb-0 whitespace-pre-wrap break-words'>
+                {message.content}
+              </p>
             </div>
 
             {/* Video Content */}
             {message.videoUrl && (
               <div className='mt-3'>
-                <VideoPreview 
-                  status={message.status} 
+                <VideoPreview
+                  status={message.status}
                   videoId={message.videoId}
                   videoUrl={message.videoUrl}
                 />
@@ -154,15 +161,16 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
                 minute: '2-digit',
               })}
             </time>
-            
+
             {/* Status */}
             <div className='flex items-center gap-1'>
               {getStatusIcon()}
-              <Badge 
+              <Badge
                 className={cn(
                   'h-5 px-1.5 text-xs',
-                  message.status === 'error' && 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                )} 
+                  message.status === 'error' &&
+                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                )}
                 variant='secondary'
               >
                 {getStatusText()}
