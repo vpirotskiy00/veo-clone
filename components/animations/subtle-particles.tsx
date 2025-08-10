@@ -21,19 +21,34 @@ interface SubtleParticlesProps {
   className?: string;
 }
 
-export function SubtleParticles({
-  trigger = false,
-  className = '',
-}: SubtleParticlesProps) {
-  const reducedMotion = useReducedMotion();
+function createParticle(id: number, x: number, y: number): Particle {
+  return {
+    id,
+    x: x + (Math.random() - 0.5) * 20,
+    y: y + (Math.random() - 0.5) * 20,
+    vx: (Math.random() - 0.5) * 1,
+    vy: (Math.random() - 0.5) * 1 - 0.5,
+    life: 1,
+    size: Math.random() * 3 + 1,
+    opacity: 0.6,
+  };
+}
+
+function updateParticle(particle: Particle): Particle {
+  return {
+    ...particle,
+    x: particle.x + particle.vx,
+    y: particle.y + particle.vy,
+    vy: particle.vy + 0.01,
+    life: particle.life - 0.008,
+    opacity: particle.opacity * 0.995,
+  };
+}
+
+function useParticleSystem(reducedMotion: boolean, mounted: boolean) {
   const [particles, setParticles] = useState<Particle[]>([]);
-  const [mounted, setMounted] = useState(false);
   const particleId = useRef(0);
   const animationFrameRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const spawnParticles = useCallback(
     (x: number, y: number) => {
@@ -41,19 +56,10 @@ export function SubtleParticles({
 
       const newParticles: Particle[] = [];
       for (let i = 0; i < 3; i++) {
-        newParticles.push({
-          id: particleId.current++,
-          x: x + (Math.random() - 0.5) * 20,
-          y: y + (Math.random() - 0.5) * 20,
-          vx: (Math.random() - 0.5) * 1,
-          vy: (Math.random() - 0.5) * 1 - 0.5, // slight upward bias
-          life: 1,
-          size: Math.random() * 3 + 1,
-          opacity: 0.6,
-        });
+        newParticles.push(createParticle(particleId.current++, x, y));
       }
 
-      setParticles(prev => [...prev, ...newParticles].slice(-20)); // Keep max 20
+      setParticles(prev => [...prev, ...newParticles].slice(-20));
     },
     [reducedMotion]
   );
@@ -61,24 +67,12 @@ export function SubtleParticles({
   useEffect(() => {
     if (!mounted || reducedMotion) return;
 
-    const updateParticles = () => {
-      setParticles(prev =>
-        prev
-          .map(p => ({
-            ...p,
-            x: p.x + p.vx,
-            y: p.y + p.vy,
-            vy: p.vy + 0.01, // gravity
-            life: p.life - 0.008,
-            opacity: p.opacity * 0.995,
-          }))
-          .filter(p => p.life > 0)
-      );
-
-      animationFrameRef.current = requestAnimationFrame(updateParticles);
+    const update = () => {
+      setParticles(prev => prev.map(updateParticle).filter(p => p.life > 0));
+      animationFrameRef.current = requestAnimationFrame(update);
     };
 
-    updateParticles();
+    update();
 
     return () => {
       if (animationFrameRef.current) {
@@ -87,10 +81,26 @@ export function SubtleParticles({
     };
   }, [mounted, reducedMotion]);
 
-  // Spawn particles when trigger changes
+  return { particles, spawnParticles };
+}
+
+export function SubtleParticles({
+  trigger = false,
+  className = '',
+}: SubtleParticlesProps) {
+  const reducedMotion = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+  const { particles, spawnParticles } = useParticleSystem(
+    reducedMotion,
+    mounted
+  );
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (trigger && mounted && !reducedMotion) {
-      // Spawn from center with some randomness
       const centerX =
         typeof window !== 'undefined' ? window.innerWidth / 2 : 400;
       const centerY =
