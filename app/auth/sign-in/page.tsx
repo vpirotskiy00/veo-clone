@@ -29,6 +29,105 @@ interface SignInFormProps {
   onTogglePassword: (e: React.MouseEvent) => void;
 }
 
+interface EmailFieldProps {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function EmailField({ value, onChange }: EmailFieldProps) {
+  return (
+    <div className='space-y-2'>
+      <Label htmlFor='email'>Email address</Label>
+      <div className='relative'>
+        <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
+        <Input
+          autoComplete='email'
+          className='pl-10 h-12'
+          id='email'
+          inputMode='email'
+          onChange={onChange}
+          placeholder='Enter your email'
+          required
+          type='email'
+          value={value}
+        />
+      </div>
+    </div>
+  );
+}
+
+interface PasswordFieldProps {
+  value: string;
+  showPassword: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onTogglePassword: (e: React.MouseEvent) => void;
+}
+
+function PasswordField({
+  value,
+  showPassword,
+  onChange,
+  onTogglePassword,
+}: PasswordFieldProps) {
+  return (
+    <div className='space-y-2'>
+      <div className='flex justify-between'>
+        <Label htmlFor='password'>Password</Label>
+        <Link
+          className='text-sm text-primary hover:underline'
+          href='/auth/forgot-password'
+        >
+          Forgot password?
+        </Link>
+      </div>
+      <div className='relative'>
+        <Input
+          autoComplete='current-password'
+          className='pr-10 h-12'
+          id='password'
+          onChange={onChange}
+          placeholder='Enter your password'
+          required
+          type={showPassword ? 'text' : 'password'}
+          value={value}
+        />
+        <button
+          aria-label='Toggle password visibility'
+          className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground w-11 h-11 flex items-center justify-center -mt-[22px]'
+          onClick={onTogglePassword}
+          type='button'
+        >
+          {showPassword ? (
+            <EyeOff className='w-4 h-4' />
+          ) : (
+            <Eye className='w-4 h-4' />
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+interface RememberCheckboxProps {
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function RememberCheckbox({ checked, onChange }: RememberCheckboxProps) {
+  return (
+    <label className='flex items-center space-x-3 cursor-pointer'>
+      <input
+        checked={checked}
+        className='w-5 h-5 rounded cursor-pointer'
+        id='remember'
+        onChange={onChange}
+        type='checkbox'
+      />
+      <span className='text-sm select-none'>Remember me for 30 days</span>
+    </label>
+  );
+}
+
 function SignInForm({
   formData,
   showPassword,
@@ -42,71 +141,17 @@ function SignInForm({
   return (
     <Card className='p-6'>
       <form className='space-y-4' onSubmit={onSubmit}>
-        <div className='space-y-2'>
-          <Label htmlFor='email'>Email address</Label>
-          <div className='relative'>
-            <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-            <Input
-              autoComplete='email'
-              className='pl-10 h-12'
-              id='email'
-              inputMode='email'
-              onChange={onEmailChange}
-              placeholder='Enter your email'
-              required
-              type='email'
-              value={formData.email}
-            />
-          </div>
-        </div>
-
-        <div className='space-y-2'>
-          <div className='flex justify-between'>
-            <Label htmlFor='password'>Password</Label>
-            <Link
-              className='text-sm text-primary hover:underline'
-              href='/auth/forgot-password'
-            >
-              Forgot password?
-            </Link>
-          </div>
-          <div className='relative'>
-            <Input
-              autoComplete='current-password'
-              className='pr-10 h-12'
-              id='password'
-              onChange={onPasswordChange}
-              placeholder='Enter your password'
-              required
-              type={showPassword ? 'text' : 'password'}
-              value={formData.password}
-            />
-            <button
-              aria-label='Toggle password visibility'
-              className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground w-11 h-11 flex items-center justify-center -mt-[22px]'
-              onClick={onTogglePassword}
-              type='button'
-            >
-              {showPassword ? (
-                <EyeOff className='w-4 h-4' />
-              ) : (
-                <Eye className='w-4 h-4' />
-              )}
-            </button>
-          </div>
-        </div>
-
-        <label className='flex items-center space-x-3 cursor-pointer'>
-          <input
-            checked={formData.remember}
-            className='w-5 h-5 rounded cursor-pointer'
-            id='remember'
-            onChange={onRememberChange}
-            type='checkbox'
-          />
-          <span className='text-sm select-none'>Remember me for 30 days</span>
-        </label>
-
+        <EmailField onChange={onEmailChange} value={formData.email} />
+        <PasswordField
+          onChange={onPasswordChange}
+          onTogglePassword={onTogglePassword}
+          showPassword={showPassword}
+          value={formData.password}
+        />
+        <RememberCheckbox
+          checked={formData.remember}
+          onChange={onRememberChange}
+        />
         <Button className='w-full' disabled={isLoading} type='submit'>
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
@@ -121,7 +166,11 @@ interface SocialLoginProps {
   onTelegramLogin: () => void;
 }
 
-function SocialLogin({ isLoading, onGoogleLogin, onTelegramLogin }: SocialLoginProps) {
+function SocialLogin({
+  isLoading,
+  onGoogleLogin,
+  onTelegramLogin,
+}: SocialLoginProps) {
   return (
     <>
       <div className='relative'>
@@ -140,7 +189,11 @@ function SocialLogin({ isLoading, onGoogleLogin, onTelegramLogin }: SocialLoginP
           <Chrome className='w-4 h-4 mr-2' />
           Google
         </Button>
-        <Button disabled={isLoading} onClick={onTelegramLogin} variant='outline'>
+        <Button
+          disabled={isLoading}
+          onClick={onTelegramLogin}
+          variant='outline'
+        >
           <TelegramIcon className='w-4 h-4 mr-2' />
           Telegram
         </Button>
@@ -176,7 +229,8 @@ function AuthFooter() {
   );
 }
 
-export default function SignInPage() {
+function useSignInHandlers() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -184,7 +238,6 @@ export default function SignInPage() {
     password: '',
     remember: false,
   });
-  const router = useRouter();
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -241,15 +294,48 @@ export default function SignInPage() {
     setShowPassword(prev => !prev);
   }, []);
 
+  return {
+    showPassword,
+    isLoading,
+    formData,
+    handleSubmit,
+    handleGoogleLogin,
+    handleTelegramLogin,
+    handleEmailChange,
+    handlePasswordChange,
+    handleRememberChange,
+    togglePasswordVisibility,
+  };
+}
+
+function PageHeader() {
+  return (
+    <div className='text-center space-y-2'>
+      <h1 className='text-3xl font-bold'>Welcome back</h1>
+      <p className='text-muted-foreground'>
+        Sign in to your account to continue creating amazing videos
+      </p>
+    </div>
+  );
+}
+
+export default function SignInPage() {
+  const {
+    showPassword,
+    isLoading,
+    formData,
+    handleSubmit,
+    handleGoogleLogin,
+    handleTelegramLogin,
+    handleEmailChange,
+    handlePasswordChange,
+    handleRememberChange,
+    togglePasswordVisibility,
+  } = useSignInHandlers();
+
   return (
     <div className='space-y-6'>
-      <div className='text-center space-y-2'>
-        <h1 className='text-3xl font-bold'>Welcome back</h1>
-        <p className='text-muted-foreground'>
-          Sign in to your account to continue creating amazing videos
-        </p>
-      </div>
-
+      <PageHeader />
       <SignInForm
         formData={formData}
         isLoading={isLoading}
@@ -260,13 +346,11 @@ export default function SignInPage() {
         onTogglePassword={togglePasswordVisibility}
         showPassword={showPassword}
       />
-
       <SocialLogin
         isLoading={isLoading}
         onGoogleLogin={handleGoogleLogin}
         onTelegramLogin={handleTelegramLogin}
       />
-
       <AuthFooter />
     </div>
   );

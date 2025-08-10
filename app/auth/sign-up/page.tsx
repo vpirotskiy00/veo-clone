@@ -32,19 +32,28 @@ const calculatePasswordStrength = (password: string): number => {
 
 const getPasswordStrengthText = (strength: number): string => {
   const strengthTexts = ['', 'Very weak', 'Weak', 'Fair', 'Good', 'Strong'];
-  return strengthTexts[strength] || '';
+  return strengthTexts.at(strength) ?? '';
 };
 
 const getPasswordStrengthColor = (strength: number): string => {
-  const colors = ['text-muted-foreground', 'text-red-500', 'text-orange-500', 'text-yellow-500', 'text-blue-500', 'text-green-500'];
-  return colors[strength] || 'text-muted-foreground';
+  const colors = [
+    'text-muted-foreground',
+    'text-red-500',
+    'text-orange-500',
+    'text-yellow-500',
+    'text-blue-500',
+    'text-green-500',
+  ];
+  return colors.at(strength) ?? 'text-muted-foreground';
 };
 
 interface PasswordStrengthIndicatorProps {
   password: string;
 }
 
-function PasswordStrengthIndicator({ password }: PasswordStrengthIndicatorProps) {
+function PasswordStrengthIndicator({
+  password,
+}: PasswordStrengthIndicatorProps) {
   const strength = calculatePasswordStrength(password);
   const strengthText = getPasswordStrengthText(strength);
   const strengthColor = getPasswordStrengthColor(strength);
@@ -94,7 +103,7 @@ function PasswordRequirements({ password }: PasswordRequirementsProps) {
   return (
     <div className='text-xs text-muted-foreground space-y-1'>
       {requirements.map((req, index) => (
-        <div key={index} className='flex items-center space-x-2'>
+        <div className='flex items-center space-x-2' key={index}>
           <Check
             className={`w-3 h-3 ${req.test(password) ? 'text-green-500' : 'text-muted-foreground'}`}
           />
@@ -103,6 +112,25 @@ function PasswordRequirements({ password }: PasswordRequirementsProps) {
       ))}
     </div>
   );
+}
+
+interface FormFieldProps {
+  formData: FormData;
+  onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onEmailChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+interface PasswordFieldProps {
+  password: string;
+  showPassword: boolean;
+  onPasswordChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onTogglePassword: (e: React.MouseEvent) => void;
+}
+
+interface CheckboxFieldsProps {
+  formData: FormData;
+  onAgreeToTermsChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onMarketingEmailsChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface SignUpFormProps {
@@ -117,6 +145,125 @@ interface SignUpFormProps {
   onTogglePassword: (e: React.MouseEvent) => void;
   onAgreeToTermsChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onMarketingEmailsChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function FormFields({ formData, onNameChange, onEmailChange }: FormFieldProps) {
+  return (
+    <>
+      <div className='space-y-2'>
+        <Label htmlFor='name'>Full name</Label>
+        <div className='relative'>
+          <User className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
+          <Input
+            className='pl-10'
+            id='name'
+            onChange={onNameChange}
+            placeholder='Enter your full name'
+            required
+            type='text'
+            value={formData.name}
+          />
+        </div>
+      </div>
+
+      <div className='space-y-2'>
+        <Label htmlFor='email'>Email address</Label>
+        <div className='relative'>
+          <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
+          <Input
+            className='pl-10'
+            id='email'
+            onChange={onEmailChange}
+            placeholder='Enter your email'
+            required
+            type='email'
+            value={formData.email}
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+
+function PasswordField({
+  password,
+  showPassword,
+  onPasswordChange,
+  onTogglePassword,
+}: PasswordFieldProps) {
+  return (
+    <div className='space-y-2'>
+      <Label htmlFor='password'>Password</Label>
+      <div className='relative'>
+        <Input
+          className='pr-10'
+          id='password'
+          onChange={onPasswordChange}
+          placeholder='Create a strong password'
+          required
+          type={showPassword ? 'text' : 'password'}
+          value={password}
+        />
+        <button
+          className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground'
+          onClick={onTogglePassword}
+          type='button'
+        >
+          {showPassword ? (
+            <EyeOff className='w-4 h-4' />
+          ) : (
+            <Eye className='w-4 h-4' />
+          )}
+        </button>
+      </div>
+      <PasswordStrengthIndicator password={password} />
+    </div>
+  );
+}
+
+function CheckboxFields({
+  formData,
+  onAgreeToTermsChange,
+  onMarketingEmailsChange,
+}: CheckboxFieldsProps) {
+  return (
+    <div className='space-y-3'>
+      <div className='flex items-start space-x-2'>
+        <input
+          checked={formData.agreeToTerms}
+          className='rounded mt-0.5'
+          id='terms'
+          onChange={onAgreeToTermsChange}
+          required
+          type='checkbox'
+        />
+        <Label className='text-sm leading-relaxed' htmlFor='terms'>
+          I agree to the{' '}
+          <Link className='text-primary hover:underline' href='/terms'>
+            Terms of Service
+          </Link>{' '}
+          and{' '}
+          <Link className='text-primary hover:underline' href='/privacy'>
+            Privacy Policy
+          </Link>
+        </Label>
+      </div>
+
+      <div className='flex items-start space-x-2'>
+        <input
+          checked={formData.marketingEmails}
+          className='rounded mt-0.5'
+          id='marketing'
+          onChange={onMarketingEmailsChange}
+          type='checkbox'
+        />
+        <Label className='text-sm leading-relaxed' htmlFor='marketing'>
+          I&apos;d like to receive product updates and marketing emails
+          (optional)
+        </Label>
+      </div>
+    </div>
+  );
 }
 
 function SignUpForm({
@@ -135,103 +282,27 @@ function SignUpForm({
   return (
     <Card className='p-6'>
       <form className='space-y-4' onSubmit={onSubmit}>
-        <div className='space-y-2'>
-          <Label htmlFor='name'>Full name</Label>
-          <div className='relative'>
-            <User className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-            <Input
-              className='pl-10'
-              id='name'
-              onChange={onNameChange}
-              placeholder='Enter your full name'
-              required
-              type='text'
-              value={formData.name}
-            />
-          </div>
-        </div>
-
-        <div className='space-y-2'>
-          <Label htmlFor='email'>Email address</Label>
-          <div className='relative'>
-            <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-            <Input
-              className='pl-10'
-              id='email'
-              onChange={onEmailChange}
-              placeholder='Enter your email'
-              required
-              type='email'
-              value={formData.email}
-            />
-          </div>
-        </div>
-
-        <div className='space-y-2'>
-          <Label htmlFor='password'>Password</Label>
-          <div className='relative'>
-            <Input
-              className='pr-10'
-              id='password'
-              onChange={onPasswordChange}
-              placeholder='Create a strong password'
-              required
-              type={showPassword ? 'text' : 'password'}
-              value={formData.password}
-            />
-            <button
-              className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground'
-              onClick={onTogglePassword}
-              type='button'
-            >
-              {showPassword ? (
-                <EyeOff className='w-4 h-4' />
-              ) : (
-                <Eye className='w-4 h-4' />
-              )}
-            </button>
-          </div>
-          <PasswordStrengthIndicator password={formData.password} />
-        </div>
-
-        <div className='space-y-3'>
-          <div className='flex items-start space-x-2'>
-            <input
-              checked={formData.agreeToTerms}
-              className='rounded mt-0.5'
-              id='terms'
-              onChange={onAgreeToTermsChange}
-              required
-              type='checkbox'
-            />
-            <Label className='text-sm leading-relaxed' htmlFor='terms'>
-              I agree to the{' '}
-              <Link className='text-primary hover:underline' href='/terms'>
-                Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link className='text-primary hover:underline' href='/privacy'>
-                Privacy Policy
-              </Link>
-            </Label>
-          </div>
-
-          <div className='flex items-start space-x-2'>
-            <input
-              checked={formData.marketingEmails}
-              className='rounded mt-0.5'
-              id='marketing'
-              onChange={onMarketingEmailsChange}
-              type='checkbox'
-            />
-            <Label className='text-sm leading-relaxed' htmlFor='marketing'>
-              I&apos;d like to receive product updates and marketing emails
-              (optional)
-            </Label>
-          </div>
-        </div>
-
-        <Button className='w-full' disabled={isLoading || !isFormValid} type='submit'>
+        <FormFields
+          formData={formData}
+          onEmailChange={onEmailChange}
+          onNameChange={onNameChange}
+        />
+        <PasswordField
+          onPasswordChange={onPasswordChange}
+          onTogglePassword={onTogglePassword}
+          password={formData.password}
+          showPassword={showPassword}
+        />
+        <CheckboxFields
+          formData={formData}
+          onAgreeToTermsChange={onAgreeToTermsChange}
+          onMarketingEmailsChange={onMarketingEmailsChange}
+        />
+        <Button
+          className='w-full'
+          disabled={isLoading || !isFormValid}
+          type='submit'
+        >
           {isLoading ? 'Creating account...' : 'Create account'}
         </Button>
       </form>
@@ -245,7 +316,11 @@ interface SocialSignUpProps {
   onTelegramSignUp: () => void;
 }
 
-function SocialSignUp({ isLoading, onGoogleSignUp, onTelegramSignUp }: SocialSignUpProps) {
+function SocialSignUp({
+  isLoading,
+  onGoogleSignUp,
+  onTelegramSignUp,
+}: SocialSignUpProps) {
   return (
     <>
       <div className='relative'>
@@ -264,7 +339,11 @@ function SocialSignUp({ isLoading, onGoogleSignUp, onTelegramSignUp }: SocialSig
           <Chrome className='w-4 h-4 mr-2' />
           Google
         </Button>
-        <Button disabled={isLoading} onClick={onTelegramSignUp} variant='outline'>
+        <Button
+          disabled={isLoading}
+          onClick={onTelegramSignUp}
+          variant='outline'
+        >
           <TelegramIcon className='w-4 h-4 mr-2' />
           Telegram
         </Button>
@@ -298,7 +377,7 @@ function SignUpFooter() {
   );
 }
 
-export default function SignUpPage() {
+function useSignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -339,23 +418,11 @@ export default function SignUpPage() {
     }, 1500);
   }, [router]);
 
-  const handleNameChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData(prev => ({ ...prev, name: e.target.value }));
-    },
-    []
-  );
-
-  const handleEmailChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData(prev => ({ ...prev, email: e.target.value }));
-    },
-    []
-  );
-
-  const handlePasswordChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData(prev => ({ ...prev, password: e.target.value }));
+  const handleFieldChange = useCallback(
+    (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value =
+        e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+      setFormData(prev => ({ ...prev, [field]: value }));
     },
     []
   );
@@ -364,20 +431,6 @@ export default function SignUpPage() {
     e.preventDefault();
     setShowPassword(prev => !prev);
   }, []);
-
-  const handleAgreeToTermsChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData(prev => ({ ...prev, agreeToTerms: e.target.checked }));
-    },
-    []
-  );
-
-  const handleMarketingEmailsChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData(prev => ({ ...prev, marketingEmails: e.target.checked }));
-    },
-    []
-  );
 
   const isFormValid = useMemo(() => {
     const strength = calculatePasswordStrength(formData.password);
@@ -389,6 +442,32 @@ export default function SignUpPage() {
         strength >= 3
     );
   }, [formData]);
+
+  return {
+    showPassword,
+    isLoading,
+    formData,
+    isFormValid,
+    handleSubmit,
+    handleGoogleSignUp,
+    handleTelegramSignUp,
+    handleFieldChange,
+    togglePasswordVisibility,
+  };
+}
+
+export default function SignUpPage() {
+  const {
+    showPassword,
+    isLoading,
+    formData,
+    isFormValid,
+    handleSubmit,
+    handleGoogleSignUp,
+    handleTelegramSignUp,
+    handleFieldChange,
+    togglePasswordVisibility,
+  } = useSignUpForm();
 
   return (
     <div className='space-y-6'>
@@ -403,11 +482,11 @@ export default function SignUpPage() {
         formData={formData}
         isFormValid={isFormValid}
         isLoading={isLoading}
-        onAgreeToTermsChange={handleAgreeToTermsChange}
-        onEmailChange={handleEmailChange}
-        onMarketingEmailsChange={handleMarketingEmailsChange}
-        onNameChange={handleNameChange}
-        onPasswordChange={handlePasswordChange}
+        onAgreeToTermsChange={handleFieldChange('agreeToTerms')}
+        onEmailChange={handleFieldChange('email')}
+        onMarketingEmailsChange={handleFieldChange('marketingEmails')}
+        onNameChange={handleFieldChange('name')}
+        onPasswordChange={handleFieldChange('password')}
         onSubmit={handleSubmit}
         onTogglePassword={togglePasswordVisibility}
         showPassword={showPassword}

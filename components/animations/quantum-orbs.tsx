@@ -48,7 +48,9 @@ export function QuantumOrbs({
 
   if (!mounted || reducedMotion) return null;
 
-  const config = intensityConfigs[intensity];
+  const config =
+    intensityConfigs[intensity as keyof typeof intensityConfigs] ??
+    intensityConfigs.subtle;
   const animateConfig = {
     x: [0, 30, -20, 0],
     y: [0, -25, 20, 0],

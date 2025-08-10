@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -16,6 +16,122 @@ interface VideoBackgroundProps {
   mobileDisabled?: boolean;
 }
 
+function useVideoState(src: string, autoPlay: boolean) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  const handleCanPlay = useCallback(
+    async (video: HTMLVideoElement) => {
+      setIsLoaded(true);
+
+      if (autoPlay) {
+        try {
+          await video.play();
+        } catch (error) {
+          console.warn('Video autoplay failed:', error);
+        }
+      }
+    },
+    [autoPlay]
+  );
+
+  const handleError = useCallback(
+    (e: Event) => {
+      console.error('Video error:', e, 'src:', src);
+      setHasError(true);
+    },
+    [src]
+  );
+
+  const handleLoadedData = useCallback(() => {
+    setIsLoaded(true);
+  }, []);
+
+  return {
+    isLoaded,
+    hasError,
+    handleCanPlay,
+    handleError,
+    handleLoadedData,
+  };
+}
+
+function VideoElement({
+  src,
+  autoPlay,
+  loop,
+  muted,
+  poster,
+  videoStyle,
+  videoRef,
+  onCanPlay,
+  onError,
+  onLoadedData,
+}: {
+  src: string;
+  autoPlay: boolean;
+  loop: boolean;
+  muted: boolean;
+  poster?: string;
+  videoStyle: React.CSSProperties;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+  onCanPlay: (video: HTMLVideoElement) => Promise<void>;
+  onError: (e: Event) => void;
+  onLoadedData: () => void;
+}) {
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleCanPlayWrapper = () => onCanPlay(video);
+
+    video.addEventListener('loadeddata', onLoadedData);
+    video.addEventListener('canplay', handleCanPlayWrapper);
+    video.addEventListener('error', onError);
+
+    return () => {
+      video.removeEventListener('loadeddata', onLoadedData);
+      video.removeEventListener('canplay', handleCanPlayWrapper);
+      video.removeEventListener('error', onError);
+    };
+  }, [videoRef, onCanPlay, onError, onLoadedData]);
+
+  return (
+    <video
+      autoPlay={autoPlay}
+      className='absolute inset-0 w-full h-full object-cover'
+      loop={loop}
+      muted={muted}
+      playsInline
+      poster={poster}
+      preload='metadata'
+      ref={videoRef}
+      src={src}
+      style={videoStyle}
+    >
+      <track kind='captions' label='English' srcLang='en' />
+    </video>
+  );
+}
+
+function PosterImage({ poster }: { poster: string }) {
+  const posterStyle = useMemo(
+    () => ({
+      backgroundImage: `url(${poster})`,
+    }),
+    [poster]
+  );
+
+  return (
+    <div
+      aria-label='Background'
+      className='absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat'
+      role='img'
+      style={posterStyle}
+    />
+  );
+}
+
 export function VideoBackground({
   src,
   className = '',
@@ -28,51 +144,13 @@ export function VideoBackground({
   mobileDisabled = false,
 }: VideoBackgroundProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
   const isMobile = useIsMobile();
 
-  // Disable video on mobile if specified
+  const { isLoaded, hasError, handleCanPlay, handleError, handleLoadedData } =
+    useVideoState(src, autoPlay);
+
   const shouldPlayVideo = !mobileDisabled || !isMobile;
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const handleCanPlay = async () => {
-      setIsLoaded(true);
-
-      if (autoPlay) {
-        try {
-          await video.play();
-        } catch (error) {
-          console.warn('Video autoplay failed:', error);
-          // Fallback: show video without autoplay
-        }
-      }
-    };
-
-    const handleError = (e: Event) => {
-      console.error('Video error:', e, 'src:', src);
-      setHasError(true);
-    };
-
-    const handleLoadedData = () => {
-      setIsLoaded(true);
-    };
-
-    video.addEventListener('loadeddata', handleLoadedData);
-    video.addEventListener('canplay', handleCanPlay);
-    video.addEventListener('error', handleError);
-
-    return () => {
-      video.removeEventListener('loadeddata', handleLoadedData);
-      video.removeEventListener('canplay', handleCanPlay);
-      video.removeEventListener('error', handleError);
-    };
-  }, [src, autoPlay]);
-
-  // Memoize styles to prevent recreation on every render
   const videoStyle = useMemo(
     () => ({
       opacity: isLoaded && !hasError ? 1 : 0,
@@ -81,51 +159,31 @@ export function VideoBackground({
     [isLoaded, hasError]
   );
 
-  const posterStyle = useMemo(
-    () => ({
-      backgroundImage: `url(${poster})`,
-    }),
-    [poster]
-  );
-
   return (
     <div className={`video-container ${className}`}>
-      {/* Video Element - conditionally rendered based on mobile settings */}
       {shouldPlayVideo ? (
-        <video
+        <VideoElement
           autoPlay={autoPlay}
-          className='absolute inset-0 w-full h-full object-cover'
           loop={loop}
           muted={muted}
-          playsInline
+          onCanPlay={handleCanPlay}
+          onError={handleError}
+          onLoadedData={handleLoadedData}
           poster={poster}
-          preload='metadata'
-          ref={videoRef}
           src={src}
-          style={videoStyle}
-        >
-          <track kind='captions' label='English' srcLang='en' />
-        </video>
+          videoRef={videoRef}
+          videoStyle={videoStyle}
+        />
       ) : (
-        poster && (
-          <div
-            aria-label='Background'
-            className='absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat'
-            role='img'
-            style={posterStyle}
-          />
-        )
+        poster && <PosterImage poster={poster} />
       )}
 
-      {/* Fallback Background */}
       {hasError && (
         <div className='absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 mesh-bg' />
       )}
 
-      {/* Video Overlay */}
       {overlay && <div className='video-overlay' />}
 
-      {/* Content */}
       {children && <div className='video-content'>{children}</div>}
     </div>
   );

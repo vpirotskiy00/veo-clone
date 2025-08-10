@@ -23,7 +23,7 @@ const videos = [
     description:
       'A beautiful timelapse of the sunrise over snow-capped mountains',
     duration: '0:45',
-    status: 'completed',
+    status: 'completed' as const,
     quality: '1080p',
     size: '24.5 MB',
     thumbnail: PLACEHOLDER_THUMBNAIL,
@@ -36,7 +36,7 @@ const videos = [
     title: 'City Street Scene',
     description: 'Bustling city street with cars and pedestrians',
     duration: '1:23',
-    status: 'processing',
+    status: 'processing' as const,
     quality: '4K',
     size: '156.2 MB',
     thumbnail: PLACEHOLDER_THUMBNAIL,
@@ -49,7 +49,7 @@ const videos = [
     title: 'Ocean Waves Loop',
     description: 'Seamless loop of ocean waves crashing on the shore',
     duration: '0:30',
-    status: 'completed',
+    status: 'completed' as const,
     quality: '1080p',
     size: '18.7 MB',
     thumbnail: PLACEHOLDER_THUMBNAIL,
@@ -62,7 +62,7 @@ const videos = [
     title: 'Forest Walk POV',
     description: 'First-person view walking through a peaceful forest',
     duration: '2:15',
-    status: 'completed',
+    status: 'completed' as const,
     quality: '4K',
     size: '287.9 MB',
     thumbnail: PLACEHOLDER_THUMBNAIL,
@@ -75,7 +75,7 @@ const videos = [
     title: 'Abstract Particle Flow',
     description: 'Colorful particles flowing in abstract patterns',
     duration: '1:00',
-    status: 'failed',
+    status: 'failed' as const,
     quality: '1080p',
     size: '0 MB',
     thumbnail: PLACEHOLDER_THUMBNAIL,
@@ -88,7 +88,7 @@ const videos = [
     title: 'Desert Landscape Drone',
     description: 'Aerial view of vast desert landscape with dunes',
     duration: '1:45',
-    status: 'completed',
+    status: 'completed' as const,
     quality: '4K',
     size: '198.4 MB',
     thumbnail: PLACEHOLDER_THUMBNAIL,
@@ -97,7 +97,6 @@ const videos = [
     tags: ['desert', 'aerial', 'landscape'],
   },
 ];
-
 
 export default function VideosPage() {
   return (

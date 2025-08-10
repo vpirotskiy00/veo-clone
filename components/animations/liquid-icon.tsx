@@ -12,17 +12,12 @@ interface LiquidIconProps {
   className?: string;
 }
 
-export function LiquidIcon({
-  icon: Icon,
-  gradient,
-  className = '',
-}: LiquidIconProps) {
-  const reducedMotion = useReducedMotion();
-  const [isHovered, setIsHovered] = useState(false);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
-
-  const animations = useMemo(() => {
+function useAnimations(
+  reducedMotion: boolean,
+  isHovered: boolean,
+  isInView: boolean
+) {
+  return useMemo(() => {
     const containerTransition: Transition = { duration: 0.6, ease: 'easeOut' };
     const orbTransition: Transition = {
       duration: 2,
@@ -72,9 +67,21 @@ export function LiquidIcon({
       },
     };
   }, [reducedMotion, isHovered, isInView]);
+}
 
-  const handleHoverStart = () => setIsHovered(true);
-  const handleHoverEnd = () => setIsHovered(false);
+export function LiquidIcon({
+  icon: Icon,
+  gradient,
+  className = '',
+}: LiquidIconProps) {
+  const reducedMotion = useReducedMotion();
+  const [isHovered, setIsHovered] = useState(false);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
+
+  const animations = useAnimations(reducedMotion, isHovered, isInView);
+  const handleHoverStart = useMemo(() => () => setIsHovered(true), []);
+  const handleHoverEnd = useMemo(() => () => setIsHovered(false), []);
 
   return (
     <motion.div
@@ -84,25 +91,19 @@ export function LiquidIcon({
       onHoverStart={handleHoverStart}
       ref={ref}
     >
-      {/* Background orb with liquid morphing */}
       <motion.div
         {...animations.backgroundOrb}
         className={`relative rounded-2xl overflow-hidden bg-gradient-to-br ${gradient}`}
       >
-        {/* Shimmer effect */}
         <motion.div
           {...animations.shimmer}
           className='absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent'
         />
-
-        {/* Icon */}
         <div className='relative z-10 p-4 flex items-center justify-center'>
           <motion.div {...animations.icon}>
             <Icon className='w-7 h-7 text-white relative z-10' />
           </motion.div>
         </div>
-
-        {/* Liquid particles on hover */}
         {isHovered && !reducedMotion && <LiquidParticles />}
       </motion.div>
     </motion.div>
@@ -116,6 +117,10 @@ function LiquidParticles() {
         id: i,
         left: `${20 + Math.random() * 60}%`,
         top: `${20 + Math.random() * 60}%`,
+        style: {
+          left: `${20 + Math.random() * 60}%`,
+          top: `${20 + Math.random() * 60}%`,
+        },
       })),
     []
   );
@@ -137,6 +142,15 @@ function LiquidParticles() {
     };
   }, []);
 
+  const getParticleTransition = useMemo(
+    () =>
+      (particleId: number): Transition => ({
+        ...particleAnimation.transition,
+        delay: particleId * 0.3,
+      }),
+    [particleAnimation.transition]
+  );
+
   return (
     <>
       {particles.map(particle => (
@@ -144,16 +158,8 @@ function LiquidParticles() {
           {...particleAnimation}
           className='absolute w-2 h-2 bg-white/40 rounded-full'
           key={particle.id}
-          style={{
-            left: particle.left,
-            top: particle.top,
-          }}
-          transition={
-            {
-              ...particleAnimation.transition,
-              delay: particle.id * 0.3,
-            } as Transition
-          }
+          style={particle.style}
+          transition={getParticleTransition(particle.id)}
         />
       ))}
     </>

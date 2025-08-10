@@ -1,8 +1,8 @@
 'use client';
 
-import { AnimatePresence,motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Bot, MessageSquare } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { PromptFormData } from '@/lib/schemas/promptSchema';
@@ -18,33 +18,64 @@ interface ChatContainerProps {
   className?: string;
 }
 
-export function ChatContainer({ onSendMessage, className }: ChatContainerProps) {
+export function ChatContainer({
+  onSendMessage,
+  className,
+}: ChatContainerProps) {
   const { messages, isTyping, isGenerating } = useChatStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
+  // Memoized animation configs
+  const emptyStateAnimation = useMemo(
+    () => ({
+      animate: { opacity: 1, y: 0 },
+      initial: { opacity: 0, y: 20 },
+      transition: { duration: 0.6 },
+    }),
+    []
+  );
+
+  const typingIndicatorAnimation = useMemo(
+    () => ({
+      animate: { opacity: 1, y: 0 },
+      exit: { opacity: 0, y: -20 },
+      initial: { opacity: 0, y: 20 },
+      transition: { duration: 0.2 },
+    }),
+    []
+  );
+
+  const scrollToBottomOptions = useMemo(
+    () => ({
+      behavior: 'smooth' as const,
+      block: 'end' as const,
+    }),
+    []
+  );
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'end' 
-    });
-  }, [messages, isTyping]);
+    messagesEndRef.current?.scrollIntoView(scrollToBottomOptions);
+  }, [messages, isTyping, scrollToBottomOptions]);
 
-  const handleRetry = (messageId: string) => {
-    const message = messages.find(msg => msg.id === messageId);
-    if (message && message.type === 'user') {
-      // Recreate the form data from the message
-      const retryData: PromptFormData = {
-        prompt: message.content,
-        duration: 5,
-        aspectRatio: '16:9',
-        style: 'realistic',
-        quality: 'standard',
-      };
-      onSendMessage(retryData);
-    }
-  };
+  const handleRetry = useCallback(
+    (messageId: string) => {
+      const message = messages.find(msg => msg.id === messageId);
+      if (message && message.type === 'user') {
+        // Recreate the form data from the message
+        const retryData: PromptFormData = {
+          prompt: message.content,
+          duration: 5,
+          aspectRatio: '16:9',
+          style: 'realistic',
+          quality: 'standard',
+        };
+        onSendMessage(retryData);
+      }
+    },
+    [messages, onSendMessage]
+  );
 
   return (
     <div className={cn('flex flex-col h-full bg-background', className)}>
@@ -64,19 +95,14 @@ export function ChatContainer({ onSendMessage, className }: ChatContainerProps) 
       </div>
 
       {/* Messages Area */}
-      <ScrollArea 
-        className='flex-1 px-0'
-        ref={scrollAreaRef}
-      >
+      <ScrollArea className='flex-1 px-0' ref={scrollAreaRef}>
         <div className='min-h-full'>
           {messages.length === 0 ? (
             // Empty State
             <div className='flex flex-col items-center justify-center h-full min-h-[400px] px-4 md:px-6'>
               <motion.div
-                animate={{ opacity: 1, y: 0 }}
+                {...emptyStateAnimation}
                 className='text-center max-w-md w-full'
-                initial={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.6 }}
               >
                 <div className='mx-auto mb-4 md:mb-6 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-500/10 to-purple-600/10'>
                   <MessageSquare className='h-8 w-8 md:h-10 md:w-10 text-primary' />
@@ -85,21 +111,37 @@ export function ChatContainer({ onSendMessage, className }: ChatContainerProps) 
                   Start Creating Amazing Videos
                 </h3>
                 <p className='text-muted-foreground mb-4 md:mb-6 leading-relaxed text-sm md:text-base'>
-                  Describe your vision and watch as Veo 3 brings it to life. 
-                  Create cinematic scenes, product showcases, or anything you can imagine.
+                  Describe your vision and watch as Veo 3 brings it to life.
+                  Create cinematic scenes, product showcases, or anything you
+                  can imagine.
                 </p>
                 <div className='grid gap-2 text-xs md:text-sm text-left'>
                   <div className='flex items-start gap-2 p-2 md:p-3 rounded-lg bg-muted/50'>
-                    <span className='text-primary font-semibold shrink-0'>💡</span>
-                    <span>Try: &ldquo;A majestic eagle soaring over snow-capped mountains&rdquo;</span>
+                    <span className='text-primary font-semibold shrink-0'>
+                      💡
+                    </span>
+                    <span>
+                      Try: &ldquo;A majestic eagle soaring over snow-capped
+                      mountains&rdquo;
+                    </span>
                   </div>
                   <div className='flex items-start gap-2 p-2 md:p-3 rounded-lg bg-muted/50'>
-                    <span className='text-primary font-semibold shrink-0'>🎬</span>
-                    <span>Try: &ldquo;Time-lapse of a blooming flower in a sunlit garden&rdquo;</span>
+                    <span className='text-primary font-semibold shrink-0'>
+                      🎬
+                    </span>
+                    <span>
+                      Try: &ldquo;Time-lapse of a blooming flower in a sunlit
+                      garden&rdquo;
+                    </span>
                   </div>
                   <div className='flex items-start gap-2 p-2 md:p-3 rounded-lg bg-muted/50'>
-                    <span className='text-primary font-semibold shrink-0'>🌊</span>
-                    <span>Try: &ldquo;Ocean waves crashing against rocky cliffs at sunset&rdquo;</span>
+                    <span className='text-primary font-semibold shrink-0'>
+                      🌊
+                    </span>
+                    <span>
+                      Try: &ldquo;Ocean waves crashing against rocky cliffs at
+                      sunset&rdquo;
+                    </span>
                   </div>
                 </div>
               </motion.div>
@@ -120,12 +162,7 @@ export function ChatContainer({ onSendMessage, className }: ChatContainerProps) 
 
               {/* Typing Indicator */}
               {isTyping && (
-                <motion.div
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  transition={{ duration: 0.2 }}
-                >
+                <motion.div {...typingIndicatorAnimation}>
                   <TypingIndicator />
                 </motion.div>
               )}

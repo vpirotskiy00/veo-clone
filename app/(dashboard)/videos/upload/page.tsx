@@ -17,8 +17,8 @@ const formatFileSize = (bytes: number): string => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB'] as const;
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   const sizeIndex = Math.min(Math.max(i, 0), sizes.length - 1);
-  const sizeUnit = sizes[sizeIndex];
-  return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizeUnit || 'Bytes'}`;
+  const sizeUnit = sizes.at(sizeIndex) ?? 'Bytes';
+  return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizeUnit}`;
 };
 
 const getFileTypeIcon = (file: File): string => {
@@ -218,7 +218,9 @@ function EnhancementOptions() {
             <div className='space-y-3'>
               <label className='flex items-center space-x-3'>
                 <input className='rounded' type='checkbox' />
-                <span className='text-sm'>Generate realistic sound effects</span>
+                <span className='text-sm'>
+                  Generate realistic sound effects
+                </span>
               </label>
               <label className='flex items-center space-x-3'>
                 <input className='rounded' type='checkbox' />
@@ -258,7 +260,7 @@ function EnhancementOptions() {
   );
 }
 
-export default function UploadPage() {
+function useFileUpload() {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -271,29 +273,6 @@ export default function UploadPage() {
     e.preventDefault();
     setIsDragOver(false);
   }, []);
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-
-    const droppedFiles = Array.from(e.dataTransfer.files);
-    const mediaFiles = droppedFiles.filter(
-      file =>
-        file.type.startsWith('video/') ||
-        file.type.startsWith('audio/') ||
-        file.type.startsWith('image/')
-    );
-
-    addFiles(mediaFiles);
-  }, [addFiles]);
-
-  const handleFileSelect = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const selectedFiles = Array.from(e.target.files || []);
-      addFiles(selectedFiles);
-    },
-    [addFiles]
-  );
 
   const addFiles = useCallback((newFiles: File[]) => {
     const uploadFiles: UploadFile[] = newFiles.map(file => ({
@@ -309,27 +288,80 @@ export default function UploadPage() {
     setFiles(prev => [...prev, ...uploadFiles]);
 
     uploadFiles.forEach(uploadFile => {
-      const interval = setInterval(() => {
-        setFiles(prev =>
-          prev.map(f => {
-            if (f.id === uploadFile.id) {
-              const newProgress = f.progress + Math.random() * 15;
-              if (newProgress >= 100) {
-                clearInterval(interval);
-                return { ...f, progress: 100, status: 'completed' };
-              }
-              return { ...f, progress: newProgress };
-            }
-            return f;
-          })
-        );
-      }, 200);
+      simulateUpload(uploadFile.id, setFiles);
     });
   }, []);
 
   const removeFile = useCallback((id: string) => {
     setFiles(prev => prev.filter(f => f.id !== id));
   }, []);
+
+  return {
+    files,
+    isDragOver,
+    handleDragOver,
+    handleDragLeave,
+    addFiles,
+    removeFile,
+  };
+}
+
+function simulateUpload(
+  uploadFileId: string,
+  setFiles: React.Dispatch<React.SetStateAction<UploadFile[]>>
+) {
+  const interval = setInterval(() => {
+    setFiles(prev =>
+      prev.map(f => {
+        if (f.id === uploadFileId) {
+          const newProgress = f.progress + Math.random() * 15;
+          if (newProgress >= 100) {
+            clearInterval(interval);
+            return { ...f, progress: 100, status: 'completed' };
+          }
+          return { ...f, progress: newProgress };
+        }
+        return f;
+      })
+    );
+  }, 200);
+}
+
+export default function UploadPage() {
+  const {
+    files,
+    isDragOver,
+    handleDragOver,
+    handleDragLeave,
+    addFiles,
+    removeFile,
+  } = useFileUpload();
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      handleDragLeave(e);
+
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      const mediaFiles = droppedFiles.filter(
+        file =>
+          file.type.startsWith('video/') ||
+          file.type.startsWith('audio/') ||
+          file.type.startsWith('image/')
+      );
+
+      addFiles(mediaFiles);
+    },
+    [addFiles, handleDragLeave]
+  );
+
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const selectedFiles = Array.from(e.target.files || []);
+      addFiles(selectedFiles);
+    },
+    [addFiles]
+  );
 
   const hasCompletedFiles = files.some(f => f.status === 'completed');
 

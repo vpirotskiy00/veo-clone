@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useReducedMotion } from '@/lib/animation-system/hooks/useReducedMotion';
 
@@ -43,6 +43,31 @@ function updateParticle(particle: Particle): Particle {
     life: particle.life - 0.008,
     opacity: particle.opacity * 0.995,
   };
+}
+
+interface ParticleComponentProps {
+  particle: Particle;
+}
+
+function ParticleComponent({ particle }: ParticleComponentProps) {
+  const particleStyle = useMemo(
+    () => ({
+      left: particle.x,
+      top: particle.y,
+      width: particle.size,
+      height: particle.size,
+      opacity: particle.opacity * particle.life,
+      filter: 'blur(1px)',
+    }),
+    [particle.x, particle.y, particle.size, particle.opacity, particle.life]
+  );
+
+  return (
+    <motion.div
+      className='absolute rounded-full bg-gradient-to-r from-blue-400/60 to-purple-400/60'
+      style={particleStyle}
+    />
+  );
 }
 
 function useParticleSystem(reducedMotion: boolean, mounted: boolean) {
@@ -116,18 +141,7 @@ export function SubtleParticles({
       className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
     >
       {particles.map(particle => (
-        <motion.div
-          className='absolute rounded-full bg-gradient-to-r from-blue-400/60 to-purple-400/60'
-          key={particle.id}
-          style={{
-            left: particle.x,
-            top: particle.y,
-            width: particle.size,
-            height: particle.size,
-            opacity: particle.opacity * particle.life,
-            filter: 'blur(1px)',
-          }}
-        />
+        <ParticleComponent key={particle.id} particle={particle} />
       ))}
     </div>
   );

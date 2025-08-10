@@ -23,7 +23,7 @@ export function useResponsive<T>(
 
   const safeValues = new Map<Breakpoint, T>();
   breakpointOrder.forEach(bp => {
-    const value = values[bp];
+    const value = values[bp as keyof typeof values];
     if (value !== undefined) {
       safeValues.set(bp, value);
     }
@@ -41,7 +41,7 @@ export function useResponsive<T>(
   ];
 
   for (const index of searchIndexes) {
-    const bp = breakpointOrder[index];
+    const bp = breakpointOrder.at(index);
     if (bp && safeValues.has(bp)) {
       const value = safeValues.get(bp);
       if (value !== undefined) {
