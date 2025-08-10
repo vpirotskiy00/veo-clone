@@ -1,23 +1,14 @@
 {
-  "buildCommand": "npm run build:vercel",
-  "installCommand": "bun install",
   "framework": "nextjs",
-  "functions": {
-    "app/**/*.ts": {
-      "runtime": "nodejs18.x"
-    },
-    "app/**/*.tsx": {
-      "runtime": "nodejs18.x"
-    }
-  },
+  "installCommand": "bun install",
+  "buildCommand": "bun run build",
   "env": {
     "NODE_VERSION": "18.17.0"
   },
   "build": {
     "env": {
       "NEXT_TELEMETRY_DISABLED": "1",
-      "CI": "true",
-      "DISABLE_FILE_TRACING": "1"
+      "CI": "true"
     }
   },
   "regions": ["iad1"],
