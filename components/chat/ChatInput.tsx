@@ -75,30 +75,33 @@ function DurationField({
 
   const sliderValue = useMemo(() => [form.watch('duration') ?? 5], [form]);
 
+  const renderDurationField = useCallback(
+    ({ field }: { field: { value: number } }) => (
+      <FormItem>
+        <div className='flex items-center justify-between'>
+          <Label className='text-sm'>Duration</Label>
+          <span className='text-sm text-muted-foreground'>{field.value}s</span>
+        </div>
+        <FormControl>
+          <Slider
+            className='w-full'
+            max={60}
+            min={2}
+            onValueChange={handleDurationChange}
+            step={1}
+            value={sliderValue}
+          />
+        </FormControl>
+      </FormItem>
+    ),
+    [handleDurationChange, sliderValue]
+  );
+
   return (
     <FormField
       control={form.control}
       name='duration'
-      render={({ field }) => (
-        <FormItem>
-          <div className='flex items-center justify-between'>
-            <Label className='text-sm'>Duration</Label>
-            <span className='text-sm text-muted-foreground'>
-              {field.value}s
-            </span>
-          </div>
-          <FormControl>
-            <Slider
-              className='w-full'
-              max={60}
-              min={2}
-              onValueChange={handleDurationChange}
-              step={1}
-              value={sliderValue}
-            />
-          </FormControl>
-        </FormItem>
-      )}
+      render={renderDurationField}
     />
   );
 }
@@ -109,27 +112,36 @@ function AspectRatioField({
 }: {
   form: ReturnType<typeof useForm<PromptFormData>>;
 }) {
+  const renderAspectRatioField = useCallback(
+    ({
+      field,
+    }: {
+      field: { onChange: (value: string) => void; value: string };
+    }) => (
+      <FormItem>
+        <Label className='text-sm'>Aspect Ratio</Label>
+        <Select onValueChange={field.onChange} value={field.value}>
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            <SelectItem value='16:9'>16:9 (Landscape)</SelectItem>
+            <SelectItem value='9:16'>9:16 (Portrait)</SelectItem>
+            <SelectItem value='1:1'>1:1 (Square)</SelectItem>
+          </SelectContent>
+        </Select>
+      </FormItem>
+    ),
+    []
+  );
+
   return (
     <FormField
       control={form.control}
       name='aspectRatio'
-      render={({ field }) => (
-        <FormItem>
-          <Label className='text-sm'>Aspect Ratio</Label>
-          <Select onValueChange={field.onChange} value={field.value}>
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectItem value='16:9'>16:9 (Landscape)</SelectItem>
-              <SelectItem value='9:16'>9:16 (Portrait)</SelectItem>
-              <SelectItem value='1:1'>1:1 (Square)</SelectItem>
-            </SelectContent>
-          </Select>
-        </FormItem>
-      )}
+      render={renderAspectRatioField}
     />
   );
 }
@@ -140,29 +152,34 @@ function StyleField({
 }: {
   form: ReturnType<typeof useForm<PromptFormData>>;
 }) {
+  const renderStyleField = useCallback(
+    ({
+      field,
+    }: {
+      field: { onChange: (value: string) => void; value: string };
+    }) => (
+      <FormItem>
+        <Label className='text-sm'>Style</Label>
+        <Select onValueChange={field.onChange} value={field.value}>
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            <SelectItem value='realistic'>Realistic</SelectItem>
+            <SelectItem value='artistic'>Artistic</SelectItem>
+            <SelectItem value='cinematic'>Cinematic</SelectItem>
+            <SelectItem value='abstract'>Abstract</SelectItem>
+          </SelectContent>
+        </Select>
+      </FormItem>
+    ),
+    []
+  );
+
   return (
-    <FormField
-      control={form.control}
-      name='style'
-      render={({ field }) => (
-        <FormItem>
-          <Label className='text-sm'>Style</Label>
-          <Select onValueChange={field.onChange} value={field.value}>
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectItem value='realistic'>Realistic</SelectItem>
-              <SelectItem value='artistic'>Artistic</SelectItem>
-              <SelectItem value='cinematic'>Cinematic</SelectItem>
-              <SelectItem value='abstract'>Abstract</SelectItem>
-            </SelectContent>
-          </Select>
-        </FormItem>
-      )}
-    />
+    <FormField control={form.control} name='style' render={renderStyleField} />
   );
 }
 
@@ -172,27 +189,36 @@ function QualityField({
 }: {
   form: ReturnType<typeof useForm<PromptFormData>>;
 }) {
+  const renderQualityField = useCallback(
+    ({
+      field,
+    }: {
+      field: { onChange: (value: string) => void; value: string };
+    }) => (
+      <FormItem>
+        <Label className='text-sm'>Quality</Label>
+        <Select onValueChange={field.onChange} value={field.value}>
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            <SelectItem value='draft'>Draft (Fast)</SelectItem>
+            <SelectItem value='standard'>Standard</SelectItem>
+            <SelectItem value='high'>High (Slow)</SelectItem>
+          </SelectContent>
+        </Select>
+      </FormItem>
+    ),
+    []
+  );
+
   return (
     <FormField
       control={form.control}
       name='quality'
-      render={({ field }) => (
-        <FormItem>
-          <Label className='text-sm'>Quality</Label>
-          <Select onValueChange={field.onChange} value={field.value}>
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectItem value='draft'>Draft (Fast)</SelectItem>
-              <SelectItem value='standard'>Standard</SelectItem>
-              <SelectItem value='high'>High (Slow)</SelectItem>
-            </SelectContent>
-          </Select>
-        </FormItem>
-      )}
+      render={renderQualityField}
     />
   );
 }
@@ -493,6 +519,24 @@ function MainForm({
 
   const promptLength = form.watch('prompt')?.length ?? 0;
 
+  const renderPromptField = useCallback(
+    ({ field }: { field: Record<string, unknown> }) => (
+      <FormItem>
+        <FormControl>
+          <Textarea
+            {...field}
+            className='min-h-[80px] pr-24 resize-none'
+            disabled={disabled || isLoading}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    ),
+    [disabled, isLoading, handleKeyDown, placeholder]
+  );
+
   return (
     <Form {...form}>
       <form className='space-y-4' onSubmit={form.handleSubmit(handleSubmit)}>
@@ -504,20 +548,7 @@ function MainForm({
           <FormField
             control={form.control}
             name='prompt'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    className='min-h-[80px] pr-24 resize-none'
-                    disabled={disabled || isLoading}
-                    onKeyDown={handleKeyDown}
-                    placeholder={placeholder}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={renderPromptField}
           />
 
           <InputControls

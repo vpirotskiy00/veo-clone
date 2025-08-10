@@ -34,28 +34,32 @@ interface VideoPlayerProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;
 }
 
-function VideoPlayer({ 
-  videoUrl, 
-  isFullscreen, 
-  isMuted, 
-  setIsPlaying, 
-  videoRef 
+function VideoPlayer({
+  videoUrl,
+  isFullscreen,
+  isMuted,
+  setIsPlaying,
+  videoRef,
 }: VideoPlayerProps) {
   const videoClasses = useMemo(
-    () => cn(
-      'w-full aspect-video object-cover bg-black cursor-pointer',
-      isFullscreen && 'h-full aspect-auto'
-    ),
+    () =>
+      cn(
+        'w-full aspect-video object-cover bg-black cursor-pointer',
+        isFullscreen && 'h-full aspect-auto'
+      ),
     [isFullscreen]
   );
+
+  const handlePause = useCallback(() => setIsPlaying(false), [setIsPlaying]);
+  const handlePlay = useCallback(() => setIsPlaying(true), [setIsPlaying]);
 
   return (
     <video
       className={videoClasses}
       loop
       muted={isMuted}
-      onPause={() => setIsPlaying(false)}
-      onPlay={() => setIsPlaying(true)}
+      onPause={handlePause}
+      onPlay={handlePlay}
       playsInline
       ref={videoRef}
       src={videoUrl}
@@ -106,11 +110,12 @@ export function VideoPreview({
   }, [clearControlsTimeout]);
 
   const containerClasses = useMemo(
-    () => cn(
-      'relative group rounded-lg overflow-hidden',
-      isFullscreen && 'fixed inset-0 z-50 rounded-none',
-      className
-    ),
+    () =>
+      cn(
+        'relative group rounded-lg overflow-hidden',
+        isFullscreen && 'fixed inset-0 z-50 rounded-none',
+        className
+      ),
     [isFullscreen, className]
   );
 
