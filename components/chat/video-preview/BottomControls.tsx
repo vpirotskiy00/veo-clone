@@ -16,15 +16,10 @@ interface BottomControlsProps {
   onFullscreen: () => void;
 }
 
-const buttonSize = {
-  mobile: 'h-9 w-9 p-0',
-  desktop: 'h-8 w-8 p-0',
-} as const;
-
-const iconSize = {
-  mobile: 'h-5 w-5',
-  desktop: 'h-4 w-4',
-} as const;
+const BUTTON_SIZE_MOBILE = 'h-9 w-9 p-0';
+const BUTTON_SIZE_DESKTOP = 'h-8 w-8 p-0';
+const ICON_SIZE_MOBILE = 'h-5 w-5';
+const ICON_SIZE_DESKTOP = 'h-4 w-4';
 
 export function BottomControls({
   showControls,
@@ -36,10 +31,12 @@ export function BottomControls({
   onOpenInNewTab,
   onFullscreen,
 }: BottomControlsProps) {
-  const stopPropagation = (callback: () => void) => (e: MouseEvent) => {
+function createStopPropagationHandler(callback: () => void) {
+  return (e: MouseEvent) => {
     e.stopPropagation();
     callback();
   };
+}
 
   return (
     <motion.div
@@ -58,17 +55,17 @@ export function BottomControls({
           <Button
             className={cn(
               'text-white hover:bg-white/20',
-              isMobile ? buttonSize.mobile : buttonSize.desktop
+              isMobile ? BUTTON_SIZE_MOBILE : BUTTON_SIZE_DESKTOP
             )}
-            onClick={stopPropagation(onMuteToggle)}
+            onClick={createStopPropagationHandler(onMuteToggle)}
             size="sm"
             title={isMuted ? 'Unmute' : 'Mute'}
             variant="ghost"
           >
             {isMuted ? (
-              <VolumeX className={isMobile ? iconSize.mobile : iconSize.desktop} />
+              <VolumeX className={isMobile ? ICON_SIZE_MOBILE : ICON_SIZE_DESKTOP} />
             ) : (
-              <Volume2 className={isMobile ? iconSize.mobile : iconSize.desktop} />
+              <Volume2 className={isMobile ? ICON_SIZE_MOBILE : ICON_SIZE_DESKTOP} />
             )}
           </Button>
         </div>
@@ -78,19 +75,19 @@ export function BottomControls({
           <Button
             className={cn(
               'text-white hover:bg-white/20',
-              isMobile ? buttonSize.mobile : buttonSize.desktop
+              isMobile ? BUTTON_SIZE_MOBILE : BUTTON_SIZE_DESKTOP
             )}
-            onClick={stopPropagation(onDownload)}
+            onClick={createStopPropagationHandler(onDownload)}
             size="sm"
             title="Download video"
             variant="ghost"
           >
-            <Download className={isMobile ? iconSize.mobile : iconSize.desktop} />
+            <Download className={isMobile ? ICON_SIZE_MOBILE : ICON_SIZE_DESKTOP} />
           </Button>
           {!isMobile && (
             <Button
               className="h-8 w-8 p-0 text-white hover:bg-white/20"
-              onClick={stopPropagation(onOpenInNewTab)}
+              onClick={createStopPropagationHandler(onOpenInNewTab)}
               size="sm"
               title="Open in new tab"
               variant="ghost"
@@ -101,14 +98,14 @@ export function BottomControls({
           <Button
             className={cn(
               'text-white hover:bg-white/20',
-              isMobile ? buttonSize.mobile : buttonSize.desktop
+              isMobile ? BUTTON_SIZE_MOBILE : BUTTON_SIZE_DESKTOP
             )}
-            onClick={stopPropagation(onFullscreen)}
+            onClick={createStopPropagationHandler(onFullscreen)}
             size="sm"
             title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             variant="ghost"
           >
-            <Maximize className={isMobile ? iconSize.mobile : iconSize.desktop} />
+            <Maximize className={isMobile ? ICON_SIZE_MOBILE : ICON_SIZE_DESKTOP} />
           </Button>
         </div>
       </div>

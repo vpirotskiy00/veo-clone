@@ -24,7 +24,7 @@ export function ProcessingPlaceholder({ status, className }: ProcessingPlacehold
           <Play className="h-5 w-5 md:h-6 md:w-6 text-primary" />
         </div>
         <p className="text-xs md:text-sm text-muted-foreground">
-          {statusMessages[status] || 'Video will appear here'}
+          {statusMessages[status as keyof typeof statusMessages] || 'Video will appear here'}
         </p>
       </div>
     </Card>

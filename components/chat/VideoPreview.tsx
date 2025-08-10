@@ -49,7 +49,7 @@ export function VideoPreview({
       setShowControls(true);
       showControlsTemporarily();
     }
-  }, [isMobile, showControlsTemporarily]);
+  }, [isMobile, setShowControls, showControlsTemporarily]);
 
   useEffect(() => {
     return clearControlsTimeout;

@@ -145,26 +145,30 @@ export function useChatHistory(options: UseChatHistoryOptions = {}) {
   });
 
   // Actions
+  const { mutateAsync: saveChatAsync } = saveChatMutation;
+  const { mutateAsync: loadChatAsync } = loadChatMutation;
+  const { mutateAsync: deleteChatAsync } = deleteChatMutation;
+
   const saveCurrentChat = useCallback(async (title?: string) => {
     if (messages.length === 0) return null;
     
-    return saveChatMutation.mutateAsync({
+    return saveChatAsync({
       title,
       messages,
     });
-  }, [messages, saveChatMutation]);
+  }, [messages, saveChatAsync]);
 
   const loadChat = useCallback(async (chatId: string) => {
-    const messages = await loadChatMutation.mutateAsync(chatId);
+    const loadedMessages = await loadChatAsync(chatId);
     // In a real implementation, you'd load these messages into the chat store
     // For now, we'll just clear current messages
     clearMessages();
-    return messages;
-  }, [loadChatMutation, clearMessages]);
+    return loadedMessages;
+  }, [loadChatAsync, clearMessages]);
 
   const deleteChat = useCallback(async (chatId: string) => {
-    return deleteChatMutation.mutateAsync(chatId);
-  }, [deleteChatMutation]);
+    return deleteChatAsync(chatId);
+  }, [deleteChatAsync]);
 
   const startNewChat = useCallback(() => {
     clearMessages();
