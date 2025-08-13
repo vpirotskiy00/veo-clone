@@ -30,6 +30,8 @@ export function useVideoGeneration() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const progressTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [resultVideoUrl, setResultVideoUrl] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     prompt: '',
     preset: '',
@@ -52,12 +54,13 @@ export function useVideoGeneration() {
       // Send generation request to backend
       const payload: VideoGenerationRequest = {
         prompt: formData.prompt || 'video',
-        image_base64: null,
+        image_base64: imageBase64,
       };
       const gen = await VideoGenerationAPI.generateVideo(payload);
 
       // Poll until finished
-      await VideoGenerationAPI.pollVideoStatus(gen.id);
+      const final = await VideoGenerationAPI.pollVideoStatus(gen.id);
+      if (final.videoUrl) setResultVideoUrl(final.videoUrl);
 
       // Finish
       if (progressTimerRef.current) {
@@ -75,9 +78,23 @@ export function useVideoGeneration() {
       setIsGenerating(false);
       setProgress(0);
       // In a real UI we would show a toast/error
-       
+
       console.error('Generation failed', error);
     }
+  };
+
+  const handleImageSelect = async (file: File | null) => {
+    if (!file) {
+      setImageBase64(null);
+      return;
+    }
+    const base64 = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+    setImageBase64(base64);
   };
 
   useEffect(() => {
@@ -136,5 +153,7 @@ export function useVideoGeneration() {
     handleSoundStyleChange,
     handleGenerateAnother,
     calculateCredits,
+    handleImageSelect,
+    resultVideoUrl,
   };
 }
