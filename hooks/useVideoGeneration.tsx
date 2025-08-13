@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import { VideoGenerationAPI } from '@/lib/api/videoGeneration';
+import type { VideoGenerationRequest } from '@/lib/schemas/promptSchema';
 
 interface FormData {
   prompt: string;
@@ -26,6 +29,7 @@ export function useVideoGeneration() {
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
+  const progressTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [formData, setFormData] = useState<FormData>({
     prompt: '',
     preset: '',
@@ -36,21 +40,53 @@ export function useVideoGeneration() {
   });
 
   const handleGenerate = async () => {
-    setIsGenerating(true);
-    setProgress(0);
+    try {
+      setIsGenerating(true);
+      setProgress(0);
 
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsGenerating(false);
-          setStep(3);
-          return 100;
-        }
-        return prev + 2;
-      });
-    }, 200);
+      // Smooth visual progress while we poll backend
+      progressTimerRef.current = setInterval(() => {
+        setProgress(prev => Math.min(prev + 2, 95));
+      }, 300);
+
+      // Send generation request to backend
+      const payload: VideoGenerationRequest = {
+        prompt: formData.prompt || 'video',
+        image_base64: null,
+      };
+      const gen = await VideoGenerationAPI.generateVideo(payload);
+
+      // Poll until finished
+      await VideoGenerationAPI.pollVideoStatus(gen.id);
+
+      // Finish
+      if (progressTimerRef.current) {
+        clearInterval(progressTimerRef.current);
+        progressTimerRef.current = null;
+      }
+      setProgress(100);
+      setIsGenerating(false);
+      setStep(3);
+    } catch (error) {
+      if (progressTimerRef.current) {
+        clearInterval(progressTimerRef.current);
+        progressTimerRef.current = null;
+      }
+      setIsGenerating(false);
+      setProgress(0);
+      // In a real UI we would show a toast/error
+       
+      console.error('Generation failed', error);
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (progressTimerRef.current) {
+        clearInterval(progressTimerRef.current);
+      }
+    };
+  }, []);
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, prompt: e.target.value }));
