@@ -1,22 +1,34 @@
 import {
   VideoGenerationRequest,
   VideoGenerationResponse,
-  videoGenerationResponseSchema,
 } from '@/lib/schemas/promptSchema';
 
 const API_BASE_URL = 'https://frontend.aichatpro.ru';
+
+function getJwt(): string | null {
+  try {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('veo_jwt');
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 export class VideoGenerationAPI {
   private static async makeRequest<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
+    const jwt = getJwt();
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
       headers: {
         'Content-Type': 'application/json',
+        ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
         ...options.headers,
       },
-      ...options,
     });
 
     if (!response.ok) {
@@ -30,16 +42,31 @@ export class VideoGenerationAPI {
     request: VideoGenerationRequest
   ): Promise<VideoGenerationResponse> {
     try {
-      const response = await this.makeRequest<VideoGenerationResponse>(
-        '/api/v1/video/generate',
-        {
-          method: 'POST',
-          body: JSON.stringify(request),
-        }
-      );
+      // Map our request shape to backend expected payload
+      const body = {
+        prompt: request.prompt,
+        // Currently we do not collect image; backend accepts null
+        image_base64: null as string | null,
+      };
 
-      // Validate response with Zod
-      return videoGenerationResponseSchema.parse(response);
+      const resp = await this.makeRequest<{
+        success: boolean;
+        task_id: number;
+      }>('/veo/video/generate', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+
+      if (!resp.success || typeof resp.task_id !== 'number') {
+        throw new Error('Unexpected generate response');
+      }
+
+      // Adapt to our internal response contract
+      return {
+        id: String(resp.task_id),
+        status: 'processing',
+        progress: 0,
+      } satisfies VideoGenerationResponse;
     } catch (error) {
       console.error('Video generation failed:', error);
       throw new Error(
@@ -48,13 +75,34 @@ export class VideoGenerationAPI {
     }
   }
 
-  static async getVideoStatus(videoId: string): Promise<VideoGenerationResponse> {
+  static async getVideoStatus(
+    videoId: string
+  ): Promise<VideoGenerationResponse> {
     try {
-      const response = await this.makeRequest<VideoGenerationResponse>(
-        `/api/v1/video/status/${videoId}`
-      );
+      const resp = await this.makeRequest<{
+        success: boolean;
+        status: 'in queue' | 'processing' | 'finished' | 'failed';
+        task_id: number;
+        video_url?: string;
+      }>(`/veo/video/status/${videoId}`);
 
-      return videoGenerationResponseSchema.parse(response);
+      if (!resp.success) {
+        throw new Error('Status request failed');
+      }
+
+      const mappedStatus =
+        resp.status === 'finished'
+          ? 'completed'
+          : resp.status === 'failed'
+            ? 'failed'
+            : 'processing';
+
+      return {
+        id: String(resp.task_id),
+        status: mappedStatus as VideoGenerationResponse['status'],
+        videoUrl: resp.video_url,
+        progress: mappedStatus === 'completed' ? 100 : undefined,
+      };
     } catch (error) {
       console.error('Failed to get video status:', error);
       throw new Error(
@@ -63,30 +111,10 @@ export class VideoGenerationAPI {
     }
   }
 
-  static async uploadReferenceImage(file: File): Promise<{ url: string }> {
-    try {
-      const formData = new FormData();
-      formData.append('image', file);
-
-      const response = await fetch(`${API_BASE_URL}/api/v1/upload/image`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Upload failed: ${response.status}`);
-      }
-
-      return response.json();
-    } catch (error) {
-      console.error('Image upload failed:', error);
-      throw new Error(
-        error instanceof Error ? error.message : 'Failed to upload image'
-      );
-    }
-  }
-
-  static async getAuthStatus(): Promise<{ authenticated: boolean; user?: unknown }> {
+  static async getAuthStatus(): Promise<{
+    authenticated: boolean;
+    user?: unknown;
+  }> {
     try {
       return await this.makeRequest<{
         authenticated: boolean;
@@ -98,11 +126,10 @@ export class VideoGenerationAPI {
     }
   }
 
-  // Poll video status until completion
   static async pollVideoStatus(
     videoId: string,
     onUpdate?: (status: VideoGenerationResponse) => void,
-    maxAttempts = 60, // 5 minutes with 5s intervals
+    maxAttempts = 60,
     interval = 5000
   ): Promise<VideoGenerationResponse> {
     return new Promise((resolve, reject) => {
@@ -111,7 +138,7 @@ export class VideoGenerationAPI {
       const poll = async () => {
         try {
           const status = await this.getVideoStatus(videoId);
-          
+
           if (onUpdate) {
             onUpdate(status);
           }
@@ -143,7 +170,6 @@ export class VideoGenerationAPI {
   }
 }
 
-// Utility functions for mocking during development
 export const mockVideoResponse = (): VideoGenerationResponse => ({
   id: crypto.randomUUID(),
   status: 'processing',
@@ -155,6 +181,7 @@ export const mockCompletedVideo = (): VideoGenerationResponse => ({
   id: crypto.randomUUID(),
   status: 'completed',
   videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-  thumbnailUrl: 'https://via.placeholder.com/320x180/0066cc/ffffff?text=Generated+Video',
+  thumbnailUrl:
+    'https://via.placeholder.com/320x180/0066cc/ffffff?text=Generated+Video',
   progress: 100,
 });

@@ -36,14 +36,8 @@ export const chatMessageSchema = z.object({
 });
 
 export const videoGenerationRequestSchema = z.object({
-  prompt: z.string().min(10).max(2000),
-  settings: z.object({
-    duration: z.number().min(2).max(60),
-    aspectRatio: z.enum(['16:9', '9:16', '1:1']),
-    style: z.enum(['realistic', 'artistic', 'cinematic', 'abstract']),
-    quality: z.enum(['draft', 'standard', 'high']),
-  }),
-  referenceImageUrl: z.string().url().optional(),
+  prompt: z.string().min(1).max(2000),
+  image_base64: z.string().nullable().optional(),
 });
 
 export const videoGenerationResponseSchema = z.object({

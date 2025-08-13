@@ -115,10 +115,19 @@ export function useVideoGeneration(options: UseVideoGenerationOptions = {}) {
     },
   });
 
+  // Image upload endpoint is not available; we use base64 inside generate payload.
   const uploadImageMutation = useMutation({
-    mutationFn: VideoGenerationAPI.uploadReferenceImage,
+    mutationFn: async (file: File) => {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
+      });
+      return { url: base64 };
+    },
     onError: (error: Error) => {
-      console.error('Image upload failed:', error);
+      console.error('Image convert failed:', error);
       onError?.(error);
     },
   });
