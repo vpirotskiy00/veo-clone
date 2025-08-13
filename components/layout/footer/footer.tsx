@@ -26,21 +26,21 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
   ) => {
     return (
       <footer
-        ref={ref}
         className={cn(
           'bg-background/95 supports-[backdrop-filter]:bg-background/60 border-t backdrop-blur',
           className
         )}
+        ref={ref}
         {...props}
       >
-        <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
+        <div className='container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0'>
           {links.length > 0 && (
-            <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-              {links.map((link) => (
+            <div className='flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0'>
+              {links.map(link => (
                 <Link
-                  key={link.href}
+                  className='text-muted-foreground hover:text-foreground flex items-center gap-2 text-center text-sm leading-loose transition-colors'
                   href={link.href}
-                  className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-center text-sm leading-loose transition-colors"
+                  key={link.href}
                 >
                   {link.icon}
                   {link.label}
@@ -48,7 +48,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
               ))}
             </div>
           )}
-          <p className="text-muted-foreground text-center text-sm leading-loose md:text-left">
+          <p className='text-muted-foreground text-center text-sm leading-loose md:text-left'>
             {copyright}
           </p>
         </div>

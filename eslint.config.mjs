@@ -28,6 +28,9 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  {
+    ignores: ['vitest.config.ts'],
+  },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   ...storybook.configs['flat/recommended'],
   {
@@ -217,6 +220,9 @@ const eslintConfig = [
       'prefer-const': 'error',
       'no-var': 'error',
       'no-debugger': 'error',
+      
+      // Next.js specific - enforce using next/image
+      '@next/next/no-img-element': 'error',
     },
     settings: {
       tailwindcss: {

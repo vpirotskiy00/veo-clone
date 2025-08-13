@@ -1,7 +1,15 @@
+import { FeaturesGrid } from '@/components/features-grid';
+import { HeroSection } from '@/components/hero-section';
+import { HowItWorks } from '@/components/how-it-works';
+import { Navigation } from '@/components/navigation';
+
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <h1 className="text-4xl font-bold">Welcome to Veo Clone</h1>
-    </div>
+    <main className='min-h-screen'>
+      <Navigation />
+      <HeroSection />
+      <FeaturesGrid />
+      <HowItWorks />
+    </main>
   );
 }
