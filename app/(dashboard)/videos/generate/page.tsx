@@ -30,7 +30,7 @@ export default function GenerateVideoPage() {
         calculateCredits={calculateCredits}
         formData={formData}
         onGenerateAnother={handleGenerateAnother}
-        // TODO: pass videoUrl to show preview/download once component supports it
+        videoUrl={_resultVideoUrl}
       />
     );
   }

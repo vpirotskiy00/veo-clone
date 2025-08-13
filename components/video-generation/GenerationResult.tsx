@@ -14,12 +14,14 @@ interface GenerationResultProps {
   };
   calculateCredits: () => number;
   onGenerateAnother: () => void;
+  videoUrl?: string | null;
 }
 
 export function GenerationResult({
   formData,
   calculateCredits,
   onGenerateAnother,
+  videoUrl,
 }: GenerationResultProps) {
   return (
     <div className='space-y-6'>
@@ -29,18 +31,32 @@ export function GenerationResult({
         </div>
         <h1 className='text-2xl font-bold'>Video Generated Successfully!</h1>
         <p className='text-muted-foreground'>
-          Your AI-generated video is ready for download.
+          Your AI-generated video is ready for preview and download.
         </p>
       </div>
 
       <Card className='max-w-2xl mx-auto'>
         <div className='p-6'>
-          <div className='aspect-video bg-muted rounded-lg flex items-center justify-center mb-6'>
-            <div className='text-center space-y-2'>
-              <Play className='w-12 h-12 text-muted-foreground mx-auto' />
-              <p className='text-sm text-muted-foreground'>Video Preview</p>
+          {videoUrl ? (
+            <div className='mb-6'>
+              <video
+                aria-label='Generated video preview'
+                className='w-full aspect-video rounded-lg bg-black'
+                controls
+                preload='metadata'
+                src={videoUrl}
+              >
+                <track kind='captions' label='captions' />
+              </video>
             </div>
-          </div>
+          ) : (
+            <div className='aspect-video bg-muted rounded-lg flex items-center justify-center mb-6'>
+              <div className='text-center space-y-2'>
+                <Play className='w-12 h-12 text-muted-foreground mx-auto' />
+                <p className='text-sm text-muted-foreground'>Video Preview</p>
+              </div>
+            </div>
+          )}
 
           <div className='space-y-4'>
             <div>
@@ -72,10 +88,25 @@ export function GenerationResult({
             </div>
 
             <div className='flex space-x-2 pt-4'>
-              <Button className='flex-1'>
-                <Download className='w-4 h-4 mr-2' />
-                Download Video
-              </Button>
+              {videoUrl ? (
+                <a
+                  className='flex-1'
+                  download
+                  href={videoUrl}
+                  rel='noopener noreferrer'
+                  target='_blank'
+                >
+                  <Button className='w-full'>
+                    <Download className='w-4 h-4 mr-2' />
+                    Download Video
+                  </Button>
+                </a>
+              ) : (
+                <Button className='flex-1' disabled>
+                  <Download className='w-4 h-4 mr-2' />
+                  Preparing...
+                </Button>
+              )}
               <Button onClick={onGenerateAnother} variant='outline'>
                 Generate Another
               </Button>
