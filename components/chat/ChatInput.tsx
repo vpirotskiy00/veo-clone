@@ -346,7 +346,7 @@ function SettingsButton({
             <Settings className='h-4 w-4' />
           </Button>
         </DrawerTrigger>
-        <DrawerContent className='p-4 pb-8'>
+        <DrawerContent className='p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]'>
           <DrawerHeader className='px-0'>
             <DrawerTitle>Generation Settings</DrawerTitle>
             <DrawerDescription>
@@ -399,16 +399,16 @@ function InputControls({
   isMobile: boolean;
 }) {
   return (
-    <div className='absolute bottom-3 right-3 flex items-center gap-1'>
+    <div className='absolute bottom-[calc(0.75rem+env(safe-area-inset-bottom))] right-3 flex items-center gap-2'>
       <Button
-        className='h-8 w-8 p-0'
+        className='h-10 w-10 p-0'
         disabled={disabled || isLoading}
         onClick={onFileClick}
-        size='sm'
+        size='icon'
         type='button'
         variant='ghost'
       >
-        <Paperclip className='h-4 w-4' />
+        <Paperclip className='h-5 w-5' />
       </Button>
 
       <SettingsButton
@@ -421,15 +421,15 @@ function InputControls({
       />
 
       <Button
-        className='h-8 w-8 p-0'
+        className='h-10 w-10 p-0'
         disabled={isSubmitDisabled}
-        size='sm'
+        size='icon'
         type='submit'
       >
         {isLoading ? (
-          <Loader2 className='h-4 w-4 animate-spin' />
+          <Loader2 className='h-5 w-5 animate-spin' />
         ) : (
-          <Send className='h-4 w-4' />
+          <Send className='h-5 w-5' />
         )}
       </Button>
     </div>
@@ -600,7 +600,7 @@ export function ChatInput({
   const imageHandling = useImageHandling();
 
   return (
-    <Card className='p-4 border-t'>
+    <Card className='p-4 border-t pb-[calc(1rem+env(safe-area-inset-bottom))]'>
       <MainForm
         disabled={disabled}
         fileInputRef={imageHandling.fileInputRef}

@@ -204,7 +204,7 @@ function MobileMenu({
             <Menu className='w-5 h-5' />
           </Button>
         </DrawerTrigger>
-        <DrawerContent className='h-[85vh]'>
+        <DrawerContent className='h-[85dvh]'>
           <DrawerHeader className='text-left'>
             <DrawerTitle>Navigation</DrawerTitle>
             <DrawerDescription>Access all features and pages</DrawerDescription>
@@ -324,7 +324,7 @@ export function Navigation() {
       initial={MOTION_CONFIGS.headerInitial}
       transition={MOTION_CONFIGS.headerTransition}
     >
-      <nav className='max-w-7xl mx-auto px-6 py-4'>
+      <nav className='max-w-7xl mx-auto px-6 py-4 pt-[calc(1rem+env(safe-area-inset-top))]'>
         <div className='flex items-center justify-between'>
           <NavLogo />
           <DesktopNavigation

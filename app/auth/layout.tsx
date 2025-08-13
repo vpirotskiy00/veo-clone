@@ -1,13 +1,15 @@
 import { Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
+import { AuthSessionProvider } from '@/components/session-provider';
+
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className='min-h-screen flex'>
+    <div className='min-h-[100dvh] flex'>
       {/* Left side - Branding */}
       <div className='hidden lg:flex lg:flex-1 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 p-12 text-white relative overflow-hidden'>
         <div className='absolute inset-0 bg-black/20' />
@@ -65,8 +67,10 @@ export default function AuthLayout({
       </div>
 
       {/* Right side - Form */}
-      <div className='flex-1 flex items-center justify-center p-8 bg-background'>
-        <div className='w-full max-w-md'>{children}</div>
+      <div className='flex-1 flex items-center justify-center p-8 pb-[calc(2rem+env(safe-area-inset-bottom))] bg-background'>
+        <AuthSessionProvider session={null}>
+          <div className='w-full max-w-md'>{children}</div>
+        </AuthSessionProvider>
       </div>
     </div>
   );

@@ -268,7 +268,7 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className='relative min-h-screen flex items-center justify-center overflow-hidden'>
+    <section className='relative min-h-[100dvh] flex items-center justify-center overflow-hidden'>
       <SimpleVideoBg className='z-0' src='/hero-video.mp4' />
       <div className='absolute inset-0 z-10'>
         <div className='absolute inset-0 bg-gradient-to-b from-black/20 via-purple-900/10 dark:via-purple-900/20 to-black/30 dark:to-black/50'></div>

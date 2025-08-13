@@ -27,13 +27,13 @@ export default async function DashboardLayout({
         <SidebarProvider defaultOpen={defaultOpen}>
           <AppSidebar />
           <SidebarInset>
-            <header className='flex h-16 shrink-0 items-center gap-2 px-4 border-b'>
+            <header className='flex h-16 shrink-0 items-center gap-2 px-4 border-b pt-[env(safe-area-inset-top)]'>
               <SidebarTrigger className='-ml-1' />
               <div className='flex items-center gap-2 px-4'>
                 <h1 className='text-lg font-semibold'>Dashboard</h1>
               </div>
             </header>
-            <div className='flex flex-1 flex-col gap-4 p-4 pt-0'>
+            <div className='flex flex-1 flex-col gap-4 p-4 pt-0 pb-[env(safe-area-inset-bottom)]'>
               {children}
             </div>
           </SidebarInset>
