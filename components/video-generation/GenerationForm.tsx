@@ -34,6 +34,7 @@ interface GenerationFormProps {
   onSoundStyleChange: (value: string) => void;
   onGenerate: () => void;
   calculateCredits: () => number;
+  onImageSelect?: (file: File | null) => void;
 }
 
 const presets = [
@@ -104,11 +105,13 @@ function VideoDetailsSection({
   onPromptChange,
   onDurationChange,
   onQualityChange,
+  onImageSelect,
 }: {
   formData: FormData;
   onPromptChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onDurationChange: (value: string) => void;
   onQualityChange: (value: string) => void;
+  onImageSelect?: (file: File | null) => void;
 }) {
   return (
     <div>
@@ -172,6 +175,16 @@ function VideoDetailsSection({
               </SelectContent>
             </Select>
           </div>
+        </div>
+
+        <div className='space-y-2'>
+          <Label htmlFor='reference'>Reference Image (optional)</Label>
+          <input
+            accept='image/*'
+            id='reference'
+            onChange={e => onImageSelect?.(e.target.files?.[0] ?? null)}
+            type='file'
+          />
         </div>
       </div>
     </div>
@@ -323,6 +336,7 @@ export function GenerationForm({
   onSoundStyleChange,
   onGenerate,
   calculateCredits,
+  onImageSelect,
 }: GenerationFormProps) {
   return (
     <div className='max-w-4xl mx-auto space-y-8'>
@@ -335,6 +349,7 @@ export function GenerationForm({
               <VideoDetailsSection
                 formData={formData}
                 onDurationChange={onDurationChange}
+                onImageSelect={onImageSelect}
                 onPromptChange={onPromptChange}
                 onQualityChange={onQualityChange}
               />

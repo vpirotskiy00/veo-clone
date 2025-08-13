@@ -20,6 +20,8 @@ export default function GenerateVideoPage() {
     handleSoundStyleChange,
     handleGenerateAnother,
     calculateCredits,
+    handleImageSelect,
+    resultVideoUrl: _resultVideoUrl,
   } = useVideoGeneration();
 
   if (step === 3) {
@@ -28,6 +30,7 @@ export default function GenerateVideoPage() {
         calculateCredits={calculateCredits}
         formData={formData}
         onGenerateAnother={handleGenerateAnother}
+        videoUrl={_resultVideoUrl}
       />
     );
   }
@@ -50,6 +53,7 @@ export default function GenerateVideoPage() {
         formData={formData}
         onDurationChange={handleDurationChange}
         onGenerate={handleGenerate}
+        onImageSelect={handleImageSelect}
         onPresetClick={handlePresetClick}
         onPromptChange={handlePromptChange}
         onQualityChange={handleQualityChange}

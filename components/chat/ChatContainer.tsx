@@ -177,7 +177,10 @@ export function ChatContainer({
     <div className={cn('flex flex-col h-full bg-background', className)}>
       <ChatHeader />
 
-      <ScrollArea className='flex-1 px-0' ref={scrollAreaRef}>
+      <ScrollArea
+        className='flex-1 px-0 pb-[env(safe-area-inset-bottom)]'
+        ref={scrollAreaRef}
+      >
         <div className='min-h-full'>
           {messages.length === 0 ? (
             <EmptyState />

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 
+import { useAuth } from '@/components/session-provider';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -388,6 +389,7 @@ function useSignUpForm() {
     marketingEmails: true,
   });
   const router = useRouter();
+  const { startTelegramAuth } = useAuth();
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -410,13 +412,15 @@ function useSignUpForm() {
     }, 1500);
   }, [router]);
 
-  const handleTelegramSignUp = useCallback(() => {
+  const handleTelegramSignUp = useCallback(async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await startTelegramAuth();
       router.push('/chat');
-    }, 1500);
-  }, [router]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [router, startTelegramAuth]);
 
   const handleFieldChange = useCallback(
     (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {

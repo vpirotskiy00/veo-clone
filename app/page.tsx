@@ -5,7 +5,7 @@ import { Navigation } from '@/components/navigation';
 
 export default function Home() {
   return (
-    <main className='min-h-screen'>
+    <main className='min-h-[100dvh]'>
       <Navigation />
       <HeroSection />
       <FeaturesGrid />

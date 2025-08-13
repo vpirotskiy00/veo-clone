@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
+import { useAuth } from '@/components/session-provider';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -231,6 +232,7 @@ function AuthFooter() {
 
 function useSignInHandlers() {
   const router = useRouter();
+  const { startTelegramAuth } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -260,13 +262,15 @@ function useSignInHandlers() {
     }, 1500);
   }, [router]);
 
-  const handleTelegramLogin = useCallback(() => {
+  const handleTelegramLogin = useCallback(async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await startTelegramAuth();
       router.push('/chat');
-    }, 1500);
-  }, [router]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [router, startTelegramAuth]);
 
   const handleEmailChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

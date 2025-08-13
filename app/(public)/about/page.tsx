@@ -164,7 +164,7 @@ export default function AboutPage() {
   return (
     <>
       <Navigation />
-      <main className='min-h-screen pt-24'>
+      <main className='min-h-[100dvh] pt-24'>
         <div className='container mx-auto px-6 py-12'>
           <HeroSection />
           <MissionSection />

@@ -304,6 +304,7 @@ export function MobileVideoPlayer({
       )}
       onTouchStart={handleTouchStart}
       ref={containerRef}
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <video
         autoPlay={autoPlay}
