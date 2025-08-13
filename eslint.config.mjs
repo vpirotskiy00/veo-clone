@@ -28,6 +28,9 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  {
+    ignores: ['vitest.config.ts'],
+  },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   ...storybook.configs['flat/recommended'],
   {

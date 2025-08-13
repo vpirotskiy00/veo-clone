@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "bun run typecheck && next build",
+    "build": "bun run typecheck && next build && node scripts/fix-manifests.mjs",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
